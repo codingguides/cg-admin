@@ -14,13 +14,13 @@ import {
 } from '@coreui/angular';
 
 import { InnerRoutingModule } from './inner-routing.module';
-import { TopicComponent } from './topic/topic.component';
+import { TopicListComponent } from './topic-list/topic-list.component';
 import { AddTopicComponent } from './add-topic/add-topic.component';
 
 
 @NgModule({
   declarations: [
-    TopicComponent,
+    TopicListComponent,
     AddTopicComponent
   ],
   imports: [

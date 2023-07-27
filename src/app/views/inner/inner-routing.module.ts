@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { TopicComponent } from './topic/topic.component';
+import { TopicListComponent } from './topic-list/topic-list.component';
 import { AddTopicComponent } from './add-topic/add-topic.component';
 
 const routes: Routes = [
@@ -12,7 +12,7 @@ const routes: Routes = [
     children: [
       {
         path: 'list',
-        component: TopicComponent,
+        component: TopicListComponent,
         data: {
           title: 'Topic List'
         }

@@ -6,7 +6,7 @@ import { ButtonModule, CardModule, FormModule, GridModule } from '@coreui/angula
 import { IconSetService } from '@coreui/icons-angular';
 import { iconSubset } from '../../../icons/icon-subset';
 import { DocsComponentsModule } from '../../../../components';
-import { TopicComponent } from './topic.component';
+import { TopicComponent } from './topic-list.component';
 
 describe('TopicComponent', () => {
   let component: TopicComponent;
