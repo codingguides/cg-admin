@@ -5,52 +5,47 @@
         <div class="row">
           <div class="col-sm-6"><strong>Add Topic</strong></div>
           <div class="col-sm-6 ">
-            <span class="add"><a [routerLink]="['/topic/list']" class=" btn btn-info" > Topic List </a></span>
+            <span class="add"><a [routerLink]="['/topic/list']" class=" btn btn-info"> Topic List </a></span>
           </div>
         </div>
       </c-card-header>
       <c-card-body>
-        <form cForm class="row g-3">
-          <c-col class="col-md-6">
-            <label cLabel for="inputEmail4">Email</label>
-            <input cFormControl id="inputEmail4" type="email" />
-          </c-col>
-          <c-col class="col-md-6">
-            <label cLabel for="inputPassword4">Password</label>
-            <input cFormControl id="inputPassword4" type="password" />
-          </c-col>
-          <c-col class="col-xs-6">
-            <label cLabel for="inputAddress">Address</label>
-            <input cFormControl id="inputAddress" placeholder="1234 Main St" />
-          </c-col>
-          <c-col class="col-xs-6">
-            <label cLabel for="inputAddress2">Address 2</label>
-            <input cFormControl id="inputAddress2" placeholder="Apartment, studio, or floor" />
-          </c-col>
-          <c-col class="col-md-6">
-            <label cLabel for="inputCity">City</label>
-            <input cFormControl id="inputCity" />
-          </c-col>
-          <c-col class="col-md-4">
-            <label cLabel for="inputState">State</label>
-            <select cSelect id="inputState">
-              <option>Choose...</option>
-              <option>...</option>
-            </select>
-          </c-col>
-          <c-col class="col-md-2">
-            <label cLabel for="inputZip">Zip</label>
-            <input cFormControl id="inputZip" />
-          </c-col>
-          <c-col class="col-xs-6">
-            <c-form-check>
-              <input cFormCheckInput id="gridCheck" name="gridCheck" type="checkbox" />
-              <label cFormCheckLabel for="gridCheck">Check me out</label>
-            </c-form-check>
-          </c-col>
-          <c-col class="col-xs-6">
-            <button cButton type="submit">Sign in</button>
-          </c-col>
+        <form cForm class="row g-3 form-horizontal" [formGroup]="formGroup"  (ngSubmit)="onSubmit(formGroup.value)">
+          <c-row>
+            <c-col class="col-md-6">
+              <label cLabel for="topicname">Topic Name</label>
+              <input cFormControl id="topicname" type="email" formControlName="name" (change)="createSlug($event)" />
+            </c-col>
+            <c-col class="col-md-6">
+              <label cLabel for="slug">Slug</label>
+              <input cFormControl id="slug" type="text" [value]="topicSlug" formControlName="slug" />
+            </c-col>
+          </c-row>
+          <c-row>
+            <c-col class="col-xs-12">
+              <label cLabel for="description">description</label>
+              <ckeditor cFormControl [data]="editorData" (change)="onChange($event)"></ckeditor>
+            </c-col>
+          </c-row>
+          <c-row>
+            <c-col class="col-md-6">
+              <label cLabel for="parent_id">Parent Topic</label>
+              <select cSelect id="parent_id" formControlName="parent_id">
+                <option value="" disabled> --- Choose Parent Topic --- </option>
+                <option *ngFor="let topic of topics; let num = index" [value]="topic._id">
+                  {{topic.name}}
+                </option>
+              </select>
+            </c-col>
+          </c-row>
+          
+
+          <c-row class="mt-2">
+            <c-col class="col-xs-6">
+              <button cButton type="submit">Add Topic</button>
+            </c-col>
+          </c-row>
+
         </form>
       </c-card-body>
     </c-card>

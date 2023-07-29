@@ -16,6 +16,7 @@ import {
 import { InnerRoutingModule } from './inner-routing.module';
 import { TopicListComponent } from './topic-list/topic-list.component';
 import { AddTopicComponent } from './add-topic/add-topic.component';
+import { CKEditorModule } from 'ckeditor4-angular';
 
 
 @NgModule({
@@ -33,6 +34,7 @@ import { AddTopicComponent } from './add-topic/add-topic.component';
     ButtonModule,
     FormsModule,
     ReactiveFormsModule,
+    CKEditorModule,
     FormModule,
     ButtonModule,
     ButtonGroupModule,

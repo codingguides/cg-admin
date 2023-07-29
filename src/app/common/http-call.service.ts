@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Router } from '@angular/router';
-
+import jwt_decode from "jwt-decode";
 
 @Injectable({
   providedIn: 'root'
@@ -60,6 +60,12 @@ export class HttpCallService {
     sessionStorage.setItem('status',status)
     console.log("status: ",status)
     return status;
+  }
+
+  public getTokenDetails(param:string){
+    const gettoken:any = this.token;
+    const decoded:any = jwt_decode(gettoken);
+    return decoded[param];
   }
 
 
