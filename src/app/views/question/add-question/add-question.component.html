@@ -1,0 +1,105 @@
+<c-row ngPreserveWhitespaces>
+  <c-col xs="12">
+    <c-card class="mb-4">
+      <c-card-header>
+        <div class="row">
+          <div class="col-sm-6"><strong>Add Topic</strong></div>
+          <div class="col-sm-6 ">
+            <span class="add"><a [routerLink]="['/topic/list']" class=" btn btn-info"> Topic List </a></span>
+          </div>
+        </div>
+      </c-card-header>
+      <c-card-body>
+        <form cForm class="row g-3 form-horizontal" [formGroup]="formGroup"  (ngSubmit)="onSubmit(formGroup.value)">
+          <c-row>
+            <c-col class="col-xs-12">
+              <label cLabel for="question">Question</label>
+              <ckeditor cFormControl [data]="editorData" (change)="onChange($event)"></ckeditor>
+            </c-col>
+          </c-row>
+          <c-row>
+            <c-col class="col-md-6">
+              <label cLabel for="options">Point</label>
+              <input cFormControl id="point" type="text"  formControlName="point" />
+            </c-col>
+            <c-col class="col-md-6">
+              <label cLabel for="level">level</label>
+              <select cSelect id="level" formControlName="level">
+                <option value="" disabled> --- Choose Level --- </option>
+                <option value="beginners"> Beginners </option>
+                <option value="advance"> Advance </option>
+                <option value="intermediate"> Intermediate </option>
+              </select>
+            </c-col>
+          </c-row>
+          <c-row>
+            <c-col class="col-md-6">
+              <label cLabel for="questiontype">Type</label>
+              <select cSelect id="questiontype" formControlName="questiontype">
+                <option value="" disabled> --- Choose Type --- </option>
+                <option value="fillintheblanks"> Fill in the blanks </option>
+                <option value="checkbox"> Checkbox </option>
+                <option value="radiobutton">Rradio button </option>
+                <option value="text"> Text </option>
+              </select>
+            </c-col>
+          </c-row>
+
+          <c-row class="mt-2">
+            <c-col class="col-md-2">
+              <label cLabel for="options">Options 1</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">
+                  <input type="radio" name="rightoption" (change)="rightOption('option1')" aria-label="Radio button for following text input">
+                  </div>
+                </div>
+                <input type="text" id="option1" formControlName="option1" class="form-control" aria-label="Text input with radio button">
+              </div>
+            </c-col>
+            <c-col class="col-md-2">
+              <label cLabel for="options">Options 2</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">
+                  <input type="radio" name="rightoption" (change)="rightOption('option2')" aria-label="Radio button for following text input">
+                  </div>
+                </div>
+                <input type="text" id="option2" formControlName="option2" class="form-control" aria-label="Text input with radio button">
+              </div>
+            </c-col>
+            <c-col class="col-md-2">
+              <label cLabel for="options">Options 3</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">
+                  <input type="radio" name="rightoption" (change)="rightOption('option3')" aria-label="Radio button for following text input">
+                  </div>
+                </div>
+                <input type="text" id="option3" formControlName="option3" class="form-control" aria-label="Text input with radio button">
+              </div>
+            </c-col>
+            <c-col class="col-md-2">
+              <label cLabel for="options">Options 4</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">
+                  <input type="radio" name="rightoption" (change)="rightOption('option4')" aria-label="Radio button for following text input">
+                  </div>
+                </div>
+                <input type="text" id="option4" formControlName="option4" class="form-control" aria-label="Text input with radio button">
+              </div>
+            </c-col>
+          </c-row>
+
+          <c-row class="mt-2">
+            <c-col class="col-xs-6">
+              <button cButton type="submit">Add Question</button>
+            </c-col>
+          </c-row>
+
+        </form>
+      </c-card-body>
+    </c-card>
+  </c-col>
+</c-row>

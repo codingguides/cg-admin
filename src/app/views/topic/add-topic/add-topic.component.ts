@@ -18,11 +18,7 @@ export class AddTopicComponent {
   topics!: any[];
   topicSlug: string = "";
   getUserDetails: any;
-
-  // toast
-  position = 'top-end';
-  visible = false;
-  percentage = 0;
+  
  
   constructor(
     public commonservice : HttpCallService,
@@ -30,6 +26,10 @@ export class AddTopicComponent {
     private formBuilder: FormBuilder,
     private router : Router
   ) { 
+  }
+
+  public onTagEdited(event: any) {
+    console.log('tag edited: current value is ' + event);
   }
 
   async ngOnInit(){
@@ -41,8 +41,10 @@ export class AddTopicComponent {
       name:  ['', [Validators.required, Validators.minLength(2)]],
       slug: ['', [Validators.required]],
       description: '',
-      parent_id:  ['', [Validators.required]]
+      parent_id:  ['', [Validators.required]],
+      tags: ['', [Validators.required]],
     });
+
   }
 
   // get f() { return this.formGroup.controls; }
@@ -53,7 +55,6 @@ export class AddTopicComponent {
 
   async getTopic(){
     await this.commonservice.get('topic/').subscribe((res)=>{
-      console.log("res>>>>>>>>>>>>",res)
       const apiResult = JSON.parse(JSON.stringify(res));
       this.topics = apiResult && apiResult.payload;
     })
@@ -71,15 +72,18 @@ export class AddTopicComponent {
   }
 
   async onSubmit(formData: any) {
+    console.log("value::::::::",this.formGroup.value);
     console.log("this.updateDesc.length..............",this.updateDesc.length)
     // if(!this.topicSlug  && this.updateDesc){
-      alert("hi")
+      // alert("hi")
+      const tags=  formData['tags'].split(',').filter((tag: any) => tag)
       const data = {
         name: formData['name'],
-        slug: this.topicSlug,
+        slug: formData['slug'] ? formData['slug'] : this.topicSlug,
         description: this.updateDesc,
         parent_id: formData['parent_id'],
-        user_id: this.getUserDetails
+        user_id: this.getUserDetails,
+        tags: formData['tags'].split(',').filter((tag: any) => tag)
       }
       console.log("data>>>>>>>>>>",data)
       this.commonservice.post(data, 'topic/add').subscribe(res => {
@@ -87,12 +91,23 @@ export class AddTopicComponent {
         const apiResult = JSON.parse(JSON.stringify(res));
         console.log(apiResult)
         if(apiResult && apiResult.status == "SUCCESS"){
-          alert(apiResult.msg)
-          this.visible = !this.visible;
-
+          console.log("paylod>>>>>>>>>>>>>>>>>",apiResult.payload._id)
+          console.log(">>>>>>>>>tags>>>>>>>>>",tags)
+          tags.map(async (tag: string)=>{
+            console.log(">>>>.tag>>>>>>>>>",tag)
+            await this.commonservice.post({
+              name: tag,
+              type: "topic",
+              topic_id: apiResult?.payload?._id,
+              question_id: apiResult?.payload?._id,
+            }, 'tags/add').subscribe((res:any)=>{
+              console.log("tagres>>>>>>>>",res)
+            })
+          })
           this.formGroup.reset();
           this.topicSlug = "";
           this.getUserDetails = "";
+          alert(apiResult.msg)
         }else{
           alert(apiResult.msg)
 
@@ -103,13 +118,6 @@ export class AddTopicComponent {
 
   }
 
-  onVisibleChange($event: boolean) {
-    this.visible = $event;
-    this.percentage = !this.visible ? 0 : this.percentage;
-  }
 
-  onTimerChange($event: number) {
-    this.percentage = $event * 25;
-  }
-
+  
 }

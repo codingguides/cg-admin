@@ -13,21 +13,17 @@ import {
   SharedModule
 } from '@coreui/angular';
 
-import { InnerRoutingModule } from './inner-routing.module';
-import { TopicListComponent } from './topic-list/topic-list.component';
-import { AddTopicComponent } from './add-topic/add-topic.component';
+import { QuestionRoutingModule } from './question-routing.module';
+import { AddQuestionComponent } from './add-question/add-question.component';
 import { CKEditorModule } from 'ckeditor4-angular';
-
 
 @NgModule({
   declarations: [
-    TopicListComponent,
-    AddTopicComponent
+    AddQuestionComponent
   ],
   imports: [
     CommonModule,
-    InnerRoutingModule,
-    // DocsComponentsModule,
+    QuestionRoutingModule,
     CardModule,
     FormModule,
     GridModule,
@@ -43,5 +39,5 @@ import { CKEditorModule } from 'ckeditor4-angular';
     ListGroupModule
   ]
 })
-export class InnerModule {
+export class QuestionModule {
 }

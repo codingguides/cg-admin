@@ -34,5 +34,5 @@ const routes: Routes = [
   ],
   exports: [RouterModule]
 })
-export class InnerRoutingModule {
+export class TopicRoutingModule {
 }

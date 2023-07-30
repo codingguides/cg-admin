@@ -36,7 +36,13 @@ const routes: Routes = [
       {
         path: 'topic',
         loadChildren: () =>
-          import('./views/inner/inner.module').then((m) => m.InnerModule)
+          import('./views/topic/topic.module').then((m) => m.TopicModule)
+      },
+
+      {
+        path: 'question',
+        loadChildren: () =>
+          import('./views/question/question.module').then((m) => m.QuestionModule)
       },
      
       {

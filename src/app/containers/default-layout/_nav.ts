@@ -24,5 +24,16 @@ export const navItems: INavData[] = [
         url: '/topic/list'
       }
     ]
+  },
+  {
+    name: 'Question',
+    url: '/question',
+    iconComponent: { name: 'cil-notes' },
+    children: [
+      {
+        name: 'Question Add',
+        url: '/question/add'
+      }
+    ]
   }
 ];
