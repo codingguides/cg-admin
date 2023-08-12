@@ -5,7 +5,7 @@
         <div class="row">
           <div class="col-sm-6"><strong>Add Topic</strong></div>
           <div class="col-sm-6 ">
-            <span class="add"><a [routerLink]="['/topic/list']" class=" btn btn-info"> Topic List </a></span>
+            <span class="add"><a [routerLink]="['/question/list']" class=" btn btn-info"> Topic List </a></span>
           </div>
         </div>
       </c-card-header>
@@ -89,6 +89,18 @@
                 </div>
                 <input type="text" id="option4" formControlName="option4" class="form-control" aria-label="Text input with radio button">
               </div>
+            </c-col>
+          </c-row>
+          <c-row>
+            <c-col class="col-md-6">
+              <label cLabel for="tags">Add Tags</label>
+              <input
+                cFormControl
+                id="tags"
+                type="text"
+                formControlName="tags"
+                required
+              />
             </c-col>
           </c-row>
 

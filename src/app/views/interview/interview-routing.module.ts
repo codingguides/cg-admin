@@ -1,27 +1,27 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AddQuestionComponent } from './add-question/add-question.component';
-import { QuestionListComponent } from './question-list/question-list.component';
+import { TopicListComponent } from './topic-list/topic-list.component';
+import { AddTopicComponent } from './add-topic/add-topic.component';
 
 const routes: Routes = [
   {
     path: '',
     data: {
-      title: 'Question'
+      title: 'Topic'
     },
     children: [
       {
         path: 'list',
-        component: QuestionListComponent,
+        component: TopicListComponent,
         data: {
           title: 'Topic List'
         }
       },
       {
         path: 'add',
-        component: AddQuestionComponent,
+        component: AddTopicComponent,
         data: {
-          title: 'Add Question'
+          title: 'Add Topic'
         }
       }
     ]
@@ -34,5 +34,5 @@ const routes: Routes = [
   ],
   exports: [RouterModule]
 })
-export class QuestionRoutingModule {
+export class TopicRoutingModule {
 }

@@ -1,0 +1,42 @@
+<c-row ngPreserveWhitespaces>
+  <c-col xs="12">
+    <c-card class="mb-4">
+      <c-card-header>
+        <c-col xs="12">
+          <div class="row">
+            <div class="col-sm-6"><strong>Question List</strong></div>
+            <div class="col-sm-6 ">
+              <span class="add"><a [routerLink]="['/question/add']" class=" btn btn-info"> Add Question </a></span>
+            </div>
+          </div>
+        </c-col>
+      </c-card-header>
+      <c-card-body>
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Question</th>
+              <th scope="col">Point</th>
+              <th scope="col">Level</th>
+              <th scope="col">Action</th>
+
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let question of questions; let num = index">
+              <th scope="row">{{num +1}}</th>
+              <td>{{removeTags(question.question)}}</td>
+              <td>{{question.point}}</td>
+              <td>{{question.level}}</td>
+              <td>
+                <i class="actionClass fa fa-pencil-square-o" aria-hidden="true" (click)="edit(question)"></i>
+                <i class="actionClass fa fa-trash-o" aria-hidden="true" (click)="delete(question)"></i>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </c-card-body>
+    </c-card>
+  </c-col>
+</c-row>

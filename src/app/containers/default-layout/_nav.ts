@@ -31,8 +31,8 @@ export const navItems: INavData[] = [
     iconComponent: { name: 'cil-notes' },
     children: [
       {
-        name: 'Question Add',
-        url: '/question/add'
+        name: 'Question List',
+        url: '/question/list'
       }
     ]
   }

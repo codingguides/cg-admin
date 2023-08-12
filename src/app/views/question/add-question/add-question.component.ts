@@ -21,8 +21,9 @@ export class AddQuestionComponent {
   @ViewChild('div')
   div!: ElementRef;
   count: any = 0;
-  options:any[] = [1,2,3,4];
+  options:any[] = [];
   selectedOption:any = ""
+
 
   constructor(
     public commonservice: HttpCallService,
@@ -47,7 +48,8 @@ export class AddQuestionComponent {
       rightoption: [],
       point: ['', [Validators.required]],
       level: ['', [Validators.required]],
-      questiontype: ['', [Validators.required]]
+      questiontype: ['', [Validators.required]],
+      tags: [[]]
     });
 
   }
@@ -69,10 +71,7 @@ export class AddQuestionComponent {
 
   async onSubmit(formData: any) {
     console.log("formData>>>>>>",formData)
-    console.log("value::::::::", this.formGroup.value['option1']);
-    console.log("value::::::::", this.formGroup.value['option2']);
-    console.log("value::::::::", this.formGroup.value['option3']);
-    console.log("value::::::::", this.formGroup.value['option4']);
+    this.options = [];
 
     let rightAnswer = "";
     if(this.selectedOption == 'option1'){
@@ -84,34 +83,38 @@ export class AddQuestionComponent {
     }else if(this.selectedOption == 'option4'){
       rightAnswer = this.formGroup.value['option4'];
     }
-    console.log({
-      "question": this.updateDesc,
-      "options1": this.formGroup.value['option1'],
-      "options2": this.formGroup.value['option2'],
-      "options3": this.formGroup.value['option3'],
-      "options4": this.formGroup.value['option4'],
-      "rightoption": rightAnswer,
-      "point": this.formGroup.value.point,
-      "level": this.formGroup.value.level,
-      "questiontype": this.formGroup.value.questiontype
-    })
+
+    for (let index = 1; index <5; index++) {
+      this.options.push(this.formGroup.value[`option${index}`]);
+    }
+
+    const tags = formData['tags'].split(',').filter((tag: any) => tag)
 
     await this.commonservice.post({
       "question": this.updateDesc,
-      "options1": this.formGroup.value['option1'],
-      "options2": this.formGroup.value['option2'],
-      "options3": this.formGroup.value['option3'],
-      "options4": this.formGroup.value['option4'],
+      "options": this.options,
       "rightoption": rightAnswer,
       "point": this.formGroup.value.point,
       "level": this.formGroup.value.level,
-      "questiontype": this.formGroup.value.questiontype
+      "questiontype": this.formGroup.value.questiontype,
+      "user_id": this.getUserDetails,
+      "tags": formData['tags'].split(',').filter((tag: any) => tag)
     },'questions/add').subscribe((res) => {
       console.log("res>>>>>>>>>>>",res)
         const apiResult = JSON.parse(JSON.stringify(res));
         console.log(apiResult)
         if(apiResult && apiResult.status == "SUCCESS"){
           console.log("paylod>>>>>>>>>>>>>>>>>",apiResult.payload._id)
+          tags.map(async (tag: string) => {
+            console.log(">>>>.tag>>>>>>>>>", tag)
+            await this.commonservice.post({
+              name: tag,
+              type: "questions",
+              questions_id: apiResult?.payload?._id,
+            }, 'tags/add').subscribe((res: any) => {
+              console.log("tagres>>>>>>>>", res)
+            })
+          })
           this.formGroup.reset();
           this.getUserDetails = "";
           alert(apiResult.msg)
