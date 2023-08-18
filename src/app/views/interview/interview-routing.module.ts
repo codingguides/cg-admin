@@ -1,27 +1,27 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { TopicListComponent } from './topic-list/topic-list.component';
-import { AddTopicComponent } from './add-topic/add-topic.component';
+import { InterviewListComponent } from './interview-list/interview-list.component';
+import { AddInterviewComponent } from './add-interview/add-interview.component';
 
 const routes: Routes = [
   {
     path: '',
     data: {
-      title: 'Topic'
+      title: 'Interview'
     },
     children: [
       {
         path: 'list',
-        component: TopicListComponent,
+        component: InterviewListComponent,
         data: {
-          title: 'Topic List'
+          title: 'Interview List'
         }
       },
       {
         path: 'add',
-        component: AddTopicComponent,
+        component: AddInterviewComponent,
         data: {
-          title: 'Add Topic'
+          title: 'Add Interview'
         }
       }
     ]
@@ -34,5 +34,5 @@ const routes: Routes = [
   ],
   exports: [RouterModule]
 })
-export class TopicRoutingModule {
+export class InterviewRoutingModule {
 }

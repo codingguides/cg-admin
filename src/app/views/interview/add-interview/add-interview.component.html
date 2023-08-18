@@ -1,0 +1,95 @@
+<c-row ngPreserveWhitespaces>
+  <c-col xs="12">
+    <c-card class="mb-4">
+      <c-card-header>
+        <div class="row">
+          <div class="col-sm-6"><strong>Add Topic</strong></div>
+          <div class="col-sm-6">
+            <span class="add"
+              ><a [routerLink]="['/topic/list']" class="btn btn-info">
+                Topic List
+              </a></span
+            >
+          </div>
+        </div>
+      </c-card-header>
+      <c-card-body>
+        <form
+          cForm
+          class="row g-3 form-horizontal"
+          [formGroup]="formGroup"
+          (ngSubmit)="onSubmit(formGroup.value)"
+        >
+          <c-row>
+            <c-col class="col-xs-12">
+              <label cLabel for="description">Question</label>
+              <ckeditor
+                cFormControl
+                [data]="editorData"
+                (change)="onChange($event)"
+              ></ckeditor>
+            </c-col>
+          </c-row>
+          <c-row>
+            <c-col class="col-md-6">
+              <label cLabel for="topic_id">Parent Topic</label>
+              <select
+                cSelect
+                id="topic_id"
+                class="form-select"
+                formControlName="topic_id"
+              >
+                <option value="" disabled>--- Choose Parent Topic ---</option>
+                <option
+                  *ngFor="let topic of topics; let num = index"
+                  [value]="topic._id"
+                >
+                  {{ topic.name }}
+                </option>
+              </select>
+              <div
+                style="color: red"
+                *ngIf="topic_id && topic_id.invalid && topic_id.touched"
+              >
+                <div [hidden]="!topic_id.errors?.['required']">
+                  Select one Parent Topic!
+                </div>
+              </div>
+            </c-col>
+            <c-col class="col-md-6">
+              <label cLabel for="topic_id">Select Type</label>
+              
+              <select
+                cSelect
+                id="type"
+                class="form-select"
+                formControlName="type"
+              >
+                <option value="" disabled>--- Choose Parent Topic ---</option>
+                <option value="beginner">Beginner</option>
+                <option value="intermediate">Intermediate</option>
+                <option value="advance">Advance</option>
+              </select>
+              <div
+                style="color: red"
+                *ngIf="type && type.invalid && type.touched"
+              >
+                <div [hidden]="!type.errors?.['required']">
+                  Select one type!
+                </div>
+              </div>
+            </c-col>
+          </c-row>
+
+          <c-row class="mt-2">
+            <c-col class="col-xs-6">
+              <button cButton type="submit" [disabled]="!formGroup.valid">
+                Add Topic
+              </button>
+            </c-col>
+          </c-row>
+        </form>
+      </c-card-body>
+    </c-card>
+  </c-col>
+</c-row>

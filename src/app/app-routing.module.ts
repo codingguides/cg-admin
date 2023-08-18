@@ -44,6 +44,11 @@ const routes: Routes = [
         loadChildren: () =>
           import('./views/question/question.module').then((m) => m.QuestionModule)
       },
+      {
+        path: 'interview',
+        loadChildren: () =>
+          import('./views/interview/interview.module').then((m) => m.InterviewModule)
+      },
      
       {
         path: 'pages',

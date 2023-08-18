@@ -3,9 +3,6 @@
     <c-card class="mb-4">
       <c-card-header>
         <c-col xs="12">
-          <!-- <c-col xs="6"><strong>Topic List</strong></c-col>
-          <c-col xs="6">
-          </c-col> -->
           <div class="row">
             <div class="col-sm-6"><strong>Topic List</strong></div>
             <div class="col-sm-6 ">
@@ -15,6 +12,17 @@
         </c-col>
       </c-card-header>
       <c-card-body>
+
+        <div class="input-group">
+          <select class="form-select form-select-sm">
+            <option value="topic" selected>Topic</option>
+            <option value="slug">Slug</option>
+            <option value="parenttopic">Parent Topic</option>
+          </select>
+          <input type="text" class="form-control">
+          <button type="button" class="btn btn-outline-secondary">Search</button>
+        </div>
+
         <table class="table">
           <thead>
             <tr>
@@ -39,6 +47,23 @@
             </tr>
           </tbody>
         </table>
+        <div class="row">
+          <div class="col-md-6">Total cost</div>
+          <div class="col-md-6 text-left">$42</div>
+        </div>
+        <nav aria-label="Page navigation example pull-right">
+          <ul class="pagination justify-content-center">
+            <li [ngClass]="currentPage == 1 ? 'page-item disabled' :'page-item'" >
+              <a class="page-link">Previous</a>
+            </li>
+            <span *ngFor="let p of parray; let num = index">
+              <li class="page-item"><a class="page-link" (click)="updateTopic(p)">{{p}}</a></li>
+            </span>
+            <li [ngClass]="currentPage == lastElement ? 'page-item disabled' :'page-item'" >
+              <a class="page-link" href="#">Next</a>
+            </li>
+          </ul>
+        </nav>
       </c-card-body>
     </c-card>
   </c-col>

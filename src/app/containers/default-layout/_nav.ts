@@ -35,5 +35,16 @@ export const navItems: INavData[] = [
         url: '/question/list'
       }
     ]
-  }
+  },
+  // {
+  //   name: 'Interview',
+  //   url: '/interview',
+  //   iconComponent: { name: 'cil-notes' },
+  //   children: [
+  //     {
+  //       name: 'Interview List',
+  //       url: '/interview/list'
+  //     }
+  //   ]
+  // }
 ];

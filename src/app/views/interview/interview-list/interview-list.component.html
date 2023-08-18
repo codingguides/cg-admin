@@ -9,7 +9,7 @@
           <div class="row">
             <div class="col-sm-6"><strong>Topic List</strong></div>
             <div class="col-sm-6 ">
-              <span class="add"><a [routerLink]="['/topic/add']" class=" btn btn-info"> Add Topic </a></span>
+              <span class="add"><a [routerLink]="['/interview/add']" class=" btn btn-info"> Add Interview </a></span>
             </div>
           </div>
         </c-col>
@@ -21,20 +21,19 @@
               <th scope="col">#</th>
               <th scope="col">Topic</th>
               <th scope="col">Slug</th>
-              <th scope="col">Parent Topic</th>
               <th scope="col">Action</th>
 
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let topic of topics; let num = index">
+            <tr *ngFor="let interview of interviewList; let num = index">
               <th scope="row">{{num +1}}</th>
-              <td>{{topic.name}}</td>
-              <td>{{topic.slug}}</td>
-              <td>{{getParentName(topic)}}</td>
+              <td>{{interview.question}}</td>
+              <td>{{interview.slug}}</td>
+              
               <td>
-                <i class="actionClass fa fa-pencil-square-o" aria-hidden="true" (click)="edit(topic)"></i>
-                <i class="actionClass fa fa-trash-o" aria-hidden="true" (click)="delete(topic)"></i>
+                <i class="actionClass fa fa-pencil-square-o" aria-hidden="true" (click)="edit(interview)"></i>
+                <i class="actionClass fa fa-trash-o" aria-hidden="true" (click)="delete(interview)"></i>
               </td>
             </tr>
           </tbody>

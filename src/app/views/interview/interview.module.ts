@@ -13,19 +13,19 @@ import {
   SharedModule
 } from '@coreui/angular';
 
-import { TopicRoutingModule } from './topic-routing.module';
-import { TopicListComponent } from './topic-list/topic-list.component';
-import { AddTopicComponent } from './add-topic/add-topic.component';
+import { InterviewRoutingModule } from './interview-routing.module';
+import { InterviewListComponent } from './interview-list/interview-list.component';
+import { AddInterviewComponent } from './add-interview/add-interview.component';
 import { CKEditorModule } from 'ckeditor4-angular';
 
 @NgModule({
   declarations: [
-    TopicListComponent,
-    AddTopicComponent
+    InterviewListComponent,
+    AddInterviewComponent
   ],
   imports: [
     CommonModule,
-    TopicRoutingModule,
+    InterviewRoutingModule,
     // DocsComponentsModule,
     CardModule,
     FormModule,
@@ -42,5 +42,5 @@ import { CKEditorModule } from 'ckeditor4-angular';
     ListGroupModule
   ]
 })
-export class TopicModule {
+export class InterviewModule {
 }
