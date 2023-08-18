@@ -5,22 +5,27 @@
         <c-col xs="12">
           <div class="row">
             <div class="col-sm-6"><strong>Topic List</strong></div>
-            <div class="col-sm-6 ">
-              <span class="add"><a [routerLink]="['/topic/add']" class=" btn btn-info"> Add Topic </a></span>
+            <div class="col-sm-6">
+              <span class="add"
+                ><a [routerLink]="['/topic/add']" class="btn btn-info">
+                  Add Topic
+                </a></span
+              >
             </div>
           </div>
         </c-col>
       </c-card-header>
       <c-card-body>
-
         <div class="input-group">
           <select class="form-select form-select-sm">
             <option value="topic" selected>Topic</option>
             <option value="slug">Slug</option>
             <option value="parenttopic">Parent Topic</option>
           </select>
-          <input type="text" class="form-control">
-          <button type="button" class="btn btn-outline-secondary">Search</button>
+          <input type="text" class="form-control" />
+          <button type="button" class="btn btn-outline-secondary">
+            Search
+          </button>
         </div>
 
         <table class="table">
@@ -31,18 +36,27 @@
               <th scope="col">Slug</th>
               <th scope="col">Parent Topic</th>
               <th scope="col">Action</th>
-
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let topic of topics; let num = index">
-              <th scope="row">{{num +1}}</th>
-              <td>{{topic.name}}</td>
-              <td>{{topic.slug}}</td>
-              <td>{{getParentName(topic)}}</td>
+              <th scope="row">{{ num + 1 }}</th>
+              <td>{{ topic.name }}</td>
+              <td>{{ topic.slug }}</td>
+              <td>{{ getParentName(topic) }}</td>
               <td>
-                <i class="actionClass fa fa-pencil-square-o" aria-hidden="true" (click)="edit(topic)"></i>
-                <i class="actionClass fa fa-trash-o" aria-hidden="true" (click)="delete(topic)"></i>
+                <a routerLink="/topic/edit/{{ topic._id }}">
+                  <i
+                    class="actionClass fa fa-pencil-square-o"
+                    aria-hidden="true"
+                  ></i>
+                </a>
+
+                <i
+                  class="actionClass fa fa-trash-o"
+                  aria-hidden="true"
+                  (click)="delete(topic._id)"
+                ></i>
               </td>
             </tr>
           </tbody>
@@ -53,13 +67,21 @@
         </div>
         <nav aria-label="Page navigation example pull-right">
           <ul class="pagination justify-content-center">
-            <li [ngClass]="currentPage == 1 ? 'page-item disabled' :'page-item'" >
+            <li
+              [ngClass]="currentPage == 1 ? 'page-item disabled' : 'page-item'"
+            >
               <a class="page-link">Previous</a>
             </li>
             <span *ngFor="let p of parray; let num = index">
-              <li class="page-item"><a class="page-link" (click)="updateTopic(p)">{{p}}</a></li>
+              <li class="page-item">
+                <a class="page-link" (click)="updateTopic(p)">{{ p }}</a>
+              </li>
             </span>
-            <li [ngClass]="currentPage == lastElement ? 'page-item disabled' :'page-item'" >
+            <li
+              [ngClass]="
+                currentPage == lastElement ? 'page-item disabled' : 'page-item'
+              "
+            >
               <a class="page-link" href="#">Next</a>
             </li>
           </ul>

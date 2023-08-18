@@ -28,7 +28,7 @@ export class AddTopicComponent {
   ) {
     this.formGroup = this.formBuilder.group({
       name: new FormControl('', [Validators.required]),
-      slug: new FormControl('slug-name', [Validators.required]),
+      slug: new FormControl('', [Validators.required]),
       parent_id: new FormControl('', [Validators.required]),
       tags: new FormControl('', [Validators.required]),
     })
@@ -130,9 +130,9 @@ export class AddTopicComponent {
         this.formGroup.reset();
         this.topicSlug = "";
         this.getUserDetails = "";
-        alert(apiResult.msg)
+        // alert(apiResult.msg)
       } else {
-        alert(apiResult.msg)
+        // alert(apiResult.msg)
 
       }
 
