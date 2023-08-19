@@ -101,7 +101,7 @@ export class AddTopicComponent {
     console.log("this.updateDesc.length..............", this.updateDesc.length)
     // if(!this.topicSlug  && this.updateDesc){
     // alert("hi")
-    const tags = formData['tags'].split(',').filter((tag: any) => tag)
+    const tags = formData['tags'] && formData['tags'].split(',').filter((tag: any) => tag)
     const data = {
       name: formData['name'],
       slug: formData['slug'] ? formData['slug'] : this.topicSlug,

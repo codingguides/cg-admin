@@ -16,16 +16,23 @@
         </c-col>
       </c-card-header>
       <c-card-body>
+        <!-- ata akhono hoi ni -->
         <div class="input-group">
-          <select class="form-select form-select-sm">
-            <option value="topic" selected>Topic</option>
-            <option value="slug">Slug</option>
-            <option value="parenttopic">Parent Topic</option>
-          </select>
-          <input type="text" class="form-control" />
-          <button type="button" class="btn btn-outline-secondary">
-            Search
-          </button>
+          <form
+          cForm
+          class="row g-3 form-horizontal"
+          >
+          <!--[formGroup]="formGroup" (ngSubmit)="onSubmit(formGroup.value)" -->
+            <select class="form-select form-select-sm" formControlName="option" >
+              <option value="Topic" selected>Topic</option>
+              <option value="Slug">Slug</option>
+              <option value="Tag">Tag</option>
+            </select>
+            <input type="text" class="form-control" formControlName="name" />
+            <button type="submit" class="btn btn-outline-secondary" >
+              Search
+            </button>
+          </form>
         </div>
 
         <table class="table">

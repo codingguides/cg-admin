@@ -20,8 +20,8 @@ export class EditTopic {
   topics!: any[];
   topicSlug: string = "";
   getUserDetails: any;
-  topicByID: any = {}
-  topicTags: any[] = []
+  topicByID: any = {};
+  topicTags: any[] = [];
 
   constructor(
     public commonservice: HttpCallService,
@@ -145,7 +145,7 @@ export class EditTopic {
   async onSubmit(formData: any) {
 
     console.log("formData>>>>>>>>>>>>",formData)
-    const tags = formData['tags'].split(',').filter((tag: any) => tag)
+    const tags =  formData['tags'] && formData['tags'].split(',').filter((tag: any) => tag)
 
     const data = {
       name: formData['name'],
@@ -165,8 +165,9 @@ export class EditTopic {
             name: tag,
             type: "topic",
             topic_id: this.router.snapshot.params['id']
-          }, 'tags/add').subscribe((res: any) => {
+          }, 'tags/add').subscribe(async (res: any) => {
             console.log("tagres>>>>>>>>", res)
+            await this.getId();
           })
         })
         this.ngOnInit();

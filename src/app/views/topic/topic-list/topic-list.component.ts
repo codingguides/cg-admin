@@ -18,6 +18,7 @@ export class TopicListComponent {
   currentPage!: number;
   lastElement!: number;
   parray:any = [];
+  searchoption:any = "";
 
   constructor(private commonservice: HttpCallService) {
 
@@ -124,5 +125,13 @@ export class TopicListComponent {
   range(start:number, end:number) {
     return Array.apply(1, Array(end))
       .map((element, index) => index + start);
+  }
+
+  searchOption(event:any){
+    console.log(event.target.value)
+  }
+
+  searchTopic(){
+
   }
 }
