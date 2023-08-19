@@ -83,6 +83,7 @@
                 <option
                   *ngFor="let topic of topics; let num = index"
                   [value]="topic._id"
+                  selected="topic.selected"
                 >
                   {{ topic.name }}
                 </option>
@@ -105,6 +106,16 @@
                 formControlName="tags"
                 required
               />
+
+              <div class="mt-2">
+                <button 
+                *ngFor="let tag of topicTags; let num = index"
+                type="button" 
+                class="btn btn-sm btn-light m-1" (click)="deletetag(tag)">
+                  {{tag.name}} <i class="fa fa-close" style="color:red"></i>
+                </button>
+              </div>
+
               <div
                 style="color: red"
                 *ngIf="tags && tags.invalid && tags.touched"

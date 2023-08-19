@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { HttpCallService } from '../../../common/http-call.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-topic-list',
@@ -76,12 +77,47 @@ export class TopicListComponent {
     }
   }
 
-  delete(topic:any){
-    alert(topic.name)
-  }
-
-  edit(topic:any){
-    alert(topic.name)
+  delete(topicid:any){
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: 'btn btn-success',
+        cancelButton: 'btn btn-danger'
+      },
+      buttonsStyling: false
+    })
+    
+    swalWithBootstrapButtons.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'No, cancel!',
+      reverseButtons: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.commonservice.delete(`topic/delete/${topicid}`).subscribe(res => {
+          const apiResult = JSON.parse(JSON.stringify(res));
+          if(apiResult.status == "SUCCESS"){
+            this.ngOnInit();
+            swalWithBootstrapButtons.fire(
+              'Deleted!',
+              'Your file has been deleted.',
+              'success'
+            )
+          }
+        })
+      } else if (
+        /* Read more about handling dismissals below */
+        result.dismiss === Swal.DismissReason.cancel
+      ) {
+        swalWithBootstrapButtons.fire(
+          'Cancelled',
+          'Your imaginary file is safe :)',
+          'error'
+        )
+      }
+    })
   }
 
 

@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';  
+import Swal from 'sweetalert2';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CKEditor4 } from 'ckeditor4-angular/ckeditor';
@@ -16,24 +17,23 @@ export class EditTopic {
   public favoriteColor = '#26ab3c';
   updateDesc: any = "";
   formGroup!: FormGroup;
-  // editorData: any = this.updateDesc;
   topics!: any[];
   topicSlug: string = "";
   getUserDetails: any;
-
+  topicByID: any = {}
+  topicTags: any[] = []
 
   constructor(
     public commonservice: HttpCallService,
     private _router: Router,
     private formBuilder: FormBuilder,
-    // private router: Router,
     private router: ActivatedRoute
   ) {
     this.formGroup = this.formBuilder.group({
       name: new FormControl('', [Validators.required]),
       slug: new FormControl('', [Validators.required]),
       parent_id: new FormControl('', [Validators.required]),
-      tags: new FormControl('', [Validators.required]),
+      tags: new FormControl('', []),
       description: new FormControl('')
     })
 
@@ -63,57 +63,27 @@ export class EditTopic {
     return this.formGroup.get('tags');
   }
   async ngOnInit() {
-    // console.log(this.router.snapshot.params['id'])
-    // console.log(typeof this.router.snapshot.params['id'])
-    // this.commonservice.get('topic/get/id').subscribe((result: any) => {
-    // console.log(result);
-    // const idResult = JSON.parse(JSON.stringify(result));
-    // console.log(idResult.payload);
-    // this.formGroup = new FormGroup({
-    //   name: new FormControl(result['name']),
-    //   slug: new FormControl(result['slug']),
-    //   parent_id: new FormControl(result['parent_id']),
-    //   // tags: new FormControl(result['']),
-    //   description: new FormControl(result['description'])
-    // })
-    // })
-    this.getId();
-
-    // this.getUserDetails = await this.commonservice.getTokenDetails('id');
-
-    // this.formGroup = this.formBuilder.group({ 
-    //   name:  ['', [Validators.required, Validators.minLength(2)]],
-    //   slug: ['', [Validators.required]],
-    //   description: '',
-    //   parent_id:  ['', [Validators.required]],
-    //   tags: ['', [Validators.required]],
-    // });
-
+    await this.getId();
   }
 
   async getId() {
     // console.log(this.router.snapshot.params['id']);
-    await this.commonservice.get(`topic/get/${this.router.snapshot.params['id']}`).subscribe((result: any) => {
-      // const apiResult = JSON.parse(JSON.stringify(res));
-      console.log(result);
-      this.topics = result && result.success
-      this.topics.map((topic: any) => {
-        console.log(topic.data);
-
-        this.formGroup = this.formBuilder.group({
-          name: new FormControl(topic.data['name']),
-          slug: new FormControl(topic.data['slug']),
-          parent_id: new FormControl(topic.data['parent_id']),
-          description: new FormControl(topic.data[this.updateDesc]),
-          tags: new FormControl(topic.data['tags'])
-        })
-      })
-      // this.formGroup = this.formBuilder.group({
-      //   name: new FormControl(result['name']),
-      //   slug: new FormControl(result['slug']),
-      //   parent_id: new FormControl(result['parents_id']),
-      //   // tags: new FormControl('', [Validators.required]),
-      // })
+    await this.commonservice.get(`topic/get/${this.router.snapshot.params['id']}`).subscribe(async (result: any) => {
+      if(result && result.status == "SUCCESS"){
+        this.topicByID = result && result.payload[0];
+          console.log("<<<<<<<<<<<<<<<<<<getId>>>>>>>>>>>>>>>>>>>",this.topicByID);
+          this.updateDesc = this.topicByID.description;
+          await this.getTopic(this.topicByID.parent_id);
+          this.topicTags = this.topicByID.tags;
+          console.log("tags reload>>>>>>>>>>>>>",this.topicTags)
+          this.formGroup = this.formBuilder.group({
+            name: new FormControl(this.topicByID.name),
+            slug: new FormControl(this.topicByID.slug),
+            parent_id: new FormControl(this.topicByID.parent_id),
+            description: new FormControl(this.topicByID.description),
+            tags: new FormControl()
+          })
+      }
     })
   }
 
@@ -123,10 +93,17 @@ export class EditTopic {
     this.updateDesc = event.editor.getData();
   }
 
-  async getTopic() {
-    await this.commonservice.get('topic/').subscribe((res) => {
+  async getTopic(selected:any) {
+    await this.commonservice.get('topic/list').subscribe((res) => {
       const apiResult = JSON.parse(JSON.stringify(res));
-      this.topics = apiResult && apiResult.payload;
+      this.topics = apiResult && apiResult.payload
+      this.topics = this.topics.map((topic)=>{
+        return {
+          ...topic,
+          "selected": topic._id === selected ? true : false
+        }
+      })
+      console.log("this.topics>>>>>>>>",this.topics)
     })
   }
 
@@ -141,6 +118,75 @@ export class EditTopic {
       .replace(/-+$/, "");
   }
 
+  deletetag(tag:any){
+    this.commonservice.delete(`tags/delete/${tag._id}`).subscribe(res => {
+      const apiResult = JSON.parse(JSON.stringify(res));
+      if(apiResult.status == "SUCCESS"){
+        this.ngOnInit();
+        Swal.fire({
+          position: 'top-end',
+          icon: 'success',
+          title: apiResult.msg,
+          showConfirmButton: false,
+          timer: 1500
+        })
+      }else{
+        Swal.fire({
+          position: 'top-end',
+          icon: 'error',
+          title: apiResult.msg,
+          showConfirmButton: false,
+          timer: 1500
+        })
+      }
+    })
+  }
+
   async onSubmit(formData: any) {
+
+    console.log("formData>>>>>>>>>>>>",formData)
+    const tags = formData['tags'].split(',').filter((tag: any) => tag)
+
+    const data = {
+      name: formData['name'],
+      slug: formData['slug'] ? formData['slug'] : this.topicSlug,
+      description: this.updateDesc,
+      parent_id: formData['parent_id'],
+      user_id: this.getUserDetails,
+      tags: tags
+    }
+    this.commonservice.put(data, `topic/update/${this.router.snapshot.params['id']}`).subscribe(res => {
+      const apiResult = JSON.parse(JSON.stringify(res));
+      console.log("apiResult>>>>>>><<<<<<<<<<<<<<<<",apiResult)
+      if(apiResult.status == "SUCCESS"){
+        tags.map(async (tag: string) => {
+          console.log(">>>>.tag>>>>>>>>>", tag)
+          await this.commonservice.post({
+            name: tag,
+            type: "topic",
+            topic_id: this.router.snapshot.params['id']
+          }, 'tags/add').subscribe((res: any) => {
+            console.log("tagres>>>>>>>>", res)
+          })
+        })
+        this.ngOnInit();
+        Swal.fire({
+          position: 'top-end',
+          icon: 'success',
+          title: apiResult.msg,
+          showConfirmButton: false,
+          timer: 1500
+        })
+      }else{
+        Swal.fire({
+          position: 'top-end',
+          icon: 'error',
+          title: apiResult.msg,
+          showConfirmButton: false,
+          timer: 1500
+        })
+      }
+    })
+
   }
 }

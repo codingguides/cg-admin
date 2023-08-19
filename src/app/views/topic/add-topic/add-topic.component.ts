@@ -3,6 +3,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { Router } from '@angular/router';
 import { CKEditor4 } from 'ckeditor4-angular/ckeditor';
 import { HttpCallService } from 'src/app/common/http-call.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-add-topic',
@@ -28,9 +29,9 @@ export class AddTopicComponent {
   ) {
     this.formGroup = this.formBuilder.group({
       name: new FormControl('', [Validators.required]),
-      slug: new FormControl('', [Validators.required]),
+      slug: new FormControl('', []),
       parent_id: new FormControl('', [Validators.required]),
-      tags: new FormControl('', [Validators.required]),
+      tags: new FormControl('', []),
     })
 
   }
@@ -78,7 +79,7 @@ export class AddTopicComponent {
   }
 
   async getTopic() {
-    await this.commonservice.get('topic/').subscribe((res) => {
+    await this.commonservice.get('topic/list').subscribe((res) => {
       const apiResult = JSON.parse(JSON.stringify(res));
       this.topics = apiResult && apiResult.payload;
     })
@@ -107,7 +108,7 @@ export class AddTopicComponent {
       description: this.updateDesc,
       parent_id: formData['parent_id'],
       user_id: this.getUserDetails,
-      tags: formData['tags'].split(',').filter((tag: any) => tag)
+      tags: tags
     }
     console.log("data>>>>>>>>>>", data)
     this.commonservice.post(data, 'topic/add').subscribe(res => {
@@ -130,7 +131,15 @@ export class AddTopicComponent {
         this.formGroup.reset();
         this.topicSlug = "";
         this.getUserDetails = "";
-        // alert(apiResult.msg)
+        this.updateDesc = "";
+        this.ngOnInit();
+        Swal.fire({
+          position: 'top-end',
+          icon: 'success',
+          title: apiResult.msg,
+          showConfirmButton: false,
+          timer: 1500
+        })
       } else {
         // alert(apiResult.msg)
 
