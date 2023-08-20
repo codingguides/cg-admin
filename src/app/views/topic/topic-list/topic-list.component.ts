@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { HttpCallService } from '../../../common/http-call.service';
 import Swal from 'sweetalert2';
+import { Router } from '@angular/router';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-topic-list',
@@ -19,20 +21,38 @@ export class TopicListComponent {
   lastElement!: number;
   parray:any = [];
   searchoption:any = "";
+  formGroup!: FormGroup;
 
-  constructor(private commonservice: HttpCallService) {
 
+  constructor(
+    public commonservice: HttpCallService,
+    private _router: Router,
+    private formBuilder: FormBuilder,
+    private router: Router
+  ) {
+    this.formGroup = this.formBuilder.group({
+      type: new FormControl('', [Validators.required]),
+      search: new FormControl('', [Validators.required])
+    })
+  }
+
+  get type() {
+    return this.formGroup.get('type');
+  }
+
+  get search() {
+    return this.formGroup.get('search');
   }
 
   ngOnInit(){
-    this.getTopic();
-  }
-
-  async getTopic(){
-    await this.commonservice.put({
+    this.getTopic({
       'page': this.page,
       'limit': this.limit
-    },'topic/').subscribe((res)=>{
+    });
+  }
+
+  async getTopic(params: Object){
+    await this.commonservice.put(params,'topic/').subscribe((res)=>{
       const apiResult = JSON.parse(JSON.stringify(res));
       console.log(typeof apiResult.payload)
       console.log(">>>>>>>>this.topics>>>>>>>>>>",apiResult.payload)
@@ -49,9 +69,12 @@ export class TopicListComponent {
         console.log("currentPage>>",this.currentPage)
         console.log("limit>>",this.limit)
         console.log("page>>",this.page)
-      }else{
+      }else if(apiResult && apiResult.status == "ERROR"){
         this.errFlag = true;
         this.errMessage = apiResult.msg;
+        this.topics = [];
+        this.totalPages = 0;
+        this.currentPage = 0;
       }
     })
   }
@@ -68,7 +91,10 @@ export class TopicListComponent {
     console.log("limit>>",this.limit)
     console.log("page>>",this.page)
 
-    await this.getTopic();
+    await this.getTopic({
+      'page': this.page,
+      'limit': this.limit
+    });
 
   }
 
@@ -134,4 +160,23 @@ export class TopicListComponent {
   searchTopic(){
 
   }
+
+  async onSubmit(formData: any) {
+    console.log("formData.type >>>>>>>",formData.type )
+    console.log("formData.search >>>>>>>",formData.search )
+    if(formData.type !== '' && formData.search !== ''){
+      console.log("if onSubmit" )
+      await this.getTopic({
+        'page': this.page,
+        'limit': this.limit,
+        'type': formData.type,
+        'search': formData.search
+      });
+    }
+  }
+
+  async getQuestion(data: Object){
+    console.log(data)
+  }
+
 }

@@ -6,33 +6,49 @@
           <div class="row">
             <div class="col-sm-6"><strong>Topic List</strong></div>
             <div class="col-sm-6">
-              <span class="add"
-                ><a [routerLink]="['/topic/add']" class="btn btn-info">
+              <span class="add"><a [routerLink]="['/topic/add']" class="btn btn-info">
                   Add Topic
-                </a></span
-              >
+                </a></span>
             </div>
           </div>
         </c-col>
       </c-card-header>
       <c-card-body>
-        <!-- ata akhono hoi ni -->
-        <div class="input-group">
-          <form
-          cForm
-          class="row g-3 form-horizontal"
-          >
-          <!--[formGroup]="formGroup" (ngSubmit)="onSubmit(formGroup.value)" -->
-            <select class="form-select form-select-sm" formControlName="option" >
-              <option value="Topic" selected>Topic</option>
-              <option value="Slug">Slug</option>
-              <option value="Tag">Tag</option>
-            </select>
-            <input type="text" class="form-control" formControlName="name" />
-            <button type="submit" class="btn btn-outline-secondary" >
-              Search
-            </button>
-          </form>
+        <div class="container mt-3">
+          <div class="row">
+            <form cForm class="row g-3 form-horizontal" [formGroup]="formGroup" (ngSubmit)="onSubmit(formGroup.value)">
+              <div class="col-sm">
+                <select cSelect id="type" class="form-select" formControlName="type" required>
+                  <option value="" disabled selected> Select type </option>
+                  <option value="Topic">Topic</option>
+                  <option value="Slug">Slug</option>
+                  <option value="Tag">Tag</option>
+                </select>
+                <div
+                  style="color: red"
+                  *ngIf="type && type.invalid && type.touched"
+                >
+                  <div [hidden]="!type.errors?.['required']">
+                    Select one Type!
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm">
+                <input cFormControl type="text" id="search" required class="form-control" placeholder="type your search"
+                  formControlName="search" />
+                <div style="color: red" *ngIf="search && search.invalid && search.touched">
+                  <div [hidden]="!search.errors?.['required']">
+                    Search is required!
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm">
+                <button type="submit" class="btn btn-outline-secondary">
+                  Search
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
 
         <table class="table">
@@ -52,25 +68,19 @@
               <td>{{ topic.slug }}</td>
               <td>{{ getParentName(topic) }}</td>
               <td>
-                <i
-                  class="actionClass fa fa-pencil-square-o"
-                  aria-hidden="true"
-                  routerLink="/topic/edit/{{ topic._id }}"
-                ></i>
-                <i
-                  class="actionClass fa fa-trash-o"
-                  aria-hidden="true"
-                  (click)="delete(topic._id)"
-                ></i>
+                <i class="actionClass fa fa-pencil-square-o" aria-hidden="true"
+                  routerLink="/topic/edit/{{ topic._id }}"></i>
+                <i class="actionClass fa fa-trash-o" aria-hidden="true" (click)="delete(topic._id)"></i>
+                <i class="actionClass fa fa-eye" aria-hidden="true" (click)="getQuestion(topic)"></i>
               </td>
             </tr>
           </tbody>
         </table>
-        <nav aria-label="Page navigation example pull-right">
+        <span class="text-center err" *ngIf="errFlag">{{errMessage}}</span>
+
+        <nav *ngIf="!errFlag" aria-label="Page navigation example pull-right">
           <ul class="pagination justify-content-center">
-            <li
-              [ngClass]="currentPage == 1 ? 'page-item disabled' : 'page-item'"
-            >
+            <li [ngClass]="currentPage == 1 ? 'page-item disabled' : 'page-item'">
               <a class="page-link">Previous</a>
             </li>
             <span *ngFor="let p of parray; let num = index">
@@ -78,11 +88,9 @@
                 <a class="page-link" (click)="updateTopic(p)">{{ p }}</a>
               </li>
             </span>
-            <li
-              [ngClass]="
+            <li [ngClass]="
                 currentPage == lastElement ? 'page-item disabled' : 'page-item'
-              "
-            >
+              ">
               <a class="page-link" href="#">Next</a>
             </li>
           </ul>
