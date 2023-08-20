@@ -61,7 +61,7 @@
           </c-row>
           <c-row>
             <c-col class="col-xs-12">
-              <label cLabel for="description">description</label>
+              <label cLabel for="description">Description</label>
               <ckeditor
                 cFormControl
                 [data]="editorData"
@@ -78,8 +78,10 @@
                 class="form-select"
                 formControlName="parent_id"
               >
-                <option value="" selected disabled>--- Choose Parent Topic ---</option>
-                <option value="0"> No parent </option>
+                <option value="" selected disabled>
+                  --- Choose Parent Topic ---
+                </option>
+                <option value="0">No parent</option>
                 <option
                   *ngFor="let topic of topics; let num = index"
                   [value]="topic._id"

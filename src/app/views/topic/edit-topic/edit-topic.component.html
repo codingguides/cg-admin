@@ -48,21 +48,16 @@
                 type="text"
                 [value]="topicSlug"
                 formControlName="slug"
-                required
+                (change)="validateSlug($event)"
               />
-              <div
-                style="color: red"
-                *ngIf="slug && slug.invalid && slug.touched"
-              >
-                <div [hidden]="!slug.errors?.['required']">
-                  Slug is required!
-                </div>
+              <div style="color: red" *ngIf="slug?.touched">
+                <div>{{ slugError.message }}</div>
               </div>
             </c-col>
           </c-row>
           <c-row>
             <c-col class="col-xs-12">
-              <label cLabel for="description">description</label>
+              <label cLabel for="description">Description</label>
               <ckeditor
                 cFormControl
                 (change)="onChange($event)"
@@ -108,11 +103,13 @@
               />
 
               <div class="mt-2">
-                <button 
-                *ngFor="let tag of topicTags; let num = index"
-                type="button" 
-                class="btn btn-sm btn-light m-1" (click)="deletetag(tag)">
-                  {{tag.name}} <i class="fa fa-close" style="color:red"></i>
+                <button
+                  *ngFor="let tag of topicTags; let num = index"
+                  type="button"
+                  class="btn btn-sm btn-light m-1"
+                  (click)="deletetag(tag)"
+                >
+                  {{ tag.name }} <i class="fa fa-close" style="color: red"></i>
                 </button>
               </div>
 

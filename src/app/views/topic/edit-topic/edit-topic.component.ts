@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';  
+import { Component, OnInit } from '@angular/core';
 import Swal from 'sweetalert2';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -22,6 +22,10 @@ export class EditTopic {
   getUserDetails: any;
   topicByID: any = {};
   topicTags: any[] = [];
+  slugError: any = {
+    flag: false,
+    message: ""
+  }
 
   constructor(
     public commonservice: HttpCallService,
@@ -33,7 +37,7 @@ export class EditTopic {
       name: new FormControl('', [Validators.required]),
       slug: new FormControl('', [Validators.required]),
       parent_id: new FormControl('', [Validators.required]),
-      tags: new FormControl('', []),
+      tags: new FormControl('', [Validators.required]),
       description: new FormControl('')
     })
 
@@ -69,20 +73,20 @@ export class EditTopic {
   async getId() {
     // console.log(this.router.snapshot.params['id']);
     await this.commonservice.get(`topic/get/${this.router.snapshot.params['id']}`).subscribe(async (result: any) => {
-      if(result && result.status == "SUCCESS"){
+      if (result && result.status == "SUCCESS") {
         this.topicByID = result && result.payload[0];
-          console.log("<<<<<<<<<<<<<<<<<<getId>>>>>>>>>>>>>>>>>>>",this.topicByID);
-          this.updateDesc = this.topicByID.description;
-          await this.getTopic(this.topicByID.parent_id);
-          this.topicTags = this.topicByID.tags;
-          console.log("tags reload>>>>>>>>>>>>>",this.topicTags)
-          this.formGroup = this.formBuilder.group({
-            name: new FormControl(this.topicByID.name),
-            slug: new FormControl(this.topicByID.slug),
-            parent_id: new FormControl(this.topicByID.parent_id),
-            description: new FormControl(this.topicByID.description),
-            tags: new FormControl()
-          })
+        console.log("<<<<<<<<<<<<<<<<<<getId>>>>>>>>>>>>>>>>>>>", this.topicByID);
+        this.updateDesc = this.topicByID.description;
+        await this.getTopic(this.topicByID.parent_id);
+        this.topicTags = this.topicByID.tags;
+        console.log("tags reload>>>>>>>>>>>>>", this.topicTags)
+        this.formGroup = this.formBuilder.group({
+          name: new FormControl(this.topicByID.name),
+          slug: new FormControl(this.topicByID.slug),
+          parent_id: new FormControl(this.topicByID.parent_id),
+          description: new FormControl(this.topicByID.description),
+          tags: new FormControl()
+        })
       }
     })
   }
@@ -93,21 +97,23 @@ export class EditTopic {
     this.updateDesc = event.editor.getData();
   }
 
-  async getTopic(selected:any) {
+  async getTopic(selected: any) {
     await this.commonservice.get('topic/list').subscribe((res) => {
       const apiResult = JSON.parse(JSON.stringify(res));
       this.topics = apiResult && apiResult.payload
-      this.topics = this.topics.map((topic)=>{
+      this.topics = this.topics.map((topic) => {
         return {
           ...topic,
           "selected": topic._id === selected ? true : false
         }
       })
-      console.log("this.topics>>>>>>>>",this.topics)
+      console.log("this.topics>>>>>>>>", this.topics)
     })
   }
 
   createSlug(event: any) {
+    this.slugError.flag = false;
+    this.slugError.message = "";
     this.topicSlug = event.target.value.toString()
       .trim()
       .toLowerCase()
@@ -118,10 +124,19 @@ export class EditTopic {
       .replace(/-+$/, "");
   }
 
-  deletetag(tag:any){
+  validateSlug(event: any) {
+    this.slugError.flag = false;
+    this.slugError.message = "";
+    if (event.target.value == "") {
+      this.slugError.flag = true;
+      this.slugError.message = "Slug is required!";
+    }
+  }
+
+  deletetag(tag: any) {
     this.commonservice.delete(`tags/delete/${tag._id}`).subscribe(res => {
       const apiResult = JSON.parse(JSON.stringify(res));
-      if(apiResult.status == "SUCCESS"){
+      if (apiResult.status == "SUCCESS") {
         this.ngOnInit();
         Swal.fire({
           position: 'top-end',
@@ -130,7 +145,7 @@ export class EditTopic {
           showConfirmButton: false,
           timer: 1500
         })
-      }else{
+      } else {
         Swal.fire({
           position: 'top-end',
           icon: 'error',
@@ -144,8 +159,8 @@ export class EditTopic {
 
   async onSubmit(formData: any) {
 
-    console.log("formData>>>>>>>>>>>>",formData)
-    const tags =  formData['tags'] && formData['tags'].split(',').filter((tag: any) => tag)
+    console.log("formData>>>>>>>>>>>>", formData)
+    const tags = formData['tags'] && formData['tags'].split(',').filter((tag: any) => tag)
 
     const data = {
       name: formData['name'],
@@ -157,8 +172,8 @@ export class EditTopic {
     }
     this.commonservice.put(data, `topic/update/${this.router.snapshot.params['id']}`).subscribe(res => {
       const apiResult = JSON.parse(JSON.stringify(res));
-      console.log("apiResult>>>>>>><<<<<<<<<<<<<<<<",apiResult)
-      if(apiResult.status == "SUCCESS"){
+      console.log("apiResult>>>>>>><<<<<<<<<<<<<<<<", apiResult)
+      if (apiResult.status == "SUCCESS") {
         tags.map(async (tag: string) => {
           console.log(">>>>.tag>>>>>>>>>", tag)
           await this.commonservice.post({
@@ -178,7 +193,7 @@ export class EditTopic {
           showConfirmButton: false,
           timer: 1500
         })
-      }else{
+      } else {
         Swal.fire({
           position: 'top-end',
           icon: 'error',
