@@ -17,11 +17,13 @@ import { QuestionRoutingModule } from './question-routing.module';
 import { AddQuestionComponent } from './add-question/add-question.component';
 import { QuestionListComponent } from './question-list/question-list.component';
 import { CKEditorModule } from 'ckeditor4-angular';
+import { EditQuestionComponent } from './edit-question/edit-question.component';
 
 @NgModule({
   declarations: [
     AddQuestionComponent,
-    QuestionListComponent
+    QuestionListComponent,
+    EditQuestionComponent
   ],
   imports: [
     CommonModule,

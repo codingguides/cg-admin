@@ -5,21 +5,21 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CKEditor4 } from 'ckeditor4-angular/ckeditor';
+import { async } from 'rxjs';
 import { HttpCallService } from 'src/app/common/http-call.service';
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-add-question',
-  templateUrl: './add-question.component.html',
-  styleUrls: ['./add-question.component.scss'],
+  selector: 'app-edit-question',
+  templateUrl: './edit-question.component.html',
+  styleUrls: ['./edit-question.component.scss'],
 })
-export class AddQuestionComponent {
+export class EditQuestionComponent {
   public favoriteColor = '#26ab3c';
   updateDesc: any = '';
   formGroup!: FormGroup;
-  editorData: any = '<p>Enter text</p>';
   questions!: any[];
   questionSlug: string = '';
   getUserDetails: any;
@@ -28,16 +28,18 @@ export class AddQuestionComponent {
   count: any = 0;
   options: any[] = [];
   selectedOption: any = '';
+  questionByID: any = {};
   config: any;
 
   constructor(
     public commonservice: HttpCallService,
     private _router: Router,
     private formBuilder: FormBuilder,
-    private router: Router,
+    private router: ActivatedRoute,
     private renderer: Renderer2
   ) {
     this.config = this.commonservice.getConfigOfCKEditor();
+
     this.formGroup = this.formBuilder.group({
       question: new FormControl(''),
       point: new FormControl('', [Validators.required]),
@@ -49,6 +51,10 @@ export class AddQuestionComponent {
       option4: new FormControl('', [Validators.required]),
       rightoption: new FormControl(''),
     });
+  }
+
+  public onTagEdited(event: any) {
+    console.log('tag edited: current value is ' + event);
   }
 
   get question() {
@@ -76,13 +82,40 @@ export class AddQuestionComponent {
     return this.formGroup.get('option4');
   }
   get rightoption() {
-    return this.formGroup.get('tags');
+    return this.formGroup.get('rightoption');
   }
 
   async ngOnInit() {
-    this.getQuestion();
+    await this.getId();
 
     this.getUserDetails = await this.commonservice.getTokenDetails('id');
+  }
+
+  async getId() {
+    await this.commonservice
+      .get(`questions/get/${this.router.snapshot.params['id']}`)
+      .subscribe(async (result: any) => {
+        if (result && result.status == 'SUCCESS') {
+          this.questionByID = result && result.payload;
+          this.updateDesc = this.questionByID.question;
+          await this.getQuestion(this.questionByID._id);
+
+          this.formGroup = this.formBuilder.group({
+            question: new FormControl(this.questionByID.question),
+            questiontype: new FormControl(this.questionByID.questiontype),
+            point: new FormControl(this.questionByID.point),
+            level: new FormControl(this.questionByID.level),
+
+            option1: new FormControl(this.questionByID.options[0].toString()),
+            option2: new FormControl(this.questionByID.options[1].toString()),
+            option3: new FormControl(this.questionByID.options[2].toString()),
+            option4: new FormControl(this.questionByID.options[3].toString()),
+            rightoption: new FormControl(
+              this.questionByID.rightoption.toString()
+            ),
+          });
+        }
+      });
   }
 
   onChange(event: CKEditor4.EventInfo) {
@@ -90,19 +123,25 @@ export class AddQuestionComponent {
   }
 
   rightOption(option: any) {
+    this.questionByID.rightoption = '';
     this.selectedOption = option;
   }
 
-  async getQuestion() {
+  async getQuestion(selected: any) {
     await this.commonservice.get('questions/').subscribe((res) => {
       const apiResult = JSON.parse(JSON.stringify(res));
       this.questions = apiResult && apiResult.payload;
+      this.questions = this.questions.map((question) => {
+        return {
+          ...question,
+          selected: question._id === selected ? true : false,
+        };
+      });
     });
   }
 
   async onSubmit(formData: any) {
     this.options = [];
-
     let rightAnswer = '';
     if (this.selectedOption == 'option1') {
       rightAnswer = this.formGroup.value['option1'];
@@ -119,7 +158,7 @@ export class AddQuestionComponent {
     }
 
     await this.commonservice
-      .post(
+      .put(
         {
           question: this.updateDesc,
           options: this.options,
@@ -129,7 +168,7 @@ export class AddQuestionComponent {
           questiontype: this.formGroup.value.questiontype,
           user_id: this.getUserDetails,
         },
-        'questions/add'
+        `questions/update/${this.router.snapshot.params['id']}`
       )
       .subscribe((res) => {
         const apiResult = JSON.parse(JSON.stringify(res));
@@ -172,5 +211,9 @@ export class AddQuestionComponent {
     </div>`;
       this.renderer.appendChild(this.div.nativeElement, p);
     }
+  }
+
+  isChecked(option: any) {
+    return this.questionByID.rightoption === option.value ? true : false;
   }
 }

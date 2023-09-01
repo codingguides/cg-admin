@@ -60,6 +60,7 @@
               <label cLabel for="description">Description</label>
               <ckeditor
                 cFormControl
+                [config]="this.config"
                 (change)="onChange($event)"
                 formControlName="description"
               ></ckeditor>

@@ -1,31 +1,35 @@
 import { Component, OnInit } from '@angular/core';
 import Swal from 'sweetalert2';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CKEditor4 } from 'ckeditor4-angular/ckeditor';
 import { HttpCallService } from 'src/app/common/http-call.service';
 
-
 @Component({
   selector: 'app-edit-topic',
   templateUrl: './edit-topic.component.html',
-  styleUrls: ['./edit-topic.component.scss']
+  styleUrls: ['./edit-topic.component.scss'],
 })
 export class EditTopic {
-
-
   public favoriteColor = '#26ab3c';
-  updateDesc: any = "";
+  updateDesc: any = '';
   formGroup!: FormGroup;
+
   topics!: any[];
-  topicSlug: string = "";
+  topicSlug: string = '';
   getUserDetails: any;
   topicByID: any = {};
   topicTags: any[] = [];
   slugError: any = {
     flag: false,
-    message: ""
-  }
+    message: '',
+  };
+  config: any;
 
   constructor(
     public commonservice: HttpCallService,
@@ -33,14 +37,15 @@ export class EditTopic {
     private formBuilder: FormBuilder,
     private router: ActivatedRoute
   ) {
+    this.config = this.commonservice.getConfigOfCKEditor();
+
     this.formGroup = this.formBuilder.group({
       name: new FormControl('', [Validators.required]),
       slug: new FormControl('', [Validators.required]),
       parent_id: new FormControl('', [Validators.required]),
       tags: new FormControl('', [Validators.required]),
-      description: new FormControl('')
-    })
-
+      description: new FormControl(''),
+    });
   }
 
   public onTagEdited(event: any) {
@@ -71,27 +76,26 @@ export class EditTopic {
   }
 
   async getId() {
-    // console.log(this.router.snapshot.params['id']);
-    await this.commonservice.get(`topic/get/${this.router.snapshot.params['id']}`).subscribe(async (result: any) => {
-      if (result && result.status == "SUCCESS") {
-        this.topicByID = result && result.payload[0];
-        console.log("<<<<<<<<<<<<<<<<<<getId>>>>>>>>>>>>>>>>>>>", this.topicByID);
-        this.updateDesc = this.topicByID.description;
-        await this.getTopic(this.topicByID.parent_id);
-        this.topicTags = this.topicByID.tags;
-        console.log("tags reload>>>>>>>>>>>>>", this.topicTags)
-        this.formGroup = this.formBuilder.group({
-          name: new FormControl(this.topicByID.name),
-          slug: new FormControl(this.topicByID.slug),
-          parent_id: new FormControl(this.topicByID.parent_id),
-          description: new FormControl(this.topicByID.description),
-          tags: new FormControl()
-        })
-      }
-    })
-  }
+    await this.commonservice
+      .get(`topic/get/${this.router.snapshot.params['id']}`)
+      .subscribe(async (result: any) => {
+        if (result && result.status == 'SUCCESS') {
+          this.topicByID = result && result.payload[0];
 
-  // get f() { return this.formGroup.controls; }
+          this.updateDesc = this.topicByID.description;
+          await this.getTopic(this.topicByID.parent_id);
+          this.topicTags = this.topicByID.tags;
+
+          this.formGroup = this.formBuilder.group({
+            name: new FormControl(this.topicByID.name),
+            slug: new FormControl(this.topicByID.slug),
+            parent_id: new FormControl(this.topicByID.parent_id),
+            description: new FormControl(this.topicByID.description),
+            tags: new FormControl(),
+          });
+        }
+      });
+  }
 
   onChange(event: CKEditor4.EventInfo) {
     this.updateDesc = event.editor.getData();
@@ -100,67 +104,66 @@ export class EditTopic {
   async getTopic(selected: any) {
     await this.commonservice.get('topic/list').subscribe((res) => {
       const apiResult = JSON.parse(JSON.stringify(res));
-      this.topics = apiResult && apiResult.payload
+      this.topics = apiResult && apiResult.payload;
       this.topics = this.topics.map((topic) => {
         return {
           ...topic,
-          "selected": topic._id === selected ? true : false
-        }
-      })
-      console.log("this.topics>>>>>>>>", this.topics)
-    })
+          selected: topic._id === selected ? true : false,
+        };
+      });
+    });
   }
 
   createSlug(event: any) {
     this.slugError.flag = false;
-    this.slugError.message = "";
-    this.topicSlug = event.target.value.toString()
+    this.slugError.message = '';
+    this.topicSlug = event.target.value
+      .toString()
       .trim()
       .toLowerCase()
-      .replace(/\s+/g, "-")
-      .replace(/[^\w\-]+/g, "")
-      .replace(/\-\-+/g, "-")
-      .replace(/^-+/, "")
-      .replace(/-+$/, "");
+      .replace(/\s+/g, '-')
+      .replace(/[^\w\-]+/g, '')
+      .replace(/\-\-+/g, '-')
+      .replace(/^-+/, '')
+      .replace(/-+$/, '');
   }
 
   validateSlug(event: any) {
     this.slugError.flag = false;
-    this.slugError.message = "";
-    if (event.target.value == "") {
+    this.slugError.message = '';
+    if (event.target.value == '') {
       this.slugError.flag = true;
-      this.slugError.message = "Slug is required!";
+      this.slugError.message = 'Slug is required!';
     }
   }
 
   deletetag(tag: any) {
-    this.commonservice.delete(`tags/delete/${tag._id}`).subscribe(res => {
+    this.commonservice.delete(`tags/delete/${tag._id}`).subscribe((res) => {
       const apiResult = JSON.parse(JSON.stringify(res));
-      if (apiResult.status == "SUCCESS") {
+      if (apiResult.status == 'SUCCESS') {
         this.ngOnInit();
         Swal.fire({
           position: 'top-end',
           icon: 'success',
           title: apiResult.msg,
           showConfirmButton: false,
-          timer: 1500
-        })
+          timer: 1500,
+        });
       } else {
         Swal.fire({
           position: 'top-end',
           icon: 'error',
           title: apiResult.msg,
           showConfirmButton: false,
-          timer: 1500
-        })
+          timer: 1500,
+        });
       }
-    })
+    });
   }
 
   async onSubmit(formData: any) {
-
-    console.log("formData>>>>>>>>>>>>", formData)
-    const tags = formData['tags'] && formData['tags'].split(',').filter((tag: any) => tag)
+    const tags =
+      formData['tags'] && formData['tags'].split(',').filter((tag: any) => tag);
 
     const data = {
       name: formData['name'],
@@ -168,41 +171,31 @@ export class EditTopic {
       description: this.updateDesc,
       parent_id: formData['parent_id'],
       user_id: this.getUserDetails,
-      tags: tags
-    }
-    this.commonservice.put(data, `topic/update/${this.router.snapshot.params['id']}`).subscribe(res => {
-      const apiResult = JSON.parse(JSON.stringify(res));
-      console.log("apiResult>>>>>>><<<<<<<<<<<<<<<<", apiResult)
-      if (apiResult.status == "SUCCESS") {
-        tags.map(async (tag: string) => {
-          console.log(">>>>.tag>>>>>>>>>", tag)
-          await this.commonservice.post({
-            name: tag,
-            type: "topic",
-            topic_id: this.router.snapshot.params['id']
-          }, 'tags/add').subscribe(async (res: any) => {
-            console.log("tagres>>>>>>>>", res)
-            await this.getId();
-          })
-        })
-        this.ngOnInit();
-        Swal.fire({
-          position: 'top-end',
-          icon: 'success',
-          title: apiResult.msg,
-          showConfirmButton: false,
-          timer: 1500
-        })
-      } else {
-        Swal.fire({
-          position: 'top-end',
-          icon: 'error',
-          title: apiResult.msg,
-          showConfirmButton: false,
-          timer: 1500
-        })
-      }
-    })
+      tags: tags,
+    };
+    this.commonservice
+      .put(data, `topic/update/${this.router.snapshot.params['id']}`)
+      .subscribe((res) => {
+        const apiResult = JSON.parse(JSON.stringify(res));
 
+        if (apiResult.status == 'SUCCESS') {
+          this.ngOnInit();
+          Swal.fire({
+            position: 'top-end',
+            icon: 'success',
+            title: apiResult.msg,
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        } else {
+          Swal.fire({
+            position: 'top-end',
+            icon: 'error',
+            title: apiResult.msg,
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+      });
   }
 }

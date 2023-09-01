@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AddQuestionComponent } from './add-question/add-question.component';
 import { QuestionListComponent } from './question-list/question-list.component';
+import { EditQuestionComponent } from './edit-question/edit-question.component';
+import { EditTopic } from '../topic/edit-topic/edit-topic.component';
 
 const routes: Routes = [
   {
@@ -14,7 +16,14 @@ const routes: Routes = [
         path: 'list',
         component: QuestionListComponent,
         data: {
-          title: 'Topic List'
+          title: 'Question List'
+        }
+      },
+      {
+        path: 'edit/:id',
+        component: EditQuestionComponent,
+        data: {
+          title: 'Edit'
         }
       },
       {
