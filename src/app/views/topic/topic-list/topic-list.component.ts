@@ -161,5 +161,5 @@ export class TopicListComponent {
     }
   }
 
-  async getQuestion(data: Object) {}
+
 }

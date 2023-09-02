@@ -18,11 +18,13 @@ import { TopicListComponent } from './topic-list/topic-list.component';
 import { AddTopicComponent } from './add-topic/add-topic.component';
 import { CKEditorModule } from 'ckeditor4-angular';
 import { EditTopic } from './edit-topic/edit-topic.component';
+import { RelationComponent } from './relation/relation.component';
 
 @NgModule({
   declarations: [
     TopicListComponent,
     AddTopicComponent,
+    RelationComponent,
     EditTopic
   ],
   imports: [
