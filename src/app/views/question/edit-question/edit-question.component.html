@@ -3,7 +3,7 @@
     <c-card class="mb-4">
       <c-card-header>
         <div class="row">
-          <div class="col-sm-6"><strong>Add Question</strong></div>
+          <div class="col-sm-6"><strong>Update Question</strong></div>
           <div class="col-sm-6">
             <span class="add"
               ><a [routerLink]="['/question/list']" class="btn btn-info">
@@ -25,9 +25,9 @@
               <label cLabel for="question">Question</label>
               <ckeditor
                 cFormControl
-                [data]="editorData"
                 [config]="this.config"
                 (change)="onChange($event)"
+                formControlName="question"
               ></ckeditor>
             </c-col>
           </c-row>
@@ -58,14 +58,6 @@
                 <option value="advance">Advance</option>
                 <option value="intermediate">Intermediate</option>
               </select>
-              <div
-                style="color: red"
-                *ngIf="level && level.invalid && level.touched"
-              >
-                <div [hidden]="!level.errors?.['required']">
-                  Select atleast One level!
-                </div>
-              </div>
             </c-col>
           </c-row>
           <c-row>
@@ -78,16 +70,6 @@
                 <option value="radiobutton">Rradio button</option>
                 <option value="text">Text</option>
               </select>
-              <div
-                style="color: red"
-                *ngIf="
-                  questiontype && questiontype.invalid && questiontype.touched
-                "
-              >
-                <div [hidden]="!questiontype.errors?.['required']">
-                  Select atleast One questiontype!
-                </div>
-              </div>
             </c-col>
           </c-row>
 
@@ -100,6 +82,7 @@
                     <input
                       type="radio"
                       name="rightoption"
+                      [checked]="isChecked(option1)"
                       (change)="rightOption('option1')"
                       aria-label="Radio button for following text input"
                     />
@@ -123,6 +106,7 @@
                 </div>
               </div>
             </c-col>
+
             <c-col class="col-md-2">
               <label cLabel for="options">Options 2</label>
               <div class="input-group">
@@ -131,6 +115,7 @@
                     <input
                       type="radio"
                       name="rightoption"
+                      [checked]="isChecked(option2)"
                       (change)="rightOption('option2')"
                       aria-label="Radio button for following text input"
                     />
@@ -161,7 +146,8 @@
                   <div class="input-group-text">
                     <input
                       type="radio"
-                      name="rightoption"
+                      form="rightoption"
+                      [checked]="isChecked(option3)"
                       (change)="rightOption('option3')"
                       aria-label="Radio button for following text input"
                     />
@@ -193,6 +179,7 @@
                     <input
                       type="radio"
                       name="rightoption"
+                      [checked]="isChecked(option4)"
                       (change)="rightOption('option4')"
                       aria-label="Radio button for following text input"
                     />
@@ -217,10 +204,11 @@
               </div>
             </c-col>
           </c-row>
+
           <c-row class="mt-2">
             <c-col class="col-xs-6">
               <button cButton type="submit" [disabled]="!formGroup.valid">
-                Add Question
+                Update Question
               </button>
             </c-col>
           </c-row>

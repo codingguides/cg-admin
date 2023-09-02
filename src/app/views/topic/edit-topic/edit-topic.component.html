@@ -3,7 +3,7 @@
     <c-card class="mb-4">
       <c-card-header>
         <div class="row">
-          <div class="col-sm-6"><strong>Add Topic</strong></div>
+          <div class="col-sm-6"><strong>Update Topic</strong></div>
           <div class="col-sm-6">
             <span class="add"
               ><a [routerLink]="['/topic/list']" class="btn btn-info">
@@ -48,7 +48,11 @@
                 type="text"
                 [value]="topicSlug"
                 formControlName="slug"
+                (change)="validateSlug($event)"
               />
+              <div style="color: red" *ngIf="slug?.touched">
+                <div>{{ slugError.message }}</div>
+              </div>
             </c-col>
           </c-row>
           <c-row>
@@ -56,9 +60,9 @@
               <label cLabel for="description">Description</label>
               <ckeditor
                 cFormControl
-                [data]="editorData"
                 [config]="this.config"
                 (change)="onChange($event)"
+                formControlName="description"
               ></ckeditor>
             </c-col>
           </c-row>
@@ -71,13 +75,11 @@
                 class="form-select"
                 formControlName="parent_id"
               >
-                <option value="" selected disabled>
-                  --- Choose Parent Topic ---
-                </option>
-                <option value="0">No parent</option>
+                <option value="" disabled>--- Choose Parent Topic ---</option>
                 <option
                   *ngFor="let topic of topics; let num = index"
                   [value]="topic._id"
+                  selected="topic.selected"
                 >
                   {{ topic.name }}
                 </option>
@@ -98,8 +100,20 @@
                 id="tags"
                 type="text"
                 formControlName="tags"
-                placeholder="use ' , ' for multiple tags"
+                required
               />
+
+              <div class="mt-2">
+                <button
+                  *ngFor="let tag of topicTags; let num = index"
+                  type="button"
+                  class="btn btn-sm btn-light m-1"
+                  (click)="deletetag(tag)"
+                >
+                  {{ tag.name }} <i class="fa fa-close" style="color: red"></i>
+                </button>
+              </div>
+
               <div
                 style="color: red"
                 *ngIf="tags && tags.invalid && tags.touched"
@@ -114,7 +128,7 @@
           <c-row class="mt-2">
             <c-col class="col-xs-6">
               <button cButton type="submit" [disabled]="!formGroup.valid">
-                Add Topic
+                Update Topic
               </button>
             </c-col>
           </c-row>

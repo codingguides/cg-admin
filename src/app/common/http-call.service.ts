@@ -27,7 +27,7 @@ export class HttpCallService {
   }
 
   public login(postData: Object, endPoints: String) {
-    return this.httpClient.post(this.url + endPoints, postData, 
+    return this.httpClient.post(this.url + endPoints, postData,
       {
         headers: new HttpHeaders({
           'Content-Type': 'application/json'
@@ -51,22 +51,54 @@ export class HttpCallService {
     return this.httpClient.delete(this.url + endPoints, this.headerOptions)
   }
 
-  public isLoggedIn( ) {
+  public isLoggedIn() {
     let status = "LoggedIn"
-    if(!sessionStorage.getItem('accessToken') || sessionStorage.getItem('accessToken') == undefined){
-      status="LogOut"
+    if (!sessionStorage.getItem('accessToken') || sessionStorage.getItem('accessToken') == undefined) {
+      status = "LogOut"
       this._router.navigate(['./login']);
     }
-    sessionStorage.setItem('status',status)
-    console.log("status: ",status)
+    sessionStorage.setItem('status', status)
+    console.log("status: ", status)
     return status;
   }
 
-  public getTokenDetails(param:string){
-    const gettoken:any = this.token;
-    const decoded:any = jwt_decode(gettoken);
+  public getTokenDetails(param: string) {
+    const gettoken: any = this.token;
+    const decoded: any = jwt_decode(gettoken);
     return decoded[param];
   }
 
+
+  public getConfigOfCKEditor(): any {
+    const toolbarGroups = [
+      '/',
+      { name: 'document', groups: ['mode', 'doctools', 'document'] },
+      { name: 'editing', groups: ['find', 'selection', 'spellchecker', 'editing'] },
+      { name: 'forms', groups: ['forms'] },
+      '/',
+      { name: 'clipboard', groups: ['clipboard', 'undo'] },
+      { name: 'paragraph', groups: ['list', 'indent', 'blocks', 'align', 'bidi', 'paragraph'] },
+      '/',
+      { name: 'basicstyles', groups: ['basicstyles', 'cleanup'] },
+      { name: 'links', groups: ['links'] },
+      { name: 'styles', groups: ['styles'] },
+      { name: 'colors', groups: ['colors'] },
+      { name: 'tools', groups: ['tools'] },
+      { name: 'others', groups: ['others'] },
+      { name: 'about', groups: ['about'] },
+      { name: 'insert', groups: ['codesnippet'] }
+    ];
+    // const removeButtons: string = 'Source,Templates,Save,NewPage,Print,Replace,Scayt,SelectAll,Form,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Blockquote,CreateDiv,Language,Image,Flash,Table,HorizontalRule,Smiley,SpecialChar,PageBreak,Iframe,ShowBlocks,About,Checkbox,Find,Preview,Styles,Format,Anchor';
+
+    return {
+      toolbarGroups: toolbarGroups,
+      // removeButtons: removeButtons,
+      disableNativeSpellChecker: true,
+      ignoreEmptyParagraphValue: true,
+      extraPlugins: "codesnippet",
+      codeSnippet_theme: 'school_book',
+      codeSnippet_languages: { javascript: 'JavaScript', php: 'PHP' }
+    };
+  }
 
 }
