@@ -10,6 +10,9 @@ import {
   FormModule,
   GridModule,
   ListGroupModule,
+  AccordionModule,
+  NavModule, 
+  TabsModule,
   SharedModule
 } from '@coreui/angular';
 
@@ -31,6 +34,9 @@ import { RelationComponent } from './relation/relation.component';
     CommonModule,
     TopicRoutingModule,
     // DocsComponentsModule,
+    AccordionModule,
+    NavModule, 
+    TabsModule,
     CardModule,
     FormModule,
     GridModule,
