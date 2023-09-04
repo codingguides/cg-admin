@@ -12,7 +12,7 @@ export const navItems: INavData[] = [
   },
   {
     name: 'Components',
-    title: true
+    title: true,
   },
   {
     name: 'Topic',
@@ -21,9 +21,9 @@ export const navItems: INavData[] = [
     children: [
       {
         name: 'Topic List',
-        url: '/topic/list'
-      }
-    ]
+        url: '/topic/list',
+      },
+    ],
   },
   {
     name: 'Question',
@@ -32,8 +32,19 @@ export const navItems: INavData[] = [
     children: [
       {
         name: 'Question List',
-        url: '/question/list'
-      }
-    ]
-  }
+        url: '/question/list',
+      },
+    ],
+  },
+  {
+    name: 'Blog',
+    url: '/blog',
+    iconComponent: { name: 'cil-notes' },
+    children: [
+      {
+        name: 'Blog List',
+        url: '/blog/list',
+      },
+    ],
+  },
 ];

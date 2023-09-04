@@ -1,0 +1,54 @@
+<c-row ngPreserveWhitespaces>
+  <c-col xs="12">
+    <c-card class="mb-4">
+      <c-card-header>
+        <c-col xs="12">
+          <div class="row">
+            <div class="col-sm-6"><strong>Blog List</strong></div>
+            <div class="col-sm-6">
+              <span class="add"
+                ><a [routerLink]="['/blog/add']" class="btn btn-info">
+                  Add Blog
+                </a></span
+              >
+            </div>
+          </div>
+        </c-col>
+      </c-card-header>
+      <c-card-body>
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Title</th>
+              <th scope="col">Slug</th>
+              <th scope="col">Status</th>
+              <th scope="col">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let blog of blogs; let num = index">
+              <th scope="row">{{ num + 1 }}</th>
+              <th scope="row">{{ blog.title }}</th>
+              <!-- <td>{{ removeTags(question.question) }}</td> -->
+              <td>{{ blog.slug }}</td>
+              <td>{{ blog.status }}</td>
+              <td>
+                <!-- <i
+                  class="actionClass fa fa-pencil-square-o"
+                  aria-hidden="true"
+                  routerLink="/blog/edit/{{ blog._id }}"
+                ></i>
+                <i
+                  class="actionClass fa fa-trash-o"
+                  aria-hidden="true"
+                  (click)="delete(blog._id)"
+                ></i> -->
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </c-card-body>
+    </c-card>
+  </c-col>
+</c-row>

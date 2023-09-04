@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { HashLocationStrategy, LocationStrategy, PathLocationStrategy } from '@angular/common';
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FormsModule,ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from "@angular/common/http";
 import { CommonModule } from '@angular/common';
 import { NgScrollbarModule } from 'ngx-scrollbar';
@@ -38,6 +38,10 @@ import {
 } from '@coreui/angular';
 
 import { IconModule, IconSetService } from '@coreui/icons-angular';
+// import { BlogListComponent } from './views/blog/blog-list/blog-list.component';
+// import { AddBlogComponent } from './views/blog/add-blog/add-blog.component';
+// import { EditBlogComponent } from './views/blog/edit-blog/edit-blog.component';
+
 
 const APP_CONTAINERS = [
   DefaultFooterComponent,
