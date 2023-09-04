@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+
 import {
   ButtonGroupModule,
   ButtonModule,
@@ -13,6 +14,7 @@ import {
   AccordionModule,
   NavModule, 
   TabsModule,
+  PaginationModule,
   SharedModule
 } from '@coreui/angular';
 
@@ -34,6 +36,7 @@ import { RelationComponent } from './relation/relation.component';
     CommonModule,
     TopicRoutingModule,
     // DocsComponentsModule,
+    PaginationModule,
     AccordionModule,
     NavModule, 
     TabsModule,
