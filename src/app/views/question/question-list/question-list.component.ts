@@ -2,12 +2,6 @@ import { Component } from '@angular/core';
 import { HttpCallService } from '../../../common/http-call.service';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
 
 @Component({
   selector: 'app-question-list',
@@ -18,40 +12,19 @@ export class QuestionListComponent {
   questions: any = [];
   errMessage: string = '';
   errFlag: boolean = true;
-  page: number = 1;
-  limit: number = 10;
-  formGroup: any;
 
   constructor(
     public commonservice: HttpCallService,
     private _router: Router,
-    private formBuilder: FormBuilder,
     private router: Router
-  ) {
+  ) {}
 
-    this.formGroup = this.formBuilder.group({
-      level: new FormControl('', []),
-      search: new FormControl('', []),
-    });
+  ngOnInit() {
+    this.getquestion();
   }
 
-  get level() {
-    return this.formGroup.get('level');
-  }
-
-  get search() {
-    return this.formGroup.get('search');
-  }
-
-  async ngOnInit() {
-    await this.getQuestion({
-      page: this.page,
-      limit: this.limit
-    });
-  }
-
-  async getQuestion(params: any) {
-    await this.commonservice.put(params, 'questions/').subscribe((res) => {
+  getquestion() {
+    this.commonservice.get('questions/').subscribe((res) => {
       const apiResult = JSON.parse(JSON.stringify(res));
       this.questions = apiResult && apiResult.payload;
 
@@ -121,21 +94,5 @@ export class QuestionListComponent {
     if (str === null || str === '') return false;
     else str = str.toString();
     return str.replace(/(<([^>]+)>)/gi, '');
-  }
-
-  async onSubmit(formData: any) {
-    console.log("formData>>>>>>>>>>>>>>>>",formData)
-    if (formData.level !== '' || formData.search !== '') {
-      await this.getQuestion({
-        page: this.page,
-        limit: this.limit,
-        level: formData.level,
-        search: formData.search,
-      });
-    }
-  }
-
-  clear(){
-    this.formGroup.reset();
   }
 }
