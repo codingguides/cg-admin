@@ -13,6 +13,49 @@
           </div>
         </div>
       </c-card-header>
+      <c-card-body>
+        <form
+          cForm
+          class="row g-3 form-horizontal"
+          [formGroup]="formGroup"
+          (ngSubmit)="onSubmit(formGroup.value)"
+        >
+          <c-row>
+            <c-col class="col-md-6">
+              <label cLabel for="blogtitle">Blog Title</label>
+              <input
+                cFormControl
+                id="blogtitle"
+                type="email"
+                formControlName="title"
+                (change)="createSlug($event)"
+                required
+              />
+            </c-col>
+            <c-col class="col-md-6">
+              <label cLabel for="slug">Slug</label>
+              <input
+                cFormControl
+                id="slug"
+                type="text"
+                [value]="topicSlug"
+                formControlName="slug"
+              />
+            </c-col>
+          </c-row>
+          <c-row>
+            <c-col class="col-xs-12">
+              <label cLabel for="description">Description</label>
+              <ckeditor
+                cFormControl
+                [data]="editorData"
+                [config]="this.config"
+                (change)="onChange($event)"
+              ></ckeditor>
+            </c-col>
+          </c-row>
+        </form>
+      </c-card-body>
     </c-card>
   </c-col>
 </c-row>
