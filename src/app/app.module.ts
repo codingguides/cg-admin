@@ -7,6 +7,7 @@ import { HttpClientModule } from "@angular/common/http";
 import { CommonModule } from '@angular/common';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 
+
 // Import routing module
 import { AppRoutingModule } from './app-routing.module';
 
@@ -38,6 +39,7 @@ import {
 } from '@coreui/angular';
 
 import { IconModule, IconSetService } from '@coreui/icons-angular';
+
 
 const APP_CONTAINERS = [
   DefaultFooterComponent,
