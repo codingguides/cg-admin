@@ -30,6 +30,7 @@ export class RelationComponent {
   questionFlag: boolean = false 
   items = [1, 2, 3, 4];
   relationListByTopic: any;
+  relationListFlag: boolean = false;
 
   constructor(
     public commonservice: HttpCallService,
@@ -53,7 +54,8 @@ get search() {
 }
 
 async ngOnInit() {
-  await this.getId()
+  await this.getId();
+  await this.relationList();
   // await this.getQuestion({
   //   page: this.page,
   //   limit: this.limit
@@ -66,6 +68,7 @@ async getId() {
     .subscribe(async (result: any) => {
       if (result && result.status == 'SUCCESS') {
         this.topicByID = result && result.payload[0];
+        console.log("this.topicByID>>>>>>>",this.topicByID.length)
       }else{
         this._router.navigate(['./topic/list']);
       }
@@ -214,10 +217,13 @@ async getId() {
       `relation/get/${this.activtedrouter.snapshot.params['id']}`
     )
     .subscribe((res: any) => {
+      this.relationListFlag = false;
       const apiResult = JSON.parse(JSON.stringify(res));
       if (apiResult && apiResult.status == 'SUCCESS') {
         this.relationListByTopic = apiResult && apiResult.payload;
-        console.log("this.relationListByTopic>>>>>>>>>>",this.relationListByTopic)
+        if(this.relationListByTopic.length == 0){
+          this.relationListFlag = true;
+        }
       }
     })
   }

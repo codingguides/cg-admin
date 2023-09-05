@@ -30,7 +30,7 @@
                         class="form-select"
                         formControlName="level"
                       >
-                        <option disabled selected>Select Level</option>
+                        <option value="" disabled selected>Select Question Level</option>
                         <option value="intermediate">Intermediate</option>
                         <option value="beginners">Beginners</option>
                         <option value="advance">Advance</option>
@@ -42,12 +42,12 @@
                         type="text"
                         id="search"
                         class="form-control"
-                        placeholder="type your search"
+                        placeholder="type your question here"
                         formControlName="search"
                       />
                     </div>
                     <div class="col-sm">
-                      <button type="submit" class="btn btn-outline-secondary  btn-custom" [disabled]="searchErrFlag">
+                      <button type="submit" class="btn btn-outline-secondary  btn-custom">
                         Search
                       </button>
                       <a (click)="clear()">
@@ -55,6 +55,7 @@
                       </a>
                     </div>
                   </form>
+                  <span class="danger" *ngIf="searchErrFlag">You need to select atleast one filter</span>
                 </div>
               </div>
               <div class="tableres" *ngIf="questionFlag">
@@ -111,6 +112,9 @@
                 </tr>
               </tbody>
             </table>
+
+            <span *ngIf="relationListFlag">Opps no relation found</span>
+
           </c-tab-pane>
         </c-tab-content>
       </c-card-body>
