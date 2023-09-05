@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { TopicListComponent } from './topic-list/topic-list.component';
 import { AddTopicComponent } from './add-topic/add-topic.component';
 import { EditTopic } from './edit-topic/edit-topic.component';
+import { RelationComponent } from './relation/relation.component';
 
 const routes: Routes = [
   {
@@ -23,6 +24,13 @@ const routes: Routes = [
         component: EditTopic,
         data: {
           title: 'Edit'
+        }
+      },
+      {
+        path: 'relation/:id',
+        component: RelationComponent,
+        data: {
+          title: 'Relation with topic and question'
         }
       },
       {
