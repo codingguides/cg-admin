@@ -19,7 +19,7 @@ export class TopicListComponent {
   errMessage: string = '';
   errFlag: boolean = true;
   page: number = 1;
-  limit: number = 2;
+  limit: number = 10;
   totalPages!: number;
   currentPage!: number;
   lastElement!: number;
@@ -57,14 +57,17 @@ export class TopicListComponent {
   async getTopic(params: Object) {
     await this.commonservice.put(params, 'topic/').subscribe((res) => {
       const apiResult = JSON.parse(JSON.stringify(res));
+
+      if (apiResult && apiResult.status == 'SUCCESS') {
+        this.topics = apiResult && apiResult.payload;
+        this.topics.map((topic: any) => {});
+      }
+
       if (apiResult && apiResult.status == 'SUCCESS') {
         this.topics = apiResult && apiResult.payload;
         this.totalPages = apiResult.totalPages;
         this.currentPage = apiResult.currentPage;
-        this.parray = [];
-        for (let index = 1; index <= this.totalPages; index++) {
-          this.parray.push(index)
-        }
+        this.parray = this.range(this.currentPage, this.totalPages);
         this.lastElement = this.parray[this.parray.length - 1];
       } else if (apiResult && apiResult.status == 'ERROR') {
         this.errFlag = true;
@@ -78,32 +81,12 @@ export class TopicListComponent {
 
   async updateTopic(pageno: number) {
     this.currentPage = pageno;
-    await this.getTopic({
-      page: pageno,
-      limit: this.limit,
-    });
-  }
 
-  async previous(pageno: number){
-    this.currentPage = pageno - 1;
-    console.log(">>>>>>>>>>>>>>>>",{
-      page: this.currentPage,
-      limit: this.limit,
-    })
-    await this.getTopic({
-      page: this.currentPage,
-      limit: this.limit,
-    });
-  }
+    this.page = this.limit + 10;
+    this.limit = this.limit + 1;
 
-  async next(pageno: number){
-    this.currentPage = pageno + 1;
-    console.log(">>>>>>>>>>>>>>>>",{
-      page: this.currentPage,
-      limit: this.limit,
-    })
     await this.getTopic({
-      page: this.currentPage,
+      page: this.page,
       limit: this.limit,
     });
   }
@@ -178,5 +161,5 @@ export class TopicListComponent {
     }
   }
 
-
+  async getQuestion(data: Object) {}
 }
