@@ -131,6 +131,7 @@ export class EditQuestionComponent {
     await this.commonservice.get('questions/').subscribe((res) => {
       const apiResult = JSON.parse(JSON.stringify(res));
       this.questions = apiResult && apiResult.payload;
+
       this.questions = this.questions.map((question) => {
         return {
           ...question,

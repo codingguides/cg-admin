@@ -29,6 +29,10 @@ export class AddQuestionComponent {
   options: any[] = [];
   selectedOption: any = '';
   config: any;
+  page: number = 1;
+  limit: number = 10;
+  errMessage: string = '';
+  errFlag: boolean = true;
 
   constructor(
     public commonservice: HttpCallService,
@@ -80,7 +84,10 @@ export class AddQuestionComponent {
   }
 
   async ngOnInit() {
-    this.getQuestion();
+    await this.getQuestion({
+      page: this.page,
+      limit: this.limit
+    });
 
     this.getUserDetails = await this.commonservice.getTokenDetails('id');
   }
@@ -93,13 +100,20 @@ export class AddQuestionComponent {
     this.selectedOption = option;
   }
 
-  async getQuestion() {
-    await this.commonservice.get('questions/').subscribe((res) => {
+  async getQuestion(params: any) {
+    await this.commonservice.put(params, 'questions/').subscribe((res) => {
       const apiResult = JSON.parse(JSON.stringify(res));
       this.questions = apiResult && apiResult.payload;
+
+      if (apiResult && apiResult.status == 'SUCCESS') {
+        this.questions = apiResult && apiResult.payload;
+        this.questions.map((question: any) => { });
+      } else {
+        this.errFlag = true;
+        this.errMessage = apiResult.msg;
+      }
     });
   }
-
   async onSubmit(formData: any) {
     this.options = [];
 
