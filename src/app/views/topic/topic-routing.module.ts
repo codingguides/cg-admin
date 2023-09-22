@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { TopicListComponent } from './topic-list/topic-list.component';
 import { AddTopicComponent } from './add-topic/add-topic.component';
 import { EditTopic } from './edit-topic/edit-topic.component';
+import { RelationComponent } from './relation/relation.component';
 
 const routes: Routes = [
   {

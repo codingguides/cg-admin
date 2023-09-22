@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { HttpCallService } from '../../../common/http-call.service';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
-
 import {
   FormBuilder,
   FormControl,
@@ -20,7 +19,7 @@ export class TopicListComponent {
   errMessage: string = '';
   errFlag: boolean = true;
   page: number = 1;
-  limit: number = 10;
+  limit: number = 2;
   totalPages!: number;
   currentPage!: number;
   lastElement!: number;

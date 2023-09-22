@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 // import { NgxPaginationModule } from 'ngx-pagination';
 
 
+
 import {
   ButtonGroupModule,
   ButtonModule,
@@ -12,6 +13,9 @@ import {
   FormModule,
   GridModule,
   ListGroupModule,
+  AccordionModule,
+  NavModule, 
+  TabsModule,
   PaginationModule,
   SharedModule
 } from '@coreui/angular';
@@ -35,6 +39,10 @@ import { EditTopic } from './edit-topic/edit-topic.component';
     PaginationModule,
     // NgxPaginationModule,
     // DocsComponentsModule,
+    PaginationModule,
+    AccordionModule,
+    NavModule, 
+    TabsModule,
     CardModule,
     FormModule,
     GridModule,

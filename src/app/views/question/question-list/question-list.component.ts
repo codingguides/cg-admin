@@ -124,7 +124,7 @@ export class QuestionListComponent {
   }
 
   async onSubmit(formData: any) {
-    console.log("formData>>>>>>>>>>>>>>>>", formData)
+    console.log("formData>>>>>>>>>>>>>>>>",formData)
     if (formData.level !== '' || formData.search !== '') {
       await this.getQuestion({
         page: this.page,
@@ -135,7 +135,9 @@ export class QuestionListComponent {
     }
   }
 
-  clear() {
+  clear(){
     this.formGroup.reset();
   }
+
+ 
 }

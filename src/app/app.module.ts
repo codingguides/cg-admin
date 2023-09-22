@@ -7,6 +7,7 @@ import { HttpClientModule } from "@angular/common/http";
 import { CommonModule } from '@angular/common';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 
+
 // Import routing module
 import { AppRoutingModule } from './app-routing.module';
 
@@ -42,6 +43,7 @@ import { ToastrModule } from 'ngx-toastr';
 // import { BlogListComponent } from './views/blog/blog-list/blog-list.component';
 // import { AddBlogComponent } from './views/blog/add-blog/add-blog.component';
 // import { EditBlogComponent } from './views/blog/edit-blog/edit-blog.component';
+
 
 
 const APP_CONTAINERS = [

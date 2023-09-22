@@ -105,7 +105,6 @@ export class EditTopic {
   async getTopic(selected: any) {
     await this.commonservice.get('topic/list').subscribe((res) => {
       const apiResult = JSON.parse(JSON.stringify(res));
-      console.log(apiResult)
       this.topics = apiResult && apiResult.payload;
       this.topics = this.topics.map((topic) => {
         return {
