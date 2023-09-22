@@ -98,7 +98,7 @@ export class EditQuestionComponent {
         if (result && result.status == 'SUCCESS') {
           this.questionByID = result && result.payload;
           this.updateDesc = this.questionByID.question;
-          await this.getQuestion(this.questionByID._id);
+          // await this.getQuestion(this.questionByID._id);
 
           this.formGroup = this.formBuilder.group({
             question: new FormControl(this.questionByID.question),
@@ -127,19 +127,7 @@ export class EditQuestionComponent {
     this.selectedOption = option;
   }
 
-  async getQuestion(selected: any) {
-    await this.commonservice.get('questions/').subscribe((res) => {
-      const apiResult = JSON.parse(JSON.stringify(res));
-      this.questions = apiResult && apiResult.payload;
 
-      this.questions = this.questions.map((question) => {
-        return {
-          ...question,
-          selected: question._id === selected ? true : false,
-        };
-      });
-    });
-  }
 
   async onSubmit(formData: any) {
     this.options = [];
