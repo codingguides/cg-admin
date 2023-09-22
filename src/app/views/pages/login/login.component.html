@@ -5,29 +5,41 @@
         <c-card-group>
           <c-card class="p-4">
             <c-card-body>
-              <form cForm [formGroup]="formGroup" (ngSubmit)="onSubmit(formGroup.value)">
+              <form
+                cForm
+                [formGroup]="formGroup"
+                (ngSubmit)="onSubmit(formGroup.value)"
+              >
                 <h1>Login</h1>
                 <p class="text-medium-emphasis">Sign In to your account</p>
-                <c-input-group class="mb-3">
+                <c-input-group class="mb-2">
                   <span cInputGroupText>
                     <svg cIcon name="cilUser"></svg>
                   </span>
-                  <input 
-                  type="email"
-                  autoComplete="email" 
-                  cFormControl 
-                  placeholder="Email"
-                  required
-                  formControlName="email"
+                  <input
+                    type="email"
+                    autoComplete="email"
+                    cFormControl
+                    placeholder="Email"
+                    required
+                    formControlName="email"
                   />
                 </c-input-group>
+                <div
+                  style="color: red"
+                  *ngIf="email && email.invalid && email.touched"
+                >
+                  <div [hidden]="!email.errors?.['required']">
+                    Email Id is required!
+                  </div>
+                </div>
                 <!-- <div class="input-group mb-4" *ngIf="formGroup.get('email').errors  && isSubmitted">  
                   <div *ngIf="formGroup.get('email').hasError('required')">  
                     <span class="text-danger" >Please Enter Username.</span>  
                   </div>
                 </div> -->
 
-                <c-input-group class="mb-4">
+                <c-input-group class="mb-2">
                   <span cInputGroupText>
                     <svg cIcon name="cilLockLocked"></svg>
                   </span>
@@ -40,15 +52,24 @@
                     formControlName="password"
                   />
                 </c-input-group>
+                <div
+                  class="one"
+                  style="color: red"
+                  *ngIf="password && password.invalid && password.touched"
+                >
+                  <div [hidden]="!password.errors?.['required']">
+                    Password is required!
+                  </div>
+                </div>
                 <!-- <div class="input-group mb-4" *ngIf="formGroup.get('password').errors  && isSubmitted">  
                   <div *ngIf="formGroup.get('password').hasError('required')">  
                     <span class="text-danger" >Please Enter Password.</span>  
                   </div>
                 </div> -->
 
-                <div class="input-group mb-4" *ngIf="errorMessage">
-                  <span class="text-danger" >{{errorMessage}}</span>
-                </div>
+                <!-- <div class="input-group mb-4" *ngIf="errorMessage">
+                  <span class="text-danger">{{ errorMessage }}</span>
+                </div> -->
 
                 <c-row>
                   <c-col xs="6">
@@ -56,11 +77,11 @@
                       Login
                     </button>
                   </c-col>
-                  <c-col class="text-right" xs="6">
+                  <!-- <c-col class="text-right" xs="6">
                     <button cButton class="px-0" color="link">
                       Forgot password?
                     </button>
-                  </c-col>
+                  </c-col> -->
                 </c-row>
               </form>
             </c-card-body>

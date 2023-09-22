@@ -1,9 +1,12 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { HttpCallService } from '../../../common/http-call.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
+import Swal from 'sweetalert2';
+import { timeout } from 'rxjs';
 
 
 @Component({
@@ -23,7 +26,8 @@ export class LoginComponent {
     public commonservice: HttpCallService,
     private formBuilder: FormBuilder,
     private _router: Router,
-    private httpClient: HttpClient
+    private httpClient: HttpClient,
+    private toastr: ToastrService,
   ) {
     this.checkLoggedIn();
     this.formGroup = this.formBuilder.group({
@@ -32,10 +36,18 @@ export class LoginComponent {
     });
     this.url = `${environment.apiURL}/api/`;
   }
+  get email() {
+    return this.formGroup.get('email');
+  }
 
-  checkLoggedIn(){
-    console.log('sessionStorage.getItem(status)>>>>>>>>>>>>',sessionStorage.getItem('status'))
-    if(sessionStorage.getItem('status') === "LoggedIn"){
+  get password() {
+    return this.formGroup.get('password');
+  }
+
+
+  checkLoggedIn() {
+    // console.log('sessionStorage.getItem(status)>>>>>>>>>>>>', sessionStorage.getItem('status'))
+    if (sessionStorage.getItem('status') === "LoggedIn") {
       this._router.navigate(['./dashboard']);
     }
   }
@@ -53,11 +65,11 @@ export class LoginComponent {
       }, 'user/login').subscribe(res => {
         this.isErrorMessage = false;
         const apiResult = JSON.parse(JSON.stringify(res));
-        console.log(apiResult)
+
         if (apiResult['result'] == "ok") {
           if (apiResult && apiResult['data']['payload']) {
             localStorage.clear();
-            console.log("apiResult>>>>>>>>>>>>>>>>>",apiResult)
+
             console.log(apiResult && apiResult['data']['token'])
             localStorage.setItem("accessToken", apiResult && apiResult['data']['token']);
             sessionStorage.setItem("accessToken", apiResult && apiResult['data']['token']);
@@ -67,13 +79,18 @@ export class LoginComponent {
             this.isErrorMessage = true;
             this.errorMessage = apiResult['message'];
           }
+          Swal.fire({
+            position: 'top-end',
+            icon: 'success',
+            title: 'Login Successful',
+            showConfirmButton: false,
+            timer: 1500,
+          });
         } else {
-          // this.isErrorMessage = true;
-          // this.errorMessage = apiResult['message'];
-          apiResult.errors.map((err: object)=>{
-            console.log(err)
+          apiResult.errors.map((err: object) => {
+            const error = JSON.parse(JSON.stringify(err));
+            this.toastr.error(error['msg'], "LOGIN", { timeOut: 5000 });
           })
-          console.log("errors>>>>>>>>",apiResult.errors)
         }
       });
     }

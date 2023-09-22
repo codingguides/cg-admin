@@ -16,6 +16,63 @@
         </c-col>
       </c-card-header>
       <c-card-body>
+        <div class="container mt-3">
+          <div class="row">
+            <form
+              cForm
+              class="row g-3 form-horizontal"
+              [formGroup]="formGroup"
+              (ngSubmit)="onSubmit(formGroup.value)"
+            >
+              <div class="col-sm">
+                <select
+                  cSelect
+                  id="type"
+                  class="form-select"
+                  formControlName="type"
+                  required
+                >
+                  <option value="" disabled selected>Select type</option>
+                  <option value="Title">Title</option>
+                  <option value="Slug">Slug</option>
+                </select>
+                <div
+                  style="color: red"
+                  *ngIf="type && type.invalid && type.touched"
+                >
+                  <div [hidden]="!type.errors?.['required']">
+                    Select one Type!
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm">
+                <input
+                  cFormControl
+                  type="text"
+                  id="search"
+                  required
+                  class="form-control"
+                  placeholder="type your search"
+                  formControlName="search"
+                />
+                <div
+                  style="color: red"
+                  *ngIf="search && search.invalid && search.touched"
+                >
+                  <div [hidden]="!search.errors?.['required']">
+                    Search is required!
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm">
+                <button type="submit" class="btn btn-outline-secondary">
+                  Search
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
         <table class="table">
           <thead>
             <tr>
@@ -27,14 +84,27 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let blog of blogs; let num = index">
+            <tr
+              *ngFor="
+                let blog of blogs
+                  | paginate
+                    : {
+                        itemsPerPage: 2,
+                        currentPage: page,
+                        totalItems: totalLength
+                      };
+                let num = index
+              "
+            >
               <th scope="row">{{ num + 1 }}</th>
-              <th scope="row">{{ blog.title }}</th>
+              <td scope="row">{{ blog.title }}</td>
               <!-- <td>{{ removeTags(question.question) }}</td> -->
               <td>{{ blog.slug }}</td>
-              <td>{{ blog.status }}</td>
               <td>
-                <!-- <i
+                <p (click)="statusUpdate(blog)">{{ blog.status }}</p>
+              </td>
+              <td>
+                <i
                   class="actionClass fa fa-pencil-square-o"
                   aria-hidden="true"
                   routerLink="/blog/edit/{{ blog._id }}"
@@ -43,11 +113,17 @@
                   class="actionClass fa fa-trash-o"
                   aria-hidden="true"
                   (click)="delete(blog._id)"
-                ></i> -->
+                ></i>
               </td>
             </tr>
           </tbody>
         </table>
+
+        <div class="pagination">
+          <pagination-controls
+            (pageChange)="page = $event"
+          ></pagination-controls>
+        </div>
       </c-card-body>
     </c-card>
   </c-col>

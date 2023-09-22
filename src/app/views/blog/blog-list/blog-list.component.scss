@@ -16,4 +16,30 @@
   th, tr, td {
     text-align: center !important;
   }
-  
+
+  .pagination {
+    padding: 20px 16px;
+    float: right;
+    font-size: 18px;   
+    margin-right: 300px;
+  }
+
+  .pagination::ng-deep .ngx-pagination .current {
+    background: brown;  
+  }
+  .pagination::ng-deep .ngx-pagination .ng-star-inserted{
+    text-decoration: none;
+  }
+
+// button.swal2-cancel.btn.btn-danger {
+//     margin-right: 10px;
+// }
+
+.my-actions { margin: 0 2em; }
+.order-1 { order: 1; }
+.order-2 { order: 2; }
+
+
+.right-gap {
+  margin-right: auto;
+}

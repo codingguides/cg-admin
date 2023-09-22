@@ -104,13 +104,34 @@
                 <i
                   class="actionClass fa fa-eye"
                   aria-hidden="true"
-                  (click)="getQuestion(topic)"
+                  routerLink="/topic/relation/{{ topic._id }}"
                 ></i>
               </td>
             </tr>
           </tbody>
         </table>
+        <!-- <div class="pagination">
+          <pagination-controls
+            (pageChange)="page = $event"
+          ></pagination-controls>
+        </div> -->
         <span class="text-center err" *ngIf="errFlag">{{ errMessage }}</span>
+
+        <!-- <c-pagination align="end" aria-label="Page navigation example">
+          <li cPageItem [disabled]="currentPage == 1 ? true : false">
+            <a cPageLink (click)="previous(currentPage)">Previous</a>
+          </li>
+          <li
+            cPageItem
+            *ngFor="let p of parray; let num = index"
+            [active]="currentPage == p ? true : false"
+          >
+            <a cPageLink (click)="updateTopic(p)">{{ p }}</a>
+          </li>
+          <li cPageItem [disabled]="currentPage == totalPages ? true : false">
+            <a cPageLink (click)="next(currentPage)">Next</a>
+          </li>
+        </c-pagination> -->
 
         <nav *ngIf="!errFlag" aria-label="Page navigation example pull-right">
           <ul class="pagination justify-content-center">

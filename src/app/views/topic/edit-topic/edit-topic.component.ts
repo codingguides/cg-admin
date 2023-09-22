@@ -81,6 +81,7 @@ export class EditTopic {
       .subscribe(async (result: any) => {
         if (result && result.status == 'SUCCESS') {
           this.topicByID = result && result.payload[0];
+          console.log(this.topicByID)
 
           this.updateDesc = this.topicByID.description;
           await this.getTopic(this.topicByID.parent_id);
@@ -104,6 +105,7 @@ export class EditTopic {
   async getTopic(selected: any) {
     await this.commonservice.get('topic/list').subscribe((res) => {
       const apiResult = JSON.parse(JSON.stringify(res));
+      console.log(apiResult)
       this.topics = apiResult && apiResult.payload;
       this.topics = this.topics.map((topic) => {
         return {

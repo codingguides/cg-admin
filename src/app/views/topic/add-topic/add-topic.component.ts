@@ -7,6 +7,7 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CKEditor4 } from 'ckeditor4-angular/ckeditor';
+import { ToastrService } from 'ngx-toastr';
 import { HttpCallService } from 'src/app/common/http-call.service';
 import Swal from 'sweetalert2';
 
@@ -29,7 +30,8 @@ export class AddTopicComponent {
     public commonservice: HttpCallService,
     private _router: Router,
     private formBuilder: FormBuilder,
-    private router: Router
+    private router: Router,
+    private toastr: ToastrService,
   ) {
     this.config = this.commonservice.getConfigOfCKEditor();
 
@@ -116,7 +118,7 @@ export class AddTopicComponent {
               },
               'tags/add'
             )
-            .subscribe((res: any) => {});
+            .subscribe((res: any) => { });
         });
         this.formGroup.reset();
         this.topicSlug = '';
@@ -131,7 +133,21 @@ export class AddTopicComponent {
           timer: 1500,
         });
       } else {
+        Swal.fire({
+          position: 'top-end',
+          icon: 'error',
+          title: apiResult.message,
+          showConfirmButton: false,
+          timer: 1500,
+        });
       }
+    }, error => {
+      const array = error.error.errors;
+      const messages = array.map(function (err: any) { return err.msg })
+      const reverseMsg = messages.reverse();
+      const messages2 = reverseMsg.forEach((msgs: any) => {
+        this.toastr.error(msgs, "ERROR");
+      })
     });
   }
 }

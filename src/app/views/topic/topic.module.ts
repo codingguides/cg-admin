@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+// import { NgxPaginationModule } from 'ngx-pagination';
+
 
 import {
   ButtonGroupModule,
@@ -10,6 +12,7 @@ import {
   FormModule,
   GridModule,
   ListGroupModule,
+  PaginationModule,
   SharedModule
 } from '@coreui/angular';
 
@@ -18,6 +21,7 @@ import { TopicListComponent } from './topic-list/topic-list.component';
 import { AddTopicComponent } from './add-topic/add-topic.component';
 import { CKEditorModule } from 'ckeditor4-angular';
 import { EditTopic } from './edit-topic/edit-topic.component';
+// import { PaginationModule } from '@coreui/angular';
 
 @NgModule({
   declarations: [
@@ -28,6 +32,8 @@ import { EditTopic } from './edit-topic/edit-topic.component';
   imports: [
     CommonModule,
     TopicRoutingModule,
+    PaginationModule,
+    // NgxPaginationModule,
     // DocsComponentsModule,
     CardModule,
     FormModule,

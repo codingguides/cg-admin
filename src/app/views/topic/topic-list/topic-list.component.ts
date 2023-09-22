@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { HttpCallService } from '../../../common/http-call.service';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
+
 import {
   FormBuilder,
   FormControl,
@@ -57,17 +58,14 @@ export class TopicListComponent {
   async getTopic(params: Object) {
     await this.commonservice.put(params, 'topic/').subscribe((res) => {
       const apiResult = JSON.parse(JSON.stringify(res));
-
-      if (apiResult && apiResult.status == 'SUCCESS') {
-        this.topics = apiResult && apiResult.payload;
-        this.topics.map((topic: any) => {});
-      }
-
       if (apiResult && apiResult.status == 'SUCCESS') {
         this.topics = apiResult && apiResult.payload;
         this.totalPages = apiResult.totalPages;
         this.currentPage = apiResult.currentPage;
-        this.parray = this.range(this.currentPage, this.totalPages);
+        this.parray = [];
+        for (let index = 1; index <= this.totalPages; index++) {
+          this.parray.push(index)
+        }
         this.lastElement = this.parray[this.parray.length - 1];
       } else if (apiResult && apiResult.status == 'ERROR') {
         this.errFlag = true;
@@ -81,15 +79,35 @@ export class TopicListComponent {
 
   async updateTopic(pageno: number) {
     this.currentPage = pageno;
-
-    this.page = this.limit + 10;
-    this.limit = this.limit + 1;
-
     await this.getTopic({
-      page: this.page,
+      page: pageno,
       limit: this.limit,
     });
   }
+
+  // async previous(pageno: number) {
+  //   this.currentPage = pageno - 1;
+  //   console.log(">>>>>>>>>>>>>>>>", {
+  //     page: this.currentPage,
+  //     limit: this.limit,
+  //   })
+  //   await this.getTopic({
+  //     page: this.currentPage,
+  //     limit: this.limit,
+  //   });
+  // }
+
+  // async next(pageno: number) {
+  //   this.currentPage = pageno + 1;
+  //   console.log(">>>>>>>>>>>>>>>>", {
+  //     page: this.currentPage,
+  //     limit: this.limit,
+  //   })
+  //   await this.getTopic({
+  //     page: this.currentPage,
+  //     limit: this.limit,
+  //   });
+  // }
 
   getParentName(topic: any) {
     if (topic.parentDetails.length > 0) {
@@ -100,10 +118,10 @@ export class TopicListComponent {
   delete(topicid: any) {
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
-        confirmButton: 'btn btn-success',
-        cancelButton: 'btn btn-danger',
+        confirmButton: 'btn btn-success btn-sm',
+        cancelButton: 'btn btn-danger btn-sm',
       },
-      buttonsStyling: false,
+      buttonsStyling: true,
     });
 
     swalWithBootstrapButtons
@@ -148,7 +166,7 @@ export class TopicListComponent {
     return Array.apply(1, Array(end)).map((element, index) => index + start);
   }
 
-  searchOption(event: any) {}
+  searchOption(event: any) { }
 
   async onSubmit(formData: any) {
     if (formData.type !== '' && formData.search !== '') {
@@ -161,5 +179,5 @@ export class TopicListComponent {
     }
   }
 
-  async getQuestion(data: Object) {}
+
 }
