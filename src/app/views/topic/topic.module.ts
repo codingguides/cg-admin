@@ -25,13 +25,16 @@ import { TopicListComponent } from './topic-list/topic-list.component';
 import { AddTopicComponent } from './add-topic/add-topic.component';
 import { CKEditorModule } from 'ckeditor4-angular';
 import { EditTopic } from './edit-topic/edit-topic.component';
+import { RelationComponent } from './relation/relation.component';
+
 // import { PaginationModule } from '@coreui/angular';
 
 @NgModule({
   declarations: [
     TopicListComponent,
     AddTopicComponent,
-    EditTopic
+    EditTopic,
+    RelationComponent
   ],
   imports: [
     CommonModule,
