@@ -27,6 +27,13 @@ const routes: Routes = [
         }
       },
       {
+        path: 'relation/:id',
+        component: RelationComponent,
+        data: {
+          title: 'Relation with topic and question'
+        }
+      },
+      {
         path: 'add',
         component: AddTopicComponent,
         data: {

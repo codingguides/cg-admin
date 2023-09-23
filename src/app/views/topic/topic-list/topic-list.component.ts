@@ -57,6 +57,7 @@ export class TopicListComponent {
   async getTopic(params: Object) {
     await this.commonservice.put(params, 'topic/').subscribe((res) => {
       const apiResult = JSON.parse(JSON.stringify(res));
+      console.log(apiResult.payload)
       if (apiResult && apiResult.status == 'SUCCESS') {
         this.topics = apiResult && apiResult.payload;
         this.totalPages = apiResult.totalPages;
@@ -84,29 +85,29 @@ export class TopicListComponent {
     });
   }
 
-  // async previous(pageno: number) {
-  //   this.currentPage = pageno - 1;
-  //   console.log(">>>>>>>>>>>>>>>>", {
-  //     page: this.currentPage,
-  //     limit: this.limit,
-  //   })
-  //   await this.getTopic({
-  //     page: this.currentPage,
-  //     limit: this.limit,
-  //   });
-  // }
+  async previous(pageno: number) {
+    this.currentPage = pageno - 1;
+    console.log(">>>>>>>>>>>>>>>>", {
+      page: this.currentPage,
+      limit: this.limit,
+    })
+    await this.getTopic({
+      page: this.currentPage,
+      limit: this.limit,
+    });
+  }
 
-  // async next(pageno: number) {
-  //   this.currentPage = pageno + 1;
-  //   console.log(">>>>>>>>>>>>>>>>", {
-  //     page: this.currentPage,
-  //     limit: this.limit,
-  //   })
-  //   await this.getTopic({
-  //     page: this.currentPage,
-  //     limit: this.limit,
-  //   });
-  // }
+  async next(pageno: number) {
+    this.currentPage = pageno + 1;
+    console.log(">>>>>>>>>>>>>>>>", {
+      page: this.currentPage,
+      limit: this.limit,
+    })
+    await this.getTopic({
+      page: this.currentPage,
+      limit: this.limit,
+    });
+  }
 
   getParentName(topic: any) {
     if (topic.parentDetails.length > 0) {
@@ -178,5 +179,7 @@ export class TopicListComponent {
     }
   }
 
-
+  clear() {
+    this.formGroup.reset();
+  }
 }

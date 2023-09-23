@@ -94,6 +94,23 @@
             </tr>
           </tbody>
         </table>
+        <span class="text-center err" *ngIf="errFlag">{{ errMessage }}</span>
+
+        <c-pagination align="end" aria-label="Page navigation example">
+          <li cPageItem [disabled]="currentPage == 1 ? true : false">
+            <a cPageLink (click)="previous(currentPage)">Previous</a>
+          </li>
+          <li
+            cPageItem
+            *ngFor="let p of parray; let num = index"
+            [active]="currentPage == p ? true : false"
+          >
+            <a cPageLink (click)="updateQuestion(p)">{{ p }}</a>
+          </li>
+          <li cPageItem [disabled]="currentPage == totalPages ? true : false">
+            <a cPageLink (click)="next(currentPage)">Next</a>
+          </li>
+        </c-pagination>
       </c-card-body>
     </c-card>
   </c-col>

@@ -19,8 +19,8 @@ export class BlogListComponent {
   blogs: any = [];
   errMessage: string = '';
   errFlag: boolean = true;
-  page: number = 1
-  totalLength: any
+  page: number = 1;
+  totalLength: any;
 
   constructor(
     public commonservice: HttpCallService,
@@ -168,6 +168,10 @@ export class BlogListComponent {
         }
       })
 
+  }
+
+  clear() {
+    this.formGroup.reset()
   }
 
 }
