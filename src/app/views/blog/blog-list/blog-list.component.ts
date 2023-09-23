@@ -21,6 +21,7 @@ export class BlogListComponent {
   errFlag: boolean = true;
   page: number = 1;
   totalLength: any;
+  showSearch:boolean = true
 
   constructor(
     public commonservice: HttpCallService,
@@ -30,7 +31,8 @@ export class BlogListComponent {
   ) {
     this.formGroup = this.formBuilder.group({
       type: new FormControl('', [Validators.required]),
-      search: new FormControl('', [Validators.required]),
+      search: new FormControl('', []),
+      status: new FormControl('', [])
     });
   }
 
@@ -172,6 +174,14 @@ export class BlogListComponent {
 
   clear() {
     this.formGroup.reset()
+  }
+
+  changeSearch(event: any){
+    if(event.target.value == 'status'){
+      this.showSearch = false;
+    }else{
+      this.showSearch = true;
+    }
   }
 
 }

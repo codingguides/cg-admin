@@ -31,10 +31,12 @@
                   class="form-select"
                   formControlName="type"
                   required
+                  (change)="changeSearch($event)"
                 >
                   <option value="" disabled selected>Select type</option>
-                  <option value="Title">Title</option>
-                  <option value="Slug">Slug</option>
+                  <option value="title">Title</option>
+                  <option value="slug">Slug</option>
+                  <option value="status">Status</option>
                 </select>
                 <div
                   style="color: red"
@@ -45,7 +47,7 @@
                   </div>
                 </div>
               </div>
-              <div class="col-sm">
+              <div class="col-sm" *ngIf="showSearch">
                 <input
                   cFormControl
                   type="text"
@@ -63,6 +65,19 @@
                     Search is required!
                   </div>
                 </div>
+              </div>
+              <div class="col-sm" *ngIf="!showSearch">
+                <select
+                  cSelect
+                  id="type"
+                  class="form-select"
+                  formControlName="status"
+                  required
+                >
+                  <option value="" disabled selected>Select type</option>
+                  <option value="publish">Publish</option>
+                  <option value="draft">Draft</option>
+                </select>
               </div>
               <div class="col-sm">
                 <button type="submit" class="btn btn-outline-secondary">
