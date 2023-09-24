@@ -57,7 +57,7 @@ export class TopicListComponent {
   async getTopic(params: Object) {
     await this.commonservice.put(params, 'topic/').subscribe((res) => {
       const apiResult = JSON.parse(JSON.stringify(res));
-      console.log(apiResult.payload)
+      console.log(apiResult.payload);
       if (apiResult && apiResult.status == 'SUCCESS') {
         this.topics = apiResult && apiResult.payload;
         this.totalPages = apiResult.totalPages;
@@ -176,6 +176,7 @@ export class TopicListComponent {
         type: formData.type,
         search: formData.search,
       });
+      console.log(formData.type)
     }
   }
 

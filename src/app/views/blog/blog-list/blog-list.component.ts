@@ -20,8 +20,13 @@ export class BlogListComponent {
   errMessage: string = '';
   errFlag: boolean = true;
   page: number = 1;
-  totalLength: any;
-  showSearch:boolean = true
+  limit: number = 3;
+  totalPages!: number;
+  currentPage!: number;
+  lastElement!: number;
+  showSearch: boolean = true;
+  parray: any = [];
+  searchoption: any = '';
 
   constructor(
     public commonservice: HttpCallService,
@@ -32,7 +37,7 @@ export class BlogListComponent {
     this.formGroup = this.formBuilder.group({
       type: new FormControl('', [Validators.required]),
       search: new FormControl('', []),
-      status: new FormControl('', [])
+      status: new FormControl('', []),
     });
   }
 
@@ -43,24 +48,79 @@ export class BlogListComponent {
   get search() {
     return this.formGroup.get('search');
   }
-
-  ngOnInit() {
-    this.getBlog();
+  get status() {
+    return this.formGroup.get('status')
   }
 
-  getBlog() {
-    this.commonservice.get('blog/').subscribe((res) => {
+  ngOnInit() {
+    this.getBlog({
+      page: this.page,
+      limit: this.limit,
+    });
+  }
+
+  async getBlog(params: Object) {
+    await this.commonservice.put(params, 'blog/').subscribe((res) => {
       const apiResult = JSON.parse(JSON.stringify(res));
-      this.blogs = apiResult && apiResult.payload;
+      console.log(apiResult.payload);
 
       if (apiResult && apiResult.status == 'SUCCESS') {
         this.blogs = apiResult && apiResult.payload;
+        this.totalPages = apiResult.totalPages;
+        this.currentPage = apiResult.currentPage;
+        this.parray = [];
+        for (let index = 1; index <= this.totalPages; index++) {
+          this.parray.push(index)
+        }
+        this.lastElement = this.parray[this.parray.length - 1];
       } else if (apiResult && apiResult.status == 'ERROR') {
         this.errFlag = true;
         this.errMessage = apiResult.msg;
+        this.blogs = [];
+        this.totalPages = 0;
+        this.currentPage = 0;
       }
     })
   }
+
+  async updateBlog(pageno: number) {
+    this.currentPage = pageno;
+    await this.getBlog({
+      page: pageno,
+      limit: this.limit,
+    });
+  }
+
+  async previous(pageno: number) {
+    this.currentPage = pageno - 1;
+    console.log(">>>>>>>>>>>>>>>>", {
+      page: this.currentPage,
+      limit: this.limit,
+    })
+    await this.getBlog({
+      page: this.currentPage,
+      limit: this.limit,
+    });
+  }
+
+  async next(pageno: number) {
+    this.currentPage = pageno + 1;
+    console.log(">>>>>>>>>>>>>>>>", {
+      page: this.currentPage,
+      limit: this.limit,
+    })
+    await this.getBlog({
+      page: this.currentPage,
+      limit: this.limit,
+    });
+  }
+
+  getParentName(blog: any) {
+    if (blog.parentDetails.length > 0) {
+      return blog.parentDetails[0].name;
+    }
+  }
+
 
   delete(blogid: any) {
     const swalWithBootstrapButtons = Swal.mixin({
@@ -110,14 +170,21 @@ export class BlogListComponent {
   }
 
   async onSubmit(formData: any) {
-    if (formData.type !== '' && formData.search !== '') {
-      // await this.getTopic({
-      //   page: this.page,
-      //   limit: this.limit,
-      //   type: formData.type,
-      //   search: formData.search,
-      // });
+
+    if (formData.type !== '' && formData.search !== '' || formData.type !== '' && formData.status !== '') {
+      await this.getBlog({
+        page: this.page,
+        limit: this.limit,
+        type: formData.type,
+        search: formData.search,
+        status: formData.status,
+      });
+      console.log(formData);
     }
+  }
+
+  clear() {
+    this.formGroup.reset()
   }
 
   statusUpdate(value: any) {
@@ -172,16 +239,13 @@ export class BlogListComponent {
 
   }
 
-  clear() {
-    this.formGroup.reset()
-  }
 
-  changeSearch(event: any){
-    if(event.target.value == 'status'){
+
+  changeSearch(event: any) {
+    if (event.target.value == 'status') {
       this.showSearch = false;
-    }else{
+    } else {
       this.showSearch = true;
     }
   }
-
 }
