@@ -60,7 +60,6 @@ export class BlogListComponent {
   }
 
   async getBlog(params: Object) {
-    alert("hi")
     await this.commonservice.put(params, 'blog/').subscribe((res) => {
       const apiResult = JSON.parse(JSON.stringify(res));
       console.log(apiResult.payload);
