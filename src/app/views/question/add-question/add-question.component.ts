@@ -52,6 +52,7 @@ export class AddQuestionComponent {
       option3: new FormControl('', [Validators.required]),
       option4: new FormControl('', [Validators.required]),
       rightoption: new FormControl(''),
+      tags: new FormControl(''),
     });
   }
 
@@ -80,6 +81,9 @@ export class AddQuestionComponent {
     return this.formGroup.get('option4');
   }
   get rightoption() {
+    return this.formGroup.get('rightoption');
+  }
+  get tags() {
     return this.formGroup.get('tags');
   }
 
@@ -116,7 +120,7 @@ export class AddQuestionComponent {
   }
   async onSubmit(formData: any) {
     this.options = [];
-
+    const tags = formData['tags'] && formData['tags'].split(',').filter((tag: any) => tag);
     let rightAnswer = '';
     if (this.selectedOption == 'option1') {
       rightAnswer = this.formGroup.value['option1'];
@@ -142,6 +146,7 @@ export class AddQuestionComponent {
           level: this.formGroup.value.level,
           questiontype: this.formGroup.value.questiontype,
           user_id: this.getUserDetails,
+          tags: tags
         },
         'questions/add'
       )
@@ -151,7 +156,21 @@ export class AddQuestionComponent {
         if (apiResult && apiResult.status == 'SUCCESS') {
           this.formGroup.reset();
           this.getUserDetails = '';
+          this.editorData = '';
+          this.updateDesc = '';
           this.ngOnInit();
+          tags.map(async (tag: string) => {
+            await this.commonservice
+              .post(
+                {
+                  name: tag,
+                  type: 'question',
+                  question_id: apiResult?.payload?._id,
+                },
+                'tags/add'
+              )
+              .subscribe((res: any) => { });
+          });
 
           Swal.fire({
             position: 'top-end',

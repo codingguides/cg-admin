@@ -42,6 +42,7 @@ export class RelationComponent {
     this.formGroup = this.formBuilder.group({
     level: new FormControl('', []),
     search: new FormControl('', []),
+    tag: new FormControl('', []),
   });
 }
 
@@ -53,13 +54,13 @@ get search() {
   return this.formGroup.get('search');
 }
 
+get tag() {
+  return this.formGroup.get('tag');
+}
+
 async ngOnInit() {
   await this.getId();
   await this.relationList();
-  // await this.getQuestion({
-  //   page: this.page,
-  //   limit: this.limit
-  // });
 }
 
 async getId() {
@@ -77,6 +78,7 @@ async getId() {
 
   async getQuestion(params: any) {
     this.questionFlag = false;
+    console.log(params)
     await this.commonservice.put(params, 'questions/').subscribe((res) => {
       const apiResult = JSON.parse(JSON.stringify(res));
       this.questions = apiResult && apiResult.payload;
@@ -95,14 +97,15 @@ async getId() {
   async onSubmit(formData: any) {
     this.searchErrFlag = false
     console.log("formData>>>>>>>>>>>>>>>>",formData)
-    if (formData.level == '' && formData.search == '') {
-      this.searchErrFlag = true
-    }
+    // if (formData.level == '' && formData.search == '') {
+    //   this.searchErrFlag = true
+    // }
     await this.getQuestion({
       page: this.page,
       limit: this.limit,
       level: formData.level,
       search: formData.search,
+      tag: formData.tag
     });
   }
 
