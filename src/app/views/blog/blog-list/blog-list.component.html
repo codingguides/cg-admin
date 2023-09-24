@@ -106,18 +106,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr
-              *ngFor="
-                let blog of blogs
-                  | paginate
-                    : {
-                        itemsPerPage: 4,
-                        currentPage: page,
-                        totalItems: totalLength
-                      };
-                let num = index
-              "
-            >
+            <tr *ngFor="let blog of blogs; let num = index">
               <th scope="row">{{ num + 1 }}</th>
               <td scope="row">{{ blog.title }}</td>
               <!-- <td>{{ removeTags(question.question) }}</td> -->
@@ -140,12 +129,23 @@
             </tr>
           </tbody>
         </table>
+        <span class="text-center err" *ngIf="errFlag">{{ errMessage }}</span>
 
-        <div class="pagination">
-          <pagination-controls
-            (pageChange)="page = $event"
-          ></pagination-controls>
-        </div>
+        <c-pagination align="end" aria-label="Page navigation example">
+          <li cPageItem [disabled]="currentPage == 1 ? true : false">
+            <a cPageLink (click)="previous(currentPage)">Previous</a>
+          </li>
+          <li
+            cPageItem
+            *ngFor="let p of parray; let num = index"
+            [active]="currentPage == p ? true : false"
+          >
+            <a cPageLink (click)="updateBlog(p)">{{ p }}</a>
+          </li>
+          <li cPageItem [disabled]="currentPage == totalPages ? true : false">
+            <a cPageLink (click)="next(currentPage)">Next</a>
+          </li>
+        </c-pagination>
       </c-card-body>
     </c-card>
   </c-col>
