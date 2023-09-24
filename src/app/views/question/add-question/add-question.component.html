@@ -217,9 +217,20 @@
               </div>
             </c-col>
           </c-row>
+
+          <c-col class="col-md-6">
+            <label cLabel for="parent_id">Add Tags</label>
+            <input
+              cFormControl
+              id="tags"
+              type="text"
+              formControlName="tags"
+              placeholder="use ' , ' for multiple tags"
+            />
+          </c-col>
           <c-row class="mt-2">
             <c-col class="col-xs-6">
-              <button cButton type="submit" class="btn-custom" [disabled]="!formGroup.valid">
+              <button cButton type="submit" [disabled]="!formGroup.valid">
                 Add Question
               </button>
             </c-col>

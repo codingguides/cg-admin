@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
+
 import {
   ButtonGroupModule,
   ButtonModule,
@@ -12,7 +13,7 @@ import {
   GridModule,
   ListGroupModule,
   AccordionModule,
-  NavModule, 
+  NavModule,
   TabsModule,
   PaginationModule,
   SharedModule
@@ -29,16 +30,15 @@ import { RelationComponent } from './relation/relation.component';
   declarations: [
     TopicListComponent,
     AddTopicComponent,
-    RelationComponent,
-    EditTopic
+    EditTopic,
+    RelationComponent
   ],
   imports: [
     CommonModule,
     TopicRoutingModule,
-    // DocsComponentsModule,
     PaginationModule,
     AccordionModule,
-    NavModule, 
+    NavModule,
     TabsModule,
     CardModule,
     FormModule,

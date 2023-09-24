@@ -10,7 +10,8 @@ import {
   FormModule,
   GridModule,
   ListGroupModule,
-  SharedModule
+  SharedModule,
+  PaginationModule,
 } from '@coreui/angular';
 
 import { QuestionRoutingModule } from './question-routing.module';
@@ -28,6 +29,7 @@ import { EditQuestionComponent } from './edit-question/edit-question.component';
   imports: [
     CommonModule,
     QuestionRoutingModule,
+    PaginationModule,
     CardModule,
     FormModule,
     GridModule,

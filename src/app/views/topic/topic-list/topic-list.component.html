@@ -69,6 +69,13 @@
                 <button type="submit" class="btn btn-outline-secondary">
                   Search
                 </button>
+                <button
+                  type="submit"
+                  class="btn btn-outline-secondary"
+                  (click)="clear()"
+                >
+                  Clear <i class="fa fa-times-circle" aria-hidden="true"></i>
+                </button>
               </div>
             </form>
           </div>
@@ -116,7 +123,11 @@
           <li cPageItem [disabled]="currentPage == 1 ? true : false">
             <a cPageLink (click)="previous(currentPage)">Previous</a>
           </li>
-          <li cPageItem *ngFor="let p of parray; let num = index" [active]="currentPage == p ? true : false">
+          <li
+            cPageItem
+            *ngFor="let p of parray; let num = index"
+            [active]="currentPage == p ? true : false"
+          >
             <a cPageLink (click)="updateTopic(p)">{{ p }}</a>
           </li>
           <li cPageItem [disabled]="currentPage == totalPages ? true : false">

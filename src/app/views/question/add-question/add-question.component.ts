@@ -29,6 +29,10 @@ export class AddQuestionComponent {
   options: any[] = [];
   selectedOption: any = '';
   config: any;
+  page: number = 1;
+  limit: number = 10;
+  errMessage: string = '';
+  errFlag: boolean = true;
 
   constructor(
     public commonservice: HttpCallService,
@@ -48,6 +52,7 @@ export class AddQuestionComponent {
       option3: new FormControl('', [Validators.required]),
       option4: new FormControl('', [Validators.required]),
       rightoption: new FormControl(''),
+      tags: new FormControl(''),
     });
   }
 
@@ -76,11 +81,17 @@ export class AddQuestionComponent {
     return this.formGroup.get('option4');
   }
   get rightoption() {
+    return this.formGroup.get('rightoption');
+  }
+  get tags() {
     return this.formGroup.get('tags');
   }
 
   async ngOnInit() {
-    this.getQuestion();
+    await this.getQuestion({
+      page: this.page,
+      limit: this.limit
+    });
 
     this.getUserDetails = await this.commonservice.getTokenDetails('id');
   }
@@ -93,16 +104,23 @@ export class AddQuestionComponent {
     this.selectedOption = option;
   }
 
-  async getQuestion() {
-    await this.commonservice.get('questions/').subscribe((res) => {
+  async getQuestion(params: any) {
+    await this.commonservice.put(params, 'questions/').subscribe((res) => {
       const apiResult = JSON.parse(JSON.stringify(res));
       this.questions = apiResult && apiResult.payload;
+
+      if (apiResult && apiResult.status == 'SUCCESS') {
+        this.questions = apiResult && apiResult.payload;
+        this.questions.map((question: any) => { });
+      } else {
+        this.errFlag = true;
+        this.errMessage = apiResult.msg;
+      }
     });
   }
-
   async onSubmit(formData: any) {
     this.options = [];
-
+    const tags = formData['tags'] && formData['tags'].split(',').filter((tag: any) => tag);
     let rightAnswer = '';
     if (this.selectedOption == 'option1') {
       rightAnswer = this.formGroup.value['option1'];
@@ -128,6 +146,7 @@ export class AddQuestionComponent {
           level: this.formGroup.value.level,
           questiontype: this.formGroup.value.questiontype,
           user_id: this.getUserDetails,
+          tags: tags
         },
         'questions/add'
       )
@@ -137,7 +156,21 @@ export class AddQuestionComponent {
         if (apiResult && apiResult.status == 'SUCCESS') {
           this.formGroup.reset();
           this.getUserDetails = '';
+          this.editorData = '';
+          this.updateDesc = '';
           this.ngOnInit();
+          tags.map(async (tag: string) => {
+            await this.commonservice
+              .post(
+                {
+                  name: tag,
+                  type: 'question',
+                  question_id: apiResult?.payload?._id,
+                },
+                'tags/add'
+              )
+              .subscribe((res: any) => { });
+          });
 
           Swal.fire({
             position: 'top-end',

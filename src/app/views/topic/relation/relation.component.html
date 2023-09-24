@@ -3,14 +3,31 @@
     <c-card class="mb-4">
       <c-card-header>
         <div class="row">
-          <div class="col-sm-6"><strong><h6>Topic Name: {{topicByID?.name}}</h6></strong></div>
+          <div class="col-sm-6">
+            <strong
+              ><h6>Topic Name: {{ topicByID?.name }}</h6></strong
+            >
+          </div>
         </div>
       </c-card-header>
       <c-card-body>
-
         <c-nav variant="tabs">
-          <a [active]="true" [cTabContent]="tabContent" [routerLink] [tabPaneIdx]="0" cNavLink>Add Relation</a>
-          <a [cTabContent]="tabContent" [routerLink] [tabPaneIdx]="1" (click)="relationList()" cNavLink>Relation List</a>
+          <a
+            [active]="true"
+            [cTabContent]="tabContent"
+            [routerLink]
+            [tabPaneIdx]="0"
+            cNavLink
+            >Add Relation</a
+          >
+          <a
+            [cTabContent]="tabContent"
+            [routerLink]
+            [tabPaneIdx]="1"
+            (click)="relationList()"
+            cNavLink
+            >Relation List</a
+          >
         </c-nav>
         <c-tab-content #tabContent="cTabContent">
           <c-tab-pane class="p-3">
@@ -30,7 +47,9 @@
                         class="form-select"
                         formControlName="level"
                       >
-                        <option value="" disabled selected>Select Question Level</option>
+                        <option value="" disabled selected>
+                          Select Question Level
+                        </option>
                         <option value="intermediate">Intermediate</option>
                         <option value="beginners">Beginners</option>
                         <option value="advance">Advance</option>
@@ -47,19 +66,39 @@
                       />
                     </div>
                     <div class="col-sm">
-                      <button type="submit" class="btn btn-outline-secondary  btn-custom">
+                      <input
+                        cFormControl
+                        type="text"
+                        id="tag"
+                        class="form-control"
+                        placeholder="type your tag here"
+                        formControlName="tag"
+                      />
+                    </div>
+                    <div class="col-sm">
+                      <button
+                        type="submit"
+                        class="btn btn-outline-secondary btn-custom"
+                      >
                         Search
                       </button>
-                      <a (click)="clear()">
-                        Clear <i class="fa fa-times-circle" aria-hidden="true"></i>
-                      </a>
+                      <button
+                        type="submit"
+                        class="btn btn-outline-secondary"
+                        (click)="clear()"
+                      >
+                        Clear
+                        <i class="fa fa-times-circle" aria-hidden="true"></i>
+                      </button>
                     </div>
                   </form>
-                  <span class="danger" *ngIf="searchErrFlag">You need to select atleast one filter</span>
+                  <span class="danger" *ngIf="searchErrFlag"
+                    >You need to select atleast one filter</span
+                  >
                 </div>
               </div>
               <div class="tableres" *ngIf="questionFlag">
-                <table class="table" >
+                <table class="table">
                   <thead>
                     <tr>
                       <th scope="col">#</th>
@@ -72,21 +111,27 @@
                   <tbody>
                     <tr *ngFor="let question of questions; let num = index">
                       <th scope="row">{{ num + 1 }}</th>
-                      <th scope="row"><input type="checkbox" (change)="addId(question._id)"></th>
+                      <th scope="row">
+                        <input type="checkbox" (change)="addId(question._id)" />
+                      </th>
                       <td>{{ removeTags(question.question) }}</td>
                       <td>{{ question.point }}</td>
                       <td>{{ question.level }}</td>
                     </tr>
                   </tbody>
                 </table>
-                <button type="submit" class="btn btn-outline-secondary btn-custom" (click)="add()">
+                <button
+                  type="submit"
+                  class="btn btn-outline-secondary btn-custom"
+                  (click)="add()"
+                >
                   Add Relation
                 </button>
               </div>
             </div>
           </c-tab-pane>
           <c-tab-pane class="p-3">
-            <table class="table" >
+            <table class="table">
               <thead>
                 <tr>
                   <th scope="col">#</th>
@@ -97,7 +142,9 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let relation of relationListByTopic; let num = index">
+                <tr
+                  *ngFor="let relation of relationListByTopic; let num = index"
+                >
                   <th scope="row">{{ num + 1 }}</th>
                   <td>{{ removeTags(relation.questions[0].question) }}</td>
                   <td>{{ relation.questions[0].point }}</td>
@@ -114,7 +161,6 @@
             </table>
 
             <span *ngIf="relationListFlag">Opps no relation found</span>
-
           </c-tab-pane>
         </c-tab-content>
       </c-card-body>

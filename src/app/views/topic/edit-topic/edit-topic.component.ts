@@ -81,6 +81,7 @@ export class EditTopic {
       .subscribe(async (result: any) => {
         if (result && result.status == 'SUCCESS') {
           this.topicByID = result && result.payload[0];
+          console.log(this.topicByID)
 
           this.updateDesc = this.topicByID.description;
           await this.getTopic(this.topicByID.parent_id);

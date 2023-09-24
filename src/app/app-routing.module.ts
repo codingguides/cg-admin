@@ -32,7 +32,7 @@ const routes: Routes = [
         loadChildren: () =>
           import('./views/dashboard/dashboard.module').then((m) => m.DashboardModule)
       },
-    
+
       {
         path: 'topic',
         loadChildren: () =>
@@ -45,11 +45,16 @@ const routes: Routes = [
           import('./views/question/question.module').then((m) => m.QuestionModule)
       },
       {
+        path: 'blog',
+        loadChildren: () =>
+          import('./views/blog/blog.module').then((m) => m.BlogModule)
+      },
+      {
         path: 'interview',
         loadChildren: () =>
           import('./views/interview/interview.module').then((m) => m.InterviewModule)
       },
-     
+
       {
         path: 'pages',
         loadChildren: () =>
@@ -71,7 +76,7 @@ const routes: Routes = [
       title: 'Page 500'
     }
   },
-  
+
   {
     path: 'register',
     component: RegisterComponent,
@@ -79,7 +84,7 @@ const routes: Routes = [
       title: 'Register Page'
     }
   },
-  {path: '**', redirectTo: 'dashboard'}
+  { path: '**', redirectTo: 'dashboard' }
 ];
 
 @NgModule({

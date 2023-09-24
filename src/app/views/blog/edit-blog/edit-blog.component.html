@@ -1,0 +1,127 @@
+<c-row ngPreserveWhitespaces>
+  <c-col xs="12">
+    <c-card class="mb-4">
+      <c-card-header>
+        <div class="row">
+          <div class="col-sm-6"><strong>Edit Blog</strong></div>
+          <div class="col-sm-6">
+            <span class="add"
+              ><a [routerLink]="['/blog/list']" class="btn btn-info">
+                Blog List
+              </a></span
+            >
+          </div>
+        </div>
+      </c-card-header>
+      <c-card-body>
+        <form
+          cForm
+          class="row g-3 form-horizontal"
+          [formGroup]="formGroup"
+          (ngSubmit)="onSubmit(formGroup.value)"
+        >
+          <c-row>
+            <c-col class="col-md-6">
+              <label cLabel for="blogtitle">Blog Title</label>
+              <input
+                cFormControl
+                id="blogtitle"
+                type="email"
+                formControlName="title"
+                (change)="createSlug($event)"
+                required
+              />
+              <div
+                style="color: red"
+                *ngIf="title && title.invalid && title.touched"
+              >
+                <div [hidden]="!title.errors?.['required']">
+                  Blog Title is required!
+                </div>
+              </div>
+            </c-col>
+            <c-col class="col-md-6">
+              <label cLabel for="slug">Slug</label>
+              <input
+                cFormControl
+                id="slug"
+                type="text"
+                [value]="blogSlug"
+                formControlName="slug"
+                (change)="validateSlug($event)"
+              />
+              <div style="color: red" *ngIf="slug?.touched">
+                <div>{{ slugError.message }}</div>
+              </div>
+            </c-col>
+          </c-row>
+          <c-row>
+            <c-col class="col-xs-12">
+              <label cLabel for="description">Description</label>
+              <ckeditor
+                cFormControl
+                [data]="this.config"
+                [config]="this.config"
+                (change)="onChange($event)"
+                formControlName="description"
+              ></ckeditor>
+            </c-col>
+          </c-row>
+          <c-row>
+            <c-col class="col-md-6">
+              <label cLabel for="image">Feature Image</label>
+              <input
+                cFormControl
+                type="url"
+                id="image"
+                formControlName="feature_image"
+              />
+              <div
+                style="color: red"
+                *ngIf="
+                  feature_image &&
+                  feature_image.invalid &&
+                  feature_image.touched
+                "
+              >
+                <div [hidden]="!feature_image.errors?.['required']">
+                  Feature Image is required!
+                </div>
+              </div>
+            </c-col>
+
+            <c-col class="col-md-6">
+              <label cLabel for="image">Feature Video</label>
+              <input
+                cFormControl
+                type="url"
+                id="video"
+                formControlName="feature_video"
+              />
+              <div
+                style="color: red"
+                *ngIf="
+                  feature_video &&
+                  feature_video.invalid &&
+                  feature_video.touched
+                "
+              >
+                <div [hidden]="!feature_video.errors?.['required']">
+                  Feature Video is required!
+                </div>
+              </div>
+            </c-col>
+          </c-row>
+
+          <c-row class="mt-2">
+            <c-col class="col-xs-6">
+              <button cButton type="submit" [disabled]="!formGroup.valid">
+                Update Blog
+              </button>
+            </c-col>
+          </c-row>
+        </form>
+      </c-card-body>
+    </c-card>
+  </c-col>
+</c-row>

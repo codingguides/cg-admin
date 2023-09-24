@@ -4,11 +4,11 @@
       <c-card-header>
         <c-col xs="12">
           <div class="row">
-            <div class="col-sm-6"><strong>Questions List</strong></div>
+            <div class="col-sm-6"><strong>Blog List</strong></div>
             <div class="col-sm-6">
               <span class="add"
-                ><a [routerLink]="['/question/add']" class="btn btn-info">
-                  Add Question
+                ><a [routerLink]="['/blog/add']" class="btn btn-info">
+                  Add Blog
                 </a></span
               >
             </div>
@@ -27,25 +27,57 @@
               <div class="col-sm">
                 <select
                   cSelect
-                  id="level"
+                  id="type"
                   class="form-select"
-                  formControlName="level"
+                  formControlName="type"
+                  required
+                  (change)="changeSearch($event)"
                 >
-                  <option value="" disabled selected>Select Level</option>
-                  <option value="intermediate">Intermediate</option>
-                  <option value="beginners">Beginners</option>
-                  <option value="advance">Advance</option>
+                  <option value="" disabled selected>Select type</option>
+                  <option value="title">Title</option>
+                  <option value="slug">Slug</option>
+                  <option value="status">Status</option>
                 </select>
+                <div
+                  style="color: red"
+                  *ngIf="type && type.invalid && type.touched"
+                >
+                  <div [hidden]="!type.errors?.['required']">
+                    Select one Type!
+                  </div>
+                </div>
               </div>
-              <div class="col-sm">
+              <div class="col-sm" *ngIf="showSearch">
                 <input
                   cFormControl
                   type="text"
                   id="search"
+                  required
                   class="form-control"
                   placeholder="type your search"
                   formControlName="search"
                 />
+                <div
+                  style="color: red"
+                  *ngIf="search && search.invalid && search.touched"
+                >
+                  <div [hidden]="!search.errors?.['required']">
+                    Search is required!
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm" *ngIf="!showSearch">
+                <select
+                  cSelect
+                  id="type"
+                  class="form-select"
+                  formControlName="status"
+                  required
+                >
+                  <option value="" disabled selected>Select type</option>
+                  <option value="publish">Publish</option>
+                  <option value="draft">Draft</option>
+                </select>
               </div>
               <div class="col-sm">
                 <button type="submit" class="btn btn-outline-secondary">
@@ -67,28 +99,31 @@
           <thead>
             <tr>
               <th scope="col">#</th>
-              <th scope="col">Question</th>
-              <th scope="col">Point</th>
-              <th scope="col">Level</th>
+              <th scope="col">Title</th>
+              <th scope="col">Slug</th>
+              <th scope="col">Status</th>
               <th scope="col">Action</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let question of questions; let num = index">
+            <tr *ngFor="let blog of blogs; let num = index">
               <th scope="row">{{ num + 1 }}</th>
-              <td>{{ removeTags(question.question) }}</td>
-              <td>{{ question.point }}</td>
-              <td>{{ question.level }}</td>
+              <td scope="row">{{ blog.title }}</td>
+              <!-- <td>{{ removeTags(question.question) }}</td> -->
+              <td>{{ blog.slug }}</td>
+              <td>
+                <p (click)="statusUpdate(blog)">{{ blog.status }}</p>
+              </td>
               <td>
                 <i
                   class="actionClass fa fa-pencil-square-o"
                   aria-hidden="true"
-                  routerLink="/question/edit/{{ question._id }}"
+                  routerLink="/blog/edit/{{ blog._id }}"
                 ></i>
                 <i
                   class="actionClass fa fa-trash-o"
                   aria-hidden="true"
-                  (click)="delete(question._id)"
+                  (click)="delete(blog._id)"
                 ></i>
               </td>
             </tr>
@@ -105,7 +140,7 @@
             *ngFor="let p of parray; let num = index"
             [active]="currentPage == p ? true : false"
           >
-            <a cPageLink (click)="updateQuestion(p)">{{ p }}</a>
+            <a cPageLink (click)="updateBlog(p)">{{ p }}</a>
           </li>
           <li cPageItem [disabled]="currentPage == totalPages ? true : false">
             <a cPageLink (click)="next(currentPage)">Next</a>

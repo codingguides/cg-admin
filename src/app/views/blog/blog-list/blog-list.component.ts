@@ -10,22 +10,23 @@ import {
 } from '@angular/forms';
 
 @Component({
-  selector: 'app-topic-list',
-  templateUrl: './topic-list.component.html',
-  styleUrls: ['./topic-list.component.scss'],
+  selector: 'app-blog-list',
+  templateUrl: './blog-list.component.html',
+  styleUrls: ['./blog-list.component.scss']
 })
-export class TopicListComponent {
-  topics: any = [];
+export class BlogListComponent {
+  formGroup!: FormGroup;
+  blogs: any = [];
   errMessage: string = '';
   errFlag: boolean = true;
   page: number = 1;
-  limit: number = 2;
+  limit: number = 3;
   totalPages!: number;
   currentPage!: number;
   lastElement!: number;
+  showSearch: boolean = true;
   parray: any = [];
   searchoption: any = '';
-  formGroup!: FormGroup;
 
   constructor(
     public commonservice: HttpCallService,
@@ -35,7 +36,8 @@ export class TopicListComponent {
   ) {
     this.formGroup = this.formBuilder.group({
       type: new FormControl('', [Validators.required]),
-      search: new FormControl('', [Validators.required]),
+      search: new FormControl('', []),
+      status: new FormControl('', []),
     });
   }
 
@@ -46,20 +48,24 @@ export class TopicListComponent {
   get search() {
     return this.formGroup.get('search');
   }
+  get status() {
+    return this.formGroup.get('status')
+  }
 
   ngOnInit() {
-    this.getTopic({
+    this.getBlog({
       page: this.page,
       limit: this.limit,
     });
   }
 
-  async getTopic(params: Object) {
-    await this.commonservice.put(params, 'topic/').subscribe((res) => {
+  async getBlog(params: Object) {
+    await this.commonservice.put(params, 'blog/').subscribe((res) => {
       const apiResult = JSON.parse(JSON.stringify(res));
       console.log(apiResult.payload);
+
       if (apiResult && apiResult.status == 'SUCCESS') {
-        this.topics = apiResult && apiResult.payload;
+        this.blogs = apiResult && apiResult.payload;
         this.totalPages = apiResult.totalPages;
         this.currentPage = apiResult.currentPage;
         this.parray = [];
@@ -70,16 +76,16 @@ export class TopicListComponent {
       } else if (apiResult && apiResult.status == 'ERROR') {
         this.errFlag = true;
         this.errMessage = apiResult.msg;
-        this.topics = [];
+        this.blogs = [];
         this.totalPages = 0;
         this.currentPage = 0;
       }
-    });
+    })
   }
 
-  async updateTopic(pageno: number) {
+  async updateBlog(pageno: number) {
     this.currentPage = pageno;
-    await this.getTopic({
+    await this.getBlog({
       page: pageno,
       limit: this.limit,
     });
@@ -91,7 +97,7 @@ export class TopicListComponent {
       page: this.currentPage,
       limit: this.limit,
     })
-    await this.getTopic({
+    await this.getBlog({
       page: this.currentPage,
       limit: this.limit,
     });
@@ -103,19 +109,20 @@ export class TopicListComponent {
       page: this.currentPage,
       limit: this.limit,
     })
-    await this.getTopic({
+    await this.getBlog({
       page: this.currentPage,
       limit: this.limit,
     });
   }
 
-  getParentName(topic: any) {
-    if (topic.parentDetails.length > 0) {
-      return topic.parentDetails[0].name;
+  getParentName(blog: any) {
+    if (blog.parentDetails.length > 0) {
+      return blog.parentDetails[0].name;
     }
   }
 
-  delete(topicid: any) {
+
+  delete(blogid: any) {
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
         confirmButton: 'btn btn-success btn-sm',
@@ -137,7 +144,7 @@ export class TopicListComponent {
       .then((result) => {
         if (result.isConfirmed) {
           this.commonservice
-            .delete(`topic/delete/${topicid}`)
+            .delete(`blog/delete/${blogid}`)
             .subscribe((res) => {
               const apiResult = JSON.parse(JSON.stringify(res));
               if (apiResult.status == 'SUCCESS') {
@@ -159,28 +166,86 @@ export class TopicListComponent {
             'error'
           );
         }
-      });
+      })
   }
-
-  range(start: number, end: number) {
-    return Array.apply(1, Array(end)).map((element, index) => index + start);
-  }
-
-  searchOption(event: any) { }
 
   async onSubmit(formData: any) {
-    if (formData.type !== '' && formData.search !== '') {
-      await this.getTopic({
+
+    if (formData.type !== '' && formData.search !== '' || formData.type !== '' && formData.status !== '') {
+      await this.getBlog({
         page: this.page,
         limit: this.limit,
         type: formData.type,
         search: formData.search,
+        status: formData.status,
       });
-      console.log(formData.type)
+      console.log(formData);
     }
   }
 
   clear() {
-    this.formGroup.reset();
+    this.formGroup.reset()
+  }
+
+  statusUpdate(value: any) {
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: 'btn btn-success btn-sm',
+        cancelButton: 'btn btn-danger btn-sm',
+      },
+      buttonsStyling: true,
+    });
+
+    swalWithBootstrapButtons
+      .fire({
+        title: 'Are you sure to change the status?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+
+        confirmButtonText: 'Yes, change it!',
+        cancelButtonText: 'No, cancel!',
+        reverseButtons: true,
+
+      })
+      .then((result) => {
+        if (result.isConfirmed) {
+          this.commonservice
+            .put({
+              status: value.status == "draft" ? "publish" : "draft"
+            }, `blog/update/${value._id}`)
+            .subscribe((res) => {
+              const apiResult = JSON.parse(JSON.stringify(res));
+              if (apiResult.status == 'SUCCESS') {
+                this.ngOnInit();
+                swalWithBootstrapButtons.fire(
+                  'Updated!',
+                  'Your file has been Updated.',
+                  'success'
+                );
+              }
+            });
+        } else if (
+          /* Read more about handling dismissals below */
+          result.dismiss === Swal.DismissReason.cancel
+        ) {
+          swalWithBootstrapButtons.fire(
+            'Cancelled',
+            'Your imaginary file is safe :)',
+            'error'
+          );
+        }
+      })
+
+  }
+
+
+
+  changeSearch(event: any) {
+    if (event.target.value == 'status') {
+      this.showSearch = false;
+    } else {
+      this.showSearch = true;
+    }
   }
 }

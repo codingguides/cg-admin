@@ -11,20 +11,23 @@ import { ToastrService } from 'ngx-toastr';
 import { HttpCallService } from 'src/app/common/http-call.service';
 import Swal from 'sweetalert2';
 
+
 @Component({
-  selector: 'app-add-topic',
-  templateUrl: './add-topic.component.html',
-  styleUrls: ['./add-topic.component.scss'],
+  selector: 'app-add-blog',
+  templateUrl: './add-blog.component.html',
+  styleUrls: ['./add-blog.component.scss']
 })
-export class AddTopicComponent {
+export class AddBlogComponent {
+
   public favoriteColor = '#26ab3c';
   updateDesc: any = '';
   formGroup!: FormGroup;
   editorData: any = '<p>Enter text</p>';
-  topics!: any[];
-  topicSlug: string = '';
+  blogs!: any[];
+  blogSlug: string = '';
   getUserDetails: any;
   config: any;
+  status: String = 'publish'
 
   constructor(
     public commonservice: HttpCallService,
@@ -32,39 +35,38 @@ export class AddTopicComponent {
     private formBuilder: FormBuilder,
     private router: Router,
     private toastr: ToastrService,
+
   ) {
     this.config = this.commonservice.getConfigOfCKEditor();
 
     this.formGroup = this.formBuilder.group({
-      name: new FormControl('', [Validators.required]),
+      title: new FormControl('', [Validators.required]),
       slug: new FormControl('', []),
-      parent_id: new FormControl('', [Validators.required]),
-      tags: new FormControl('', [Validators.required]),
-    });
+      feature_image: new FormControl('', [Validators.required]),
+      feature_video: new FormControl('', []),
+      // parent_id: new FormControl('', [Validators.required]),
+      // tags: new FormControl('', [Validators.required]),
+    })
   }
 
   public onTagEdited(event: any) {
     console.log('tag edited: current value is ' + event);
   }
 
-  get name() {
-    return this.formGroup.get('name');
+  get title() {
+    return this.formGroup.get('title');
   }
 
-  get slug() {
-    return this.formGroup.get('slug');
+  get feature_image() {
+    return this.formGroup.get('feature_image');
   }
 
-  get parent_id() {
-    return this.formGroup.get('parent_id');
-  }
-
-  get tags() {
-    return this.formGroup.get('tags');
+  get feature_video() {
+    return this.formGroup.get('feature_video');
   }
 
   async ngOnInit() {
-    this.getTopic();
+    this.getBlog();
 
     this.getUserDetails = await this.commonservice.getTokenDetails('id');
   }
@@ -73,15 +75,16 @@ export class AddTopicComponent {
     this.updateDesc = event.editor.getData();
   }
 
-  async getTopic() {
-    await this.commonservice.get('topic/list').subscribe((res) => {
+  async getBlog() {
+    await this.commonservice.get('blog/').subscribe((res) => {
       const apiResult = JSON.parse(JSON.stringify(res));
-      this.topics = apiResult && apiResult.payload;
+
+      this.blogs = apiResult && apiResult.payload;
     });
   }
 
   createSlug(event: any) {
-    this.topicSlug = event.target.value
+    this.blogSlug = event.target.value
       .toString()
       .trim()
       .toLowerCase()
@@ -93,38 +96,25 @@ export class AddTopicComponent {
   }
 
   async onSubmit(formData: any) {
-    const tags =
-      formData['tags'] && formData['tags'].split(',').filter((tag: any) => tag);
     const data = {
-      name: formData['name'],
-      slug: formData['slug'] ? formData['slug'] : this.topicSlug,
+      title: formData['title'],
+      slug: formData['slug'] ? formData['slug'] : this.blogSlug,
       description: this.updateDesc,
-      parent_id: formData['parent_id'],
       user_id: this.getUserDetails,
-      tags: tags,
+      feature_image: formData['feature_image'],
+      feature_video: formData['feature_video'],
+      status: this.status,
     };
-
-    this.commonservice.post(data, 'topic/add').subscribe((res) => {
+    this.commonservice.post(data, 'blog/add').subscribe((res) => {
       const apiResult = JSON.parse(JSON.stringify(res));
 
       if (apiResult && apiResult.status == 'SUCCESS') {
-        tags.map(async (tag: string) => {
-          await this.commonservice
-            .post(
-              {
-                name: tag,
-                type: 'topic',
-                topic_id: apiResult?.payload?._id,
-              },
-              'tags/add'
-            )
-            .subscribe((res: any) => { });
-        });
+        // this.toastr.success(apiResult.msg);
         this.formGroup.reset();
-        this.topicSlug = '';
+        this.formBuilder
         this.getUserDetails = '';
-        this.updateDesc = '';
         this.ngOnInit();
+
         Swal.fire({
           position: 'top-end',
           icon: 'success',
@@ -132,7 +122,8 @@ export class AddTopicComponent {
           showConfirmButton: false,
           timer: 1500,
         });
-      } else {
+      }
+      else {
         Swal.fire({
           position: 'top-end',
           icon: 'error',
@@ -148,6 +139,11 @@ export class AddTopicComponent {
       const messages2 = reverseMsg.forEach((msgs: any) => {
         this.toastr.error(msgs, "ERROR");
       })
-    });
+    })
   }
+
+  changeStatus() {
+    this.status = "draft";
+  }
+
 }
