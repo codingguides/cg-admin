@@ -125,8 +125,8 @@ export class BlogListComponent {
   delete(blogid: any) {
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
-        confirmButton: 'btn btn-success btn-sm',
-        cancelButton: 'btn btn-danger btn-sm',
+        confirmButton: 'btn btn-success',
+        cancelButton: 'btn btn-danger',
       },
       buttonsStyling: true,
     });

@@ -18,7 +18,7 @@ import Swal from 'sweetalert2';
 })
 export class AddTopicComponent {
   public favoriteColor = '#26ab3c';
-  updateDesc: any = '';
+  public updateDesc: string = '';
   formGroup!: FormGroup;
   editorData: any = '<p>Enter text</p>';
   topics!: any[];
@@ -124,6 +124,7 @@ export class AddTopicComponent {
         this.topicSlug = '';
         this.getUserDetails = '';
         this.updateDesc = '';
+        this.editorData = 'Enter text';
         this.ngOnInit();
         Swal.fire({
           position: 'top-end',

@@ -19,7 +19,7 @@ export class TopicListComponent {
   errMessage: string = '';
   errFlag: boolean = true;
   page: number = 1;
-  limit: number = 2;
+  limit: number = 3;
   totalPages!: number;
   currentPage!: number;
   lastElement!: number;
@@ -118,8 +118,8 @@ export class TopicListComponent {
   delete(topicid: any) {
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
-        confirmButton: 'btn btn-success btn-sm',
-        cancelButton: 'btn btn-danger btn-sm',
+        confirmButton: 'btn btn-success',
+        cancelButton: 'btn btn-danger',
       },
       buttonsStyling: true,
     });

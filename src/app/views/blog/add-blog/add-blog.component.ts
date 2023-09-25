@@ -20,7 +20,7 @@ import Swal from 'sweetalert2';
 export class AddBlogComponent {
 
   public favoriteColor = '#26ab3c';
-  updateDesc: any = '';
+  public updateDesc: string = '';
   formGroup!: FormGroup;
   editorData: any = '<p>Enter text</p>';
   blogs!: any[];
@@ -113,6 +113,8 @@ export class AddBlogComponent {
         this.formGroup.reset();
         this.formBuilder
         this.getUserDetails = '';
+        this.updateDesc = '';
+        this.editorData = 'Enter text';
         this.ngOnInit();
 
         Swal.fire({

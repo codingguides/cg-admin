@@ -17,7 +17,7 @@ import Swal from 'sweetalert2';
 })
 export class AddQuestionComponent {
   public favoriteColor = '#26ab3c';
-  updateDesc: any = '';
+  public updateDesc: string = '';
   formGroup!: FormGroup;
   editorData: any = '<p>Enter text</p>';
   questions!: any[];
@@ -52,7 +52,7 @@ export class AddQuestionComponent {
       option3: new FormControl('', [Validators.required]),
       option4: new FormControl('', [Validators.required]),
       rightoption: new FormControl(''),
-      tags: new FormControl(''),
+      tags: new FormControl('', [Validators.required]),
     });
   }
 
@@ -154,11 +154,6 @@ export class AddQuestionComponent {
         const apiResult = JSON.parse(JSON.stringify(res));
 
         if (apiResult && apiResult.status == 'SUCCESS') {
-          this.formGroup.reset();
-          this.getUserDetails = '';
-          this.editorData = '';
-          this.updateDesc = '';
-          this.ngOnInit();
           tags.map(async (tag: string) => {
             await this.commonservice
               .post(
@@ -171,7 +166,11 @@ export class AddQuestionComponent {
               )
               .subscribe((res: any) => { });
           });
-
+          this.formGroup.reset();
+          this.getUserDetails = '';
+          this.updateDesc = '';
+          this.editorData = 'Enter text';
+          this.ngOnInit();
           Swal.fire({
             position: 'top-end',
             icon: 'success',
