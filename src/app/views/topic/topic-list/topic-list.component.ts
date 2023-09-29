@@ -8,6 +8,7 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-topic-list',
@@ -31,7 +32,9 @@ export class TopicListComponent {
     public commonservice: HttpCallService,
     private _router: Router,
     private formBuilder: FormBuilder,
-    private router: Router
+    private router: Router,
+    private toastr: ToastrService,
+
   ) {
     this.formGroup = this.formBuilder.group({
       type: new FormControl('', [Validators.required]),
@@ -182,5 +185,22 @@ export class TopicListComponent {
 
   clear() {
     this.formGroup.reset();
+  }
+
+  isShowMenu(topic: any) {
+    this.commonservice
+      .put({
+        showNav: !topic.showNav
+      }, `topic/update/${topic._id}`)
+      .subscribe((res) => {
+        const apiResult = JSON.parse(JSON.stringify(res));
+
+        if (apiResult.status == 'SUCCESS') {
+          this.ngOnInit();
+          this.toastr.success(apiResult.msg);
+        } else {
+          this.toastr.error(apiResult.msg);
+        }
+      });
   }
 }

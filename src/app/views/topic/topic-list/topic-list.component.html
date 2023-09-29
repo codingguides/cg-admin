@@ -89,6 +89,7 @@
               <th scope="col">Slug</th>
               <th scope="col">Parent Topic</th>
               <th scope="col">Action</th>
+              <th scope="col">Show Menu</th>
             </tr>
           </thead>
           <tbody>
@@ -113,6 +114,9 @@
                   aria-hidden="true"
                   routerLink="/topic/relation/{{ topic._id }}"
                 ></i>
+              </td>
+              <td>
+                <input type="checkbox" [checked]="topic.showNav" (click)="isShowMenu(topic)" />
               </td>
             </tr>
           </tbody>
