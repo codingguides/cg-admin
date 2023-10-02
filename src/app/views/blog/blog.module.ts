@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
+import { NgxPaginationModule } from 'ngx-pagination';
 
 
 import {
@@ -33,6 +33,7 @@ import { EditBlogComponent } from './edit-blog/edit-blog.component';
     imports: [
         CommonModule,
         BlogRoutingModule,
+        NgxPaginationModule,
         PaginationModule,
         CardModule,
         FormModule,

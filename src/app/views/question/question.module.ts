@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 import {
   ButtonGroupModule,
@@ -29,6 +30,7 @@ import { EditQuestionComponent } from './edit-question/edit-question.component';
   imports: [
     CommonModule,
     QuestionRoutingModule,
+    NgxPaginationModule,
     PaginationModule,
     CardModule,
     FormModule,

@@ -20,10 +20,11 @@ export class BlogListComponent {
   errMessage: string = '';
   errFlag: boolean = true;
   page: number = 1;
-  limit: number = 3;
-  totalPages!: number;
-  currentPage!: number;
-  lastElement!: number;
+  totalLength: any;
+  // limit: number = 3;
+  // totalPages!: number;
+  // currentPage!: number;
+  // lastElement!: number;
   showSearch: boolean = true;
   parray: any = [];
   searchoption: any = '';
@@ -53,67 +54,64 @@ export class BlogListComponent {
   }
 
   ngOnInit() {
-    this.getBlog({
-      page: this.page,
-      limit: this.limit,
-    });
+    this.getBlog();
   }
 
-  async getBlog(params: Object) {
-    await this.commonservice.put(params, 'blog/').subscribe((res) => {
+  async getBlog() {
+    await this.commonservice.get('blog/').subscribe((res) => {
       const apiResult = JSON.parse(JSON.stringify(res));
       console.log(apiResult.payload);
 
       if (apiResult && apiResult.status == 'SUCCESS') {
         this.blogs = apiResult && apiResult.payload;
-        this.totalPages = apiResult.totalPages;
-        this.currentPage = apiResult.currentPage;
-        this.parray = [];
-        for (let index = 1; index <= this.totalPages; index++) {
-          this.parray.push(index)
-        }
-        this.lastElement = this.parray[this.parray.length - 1];
+        // this.totalPages = apiResult.totalPages;
+        // this.currentPage = apiResult.currentPage;
+        // this.parray = [];
+        // for (let index = 1; index <= this.totalPages; index++) {
+        //   this.parray.push(index)
+        // }
+        // this.lastElement = this.parray[this.parray.length - 1];
       } else if (apiResult && apiResult.status == 'ERROR') {
         this.errFlag = true;
         this.errMessage = apiResult.msg;
         this.blogs = [];
-        this.totalPages = 0;
-        this.currentPage = 0;
+        // this.totalPages = 0;
+        // this.currentPage = 0;
       }
     })
   }
 
-  async updateBlog(pageno: number) {
-    this.currentPage = pageno;
-    await this.getBlog({
-      page: pageno,
-      limit: this.limit,
-    });
-  }
+  // async updateBlog(pageno: number) {
+  //   this.currentPage = pageno;
+  //   await this.getBlog({
+  //     page: pageno,
+  //     limit: this.limit,
+  //   });
+  // }
 
-  async previous(pageno: number) {
-    this.currentPage = pageno - 1;
-    console.log(">>>>>>>>>>>>>>>>", {
-      page: this.currentPage,
-      limit: this.limit,
-    })
-    await this.getBlog({
-      page: this.currentPage,
-      limit: this.limit,
-    });
-  }
+  // async previous(pageno: number) {
+  //   this.currentPage = pageno - 1;
+  //   console.log(">>>>>>>>>>>>>>>>", {
+  //     page: this.currentPage,
+  //     limit: this.limit,
+  //   })
+  //   await this.getBlog({
+  //     page: this.currentPage,
+  //     limit: this.limit,
+  //   });
+  // }
 
-  async next(pageno: number) {
-    this.currentPage = pageno + 1;
-    console.log(">>>>>>>>>>>>>>>>", {
-      page: this.currentPage,
-      limit: this.limit,
-    })
-    await this.getBlog({
-      page: this.currentPage,
-      limit: this.limit,
-    });
-  }
+  // async next(pageno: number) {
+  //   this.currentPage = pageno + 1;
+  //   console.log(">>>>>>>>>>>>>>>>", {
+  //     page: this.currentPage,
+  //     limit: this.limit,
+  //   })
+  //   await this.getBlog({
+  //     page: this.currentPage,
+  //     limit: this.limit,
+  //   });
+  // }
 
   getParentName(blog: any) {
     if (blog.parentDetails.length > 0) {
@@ -172,13 +170,13 @@ export class BlogListComponent {
   async onSubmit(formData: any) {
 
     if (formData.type !== '' && formData.search !== '' || formData.type !== '' && formData.status !== '') {
-      await this.getBlog({
-        page: this.page,
-        limit: this.limit,
-        type: formData.type,
-        search: formData.search,
-        status: formData.status,
-      });
+      await this.getBlog(
+        // page: this.page,
+        // limit: this.limit,
+        // type: formData.type,
+        // search: formData.search,
+        // status: formData.status,
+      );
       console.log(formData);
     }
   }

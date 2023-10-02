@@ -16,3 +16,16 @@
 th, tr, td {
   text-align: center !important;
 }
+
+.pagination {
+  padding: 20px 16px;
+  float: right;
+  font-size: 18px;    
+}
+
+.pagination::ng-deep .ngx-pagination .current {
+  background: brown;  
+}
+.pagination::ng-deep .ngx-pagination .ng-star-inserted{
+  text-decoration: none;
+}
