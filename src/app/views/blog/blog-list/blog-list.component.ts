@@ -21,7 +21,7 @@ export class BlogListComponent {
   errFlag: boolean = true;
   page: number = 1;
   totalLength: any;
-  // limit: number = 3;
+  limit: number = 3;
   // totalPages!: number;
   // currentPage!: number;
   // lastElement!: number;
@@ -54,11 +54,14 @@ export class BlogListComponent {
   }
 
   ngOnInit() {
-    this.getBlog();
+    this.getBlog({
+      page: this.page,
+      limit: this.limit,
+    });
   }
 
-  async getBlog() {
-    await this.commonservice.get('blog/').subscribe((res) => {
+  async getBlog(param:any) {
+    await this.commonservice.put(param,'blog/').subscribe((res) => {
       const apiResult = JSON.parse(JSON.stringify(res));
       console.log(apiResult.payload);
 
@@ -170,19 +173,20 @@ export class BlogListComponent {
   async onSubmit(formData: any) {
 
     if (formData.type !== '' && formData.search !== '' || formData.type !== '' && formData.status !== '') {
-      await this.getBlog(
-        // page: this.page,
-        // limit: this.limit,
-        // type: formData.type,
-        // search: formData.search,
-        // status: formData.status,
-      );
+      await this.getBlog({
+        page: this.page,
+        limit: this.limit,
+        type: formData.type,
+        search: formData.search,
+        status: formData.status,
+      });
       console.log(formData);
     }
   }
 
   clear() {
-    this.formGroup.reset()
+    this.formGroup.reset();
+    this.ngOnInit();
   }
 
   statusUpdate(value: any) {

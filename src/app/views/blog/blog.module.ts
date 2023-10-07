@@ -2,8 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxPaginationModule } from 'ngx-pagination';
-
-
 import {
     ButtonGroupModule,
     ButtonModule,
@@ -13,8 +11,7 @@ import {
     GridModule,
     ListGroupModule,
     SharedModule,
-    PaginationModule,
-
+    PaginationModule
 } from '@coreui/angular';
 
 import { BlogRoutingModule } from './blog-routing.module';
