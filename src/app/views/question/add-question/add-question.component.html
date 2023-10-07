@@ -117,7 +117,7 @@
                   style="color: red"
                   *ngIf="option1 && option1.invalid && option1.touched"
                 >
-                  <div [hidden]="!option1.errors?.['required']">
+                  <div class="error" [hidden]="!option1.errors?.['required']">
                     Option1 is required!
                   </div>
                 </div>
@@ -148,7 +148,7 @@
                   style="color: red"
                   *ngIf="option2 && option2.invalid && option2.touched"
                 >
-                  <div [hidden]="!option2.errors?.['required']">
+                  <div class="error" [hidden]="!option2.errors?.['required']">
                     Option2 is required!
                   </div>
                 </div>
@@ -179,7 +179,7 @@
                   style="color: red"
                   *ngIf="option3 && option3.invalid && option3.touched"
                 >
-                  <div [hidden]="!option3.errors?.['required']">
+                  <div class="error" [hidden]="!option3.errors?.['required']">
                     Option3 is required!
                   </div>
                 </div>
@@ -210,7 +210,7 @@
                   style="color: red"
                   *ngIf="option4 && option4.invalid && option4.touched"
                 >
-                  <div [hidden]="!option4.errors?.['required']">
+                  <div class="error" [hidden]="!option4.errors?.['required']">
                     Option4 is required!
                   </div>
                 </div>

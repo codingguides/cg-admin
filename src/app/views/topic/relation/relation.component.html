@@ -109,7 +109,19 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr *ngFor="let question of questions; let num = index">
+                    <tr
+                      *ngFor="
+                        let question of questions
+                          | paginate
+                            : {
+                                itemsPerPage: 10,
+                                currentPage: page,
+                                totalItems: totalLength,
+                                id: 'add'
+                              };
+                        let num = index
+                      "
+                    >
                       <th scope="row">{{ num + 1 }}</th>
                       <th scope="row">
                         <input type="checkbox" (change)="addId(question._id)" />
@@ -120,6 +132,12 @@
                     </tr>
                   </tbody>
                 </table>
+                <div class="pagination">
+                  <pagination-controls
+                    (pageChange)="page = $event"
+                    id="add"
+                  ></pagination-controls>
+                </div>
                 <button cButton type="submit" (click)="add()">
                   Add Relation
                 </button>
@@ -139,12 +157,22 @@
               </thead>
               <tbody>
                 <tr
-                  *ngFor="let relation of relationListByTopic; let num = index"
+                  *ngFor="
+                    let relation of relationListByTopic
+                      | paginate
+                        : {
+                            itemsPerPage: 10,
+                            currentPage: page,
+                            totalItems: totalLength,
+                            id: 'list'
+                          };
+                    let num = index
+                  "
                 >
                   <th scope="row">{{ num + 1 }}</th>
-                  <td>{{ removeTags(relation.questions[0].question) }}</td>
-                  <td>{{ relation.questions[0].point }}</td>
-                  <td>{{ relation.questions[0].level }}</td>
+                  <td>{{ removeTags(relation?.questions[0]?.question) }}</td>
+                  <td>{{ relation?.questions[0]?.point }}</td>
+                  <td>{{ relation?.questions[0]?.level }}</td>
                   <td>
                     <i
                       class="actionClass fa fa-trash-o"
@@ -155,8 +183,13 @@
                 </tr>
               </tbody>
             </table>
-
             <span *ngIf="relationListFlag">Opps no relation found</span>
+            <div class="pagination">
+              <pagination-controls
+                (pageChange)="page = $event"
+                id="list"
+              ></pagination-controls>
+            </div>
           </c-tab-pane>
         </c-tab-content>
       </c-card-body>

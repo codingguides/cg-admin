@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 
 
@@ -36,6 +37,7 @@ import { RelationComponent } from './relation/relation.component';
   imports: [
     CommonModule,
     TopicRoutingModule,
+    NgxPaginationModule,
     PaginationModule,
     AccordionModule,
     NavModule,

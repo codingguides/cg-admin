@@ -21,7 +21,7 @@ export class BlogListComponent {
   errFlag: boolean = true;
   page: number = 1;
   totalLength: any;
-  limit: number = 3;
+  limit: number = 1000;
   // totalPages!: number;
   // currentPage!: number;
   // lastElement!: number;
@@ -60,8 +60,8 @@ export class BlogListComponent {
     });
   }
 
-  async getBlog(param:any) {
-    await this.commonservice.put(param,'blog/').subscribe((res) => {
+  async getBlog(param: any) {
+    await this.commonservice.put(param, 'blog/').subscribe((res) => {
       const apiResult = JSON.parse(JSON.stringify(res));
       console.log(apiResult.payload);
 

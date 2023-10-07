@@ -93,7 +93,18 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let topic of topics; let num = index">
+            <tr
+              *ngFor="
+                let topic of topics
+                  | paginate
+                    : {
+                        itemsPerPage: 3,
+                        currentPage: page,
+                        totalItems: totalLength,                        
+                      };
+                let num = index
+              "
+            >
               <th scope="row">{{ num + 1 }}</th>
               <td>{{ topic.name }}</td>
               <td>{{ topic.slug }}</td>
@@ -116,12 +127,22 @@
                 ></i>
               </td>
               <td>
-                <input type="checkbox" [checked]="topic.showNav" (click)="isShowMenu(topic)" />
+                <input
+                  type="checkbox"
+                  [checked]="topic.showNav"
+                  (click)="isShowMenu(topic)"
+                />
               </td>
             </tr>
           </tbody>
         </table>
-        <span class="text-center err" *ngIf="errFlag">{{ errMessage }}</span>
+
+        <div class="pagination">
+          <pagination-controls
+            (pageChange)="page = $event"
+          ></pagination-controls>
+        </div>
+        <!-- <span class="text-center err" *ngIf="errFlag">{{ errMessage }}</span>
 
         <c-pagination align="end" aria-label="Page navigation example">
           <li cPageItem [disabled]="currentPage == 1 ? true : false">
@@ -137,7 +158,7 @@
           <li cPageItem [disabled]="currentPage == totalPages ? true : false">
             <a cPageLink (click)="next(currentPage)">Next</a>
           </li>
-        </c-pagination>
+        </c-pagination> -->
 
         <!-- <nav *ngIf="!errFlag" aria-label="Page navigation example pull-right">
           <ul class="pagination justify-content-center">

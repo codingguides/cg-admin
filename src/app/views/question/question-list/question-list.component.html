@@ -79,7 +79,7 @@
                 let question of questions
                   | paginate
                     : {
-                        itemsPerPage: 3,
+                        itemsPerPage: 10,
                         currentPage: page,
                         totalItems: totalLength
                       };
@@ -87,7 +87,7 @@
               "
             >
               <th scope="row">{{ num + 1 }}</th>
-              <td>{{ removeTags(question.question) }}</td>
+              <td [innerHTML]="question.question"></td>
               <td>{{ question.point }}</td>
               <td>{{ question.level }}</td>
               <td>

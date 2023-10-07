@@ -20,7 +20,7 @@ export class QuestionListComponent {
   errFlag: boolean = true;
   page: number = 1;
   totalLength: any;
-  // limit: number = 3;
+  limit: number = 1000;
   // totalPages!: number;
   // currentPage!: number;
   // lastElement!: number;
@@ -49,11 +49,14 @@ export class QuestionListComponent {
   }
 
   async ngOnInit() {
-    await this.getQuestion();
+    await this.getQuestion({
+      page: this.page,
+      limit: this.limit
+    });
   }
 
-  async getQuestion() {
-    await this.commonservice.get('questions/').subscribe((res) => {
+  async getQuestion(params: object) {
+    await this.commonservice.put(params, 'questions/').subscribe((res) => {
       const apiResult = JSON.parse(JSON.stringify(res));
       console.log(apiResult.payload)
 
@@ -175,12 +178,12 @@ export class QuestionListComponent {
   async onSubmit(formData: any) {
     console.log("formData>>>>>>>>>>>>>>>>", formData)
     if (formData.level !== '' || formData.search !== '') {
-      await this.getQuestion(
-        // page: this.page,
-        // limit: this.limit,
-        // level: formData.level,
-        // search: formData.search,
-      );
+      await this.getQuestion({
+        page: this.page,
+        limit: this.limit,
+        level: formData.level,
+        search: formData.search,
+      });
     }
   }
 

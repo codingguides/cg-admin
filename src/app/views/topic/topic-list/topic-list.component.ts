@@ -20,10 +20,11 @@ export class TopicListComponent {
   errMessage: string = '';
   errFlag: boolean = true;
   page: number = 1;
-  limit: number = 3;
-  totalPages!: number;
-  currentPage!: number;
-  lastElement!: number;
+  totalLength: any;
+  limit: number = 1000;
+  // totalPages!: number;
+  // currentPage!: number;
+  // lastElement!: number;
   parray: any = [];
   searchoption: any = '';
   formGroup!: FormGroup;
@@ -63,54 +64,54 @@ export class TopicListComponent {
       console.log(apiResult.payload);
       if (apiResult && apiResult.status == 'SUCCESS') {
         this.topics = apiResult && apiResult.payload;
-        this.totalPages = apiResult.totalPages;
-        this.currentPage = apiResult.currentPage;
-        this.parray = [];
-        for (let index = 1; index <= this.totalPages; index++) {
-          this.parray.push(index)
-        }
-        this.lastElement = this.parray[this.parray.length - 1];
+        // this.totalPages = apiResult.totalPages;
+        // this.currentPage = apiResult.currentPage;
+        // this.parray = [];
+        // for (let index = 1; index <= this.totalPages; index++) {
+        //   this.parray.push(index)
+        // }
+        // this.lastElement = this.parray[this.parray.length - 1];
       } else if (apiResult && apiResult.status == 'ERROR') {
         this.errFlag = true;
         this.errMessage = apiResult.msg;
         this.topics = [];
-        this.totalPages = 0;
-        this.currentPage = 0;
+        // this.totalPages = 0;
+        // this.currentPage = 0;
       }
     });
   }
 
-  async updateTopic(pageno: number) {
-    this.currentPage = pageno;
-    await this.getTopic({
-      page: pageno,
-      limit: this.limit,
-    });
-  }
+  // async updateTopic(pageno: number) {
+  //   this.currentPage = pageno;
+  //   await this.getTopic({
+  //     page: pageno,
+  //     limit: this.limit,
+  //   });
+  // }
 
-  async previous(pageno: number) {
-    this.currentPage = pageno - 1;
-    console.log(">>>>>>>>>>>>>>>>", {
-      page: this.currentPage,
-      limit: this.limit,
-    })
-    await this.getTopic({
-      page: this.currentPage,
-      limit: this.limit,
-    });
-  }
+  // async previous(pageno: number) {
+  //   this.currentPage = pageno - 1;
+  //   console.log(">>>>>>>>>>>>>>>>", {
+  //     page: this.currentPage,
+  //     limit: this.limit,
+  //   })
+  //   await this.getTopic({
+  //     page: this.currentPage,
+  //     limit: this.limit,
+  //   });
+  // }
 
-  async next(pageno: number) {
-    this.currentPage = pageno + 1;
-    console.log(">>>>>>>>>>>>>>>>", {
-      page: this.currentPage,
-      limit: this.limit,
-    })
-    await this.getTopic({
-      page: this.currentPage,
-      limit: this.limit,
-    });
-  }
+  // async next(pageno: number) {
+  //   this.currentPage = pageno + 1;
+  //   console.log(">>>>>>>>>>>>>>>>", {
+  //     page: this.currentPage,
+  //     limit: this.limit,
+  //   })
+  //   await this.getTopic({
+  //     page: this.currentPage,
+  //     limit: this.limit,
+  //   });
+  // }
 
   getParentName(topic: any) {
     if (topic.parentDetails.length > 0) {

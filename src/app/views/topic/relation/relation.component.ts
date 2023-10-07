@@ -22,12 +22,13 @@ export class RelationComponent {
   errMessage: string = '';
   errFlag: boolean = true;
   formGroup: any;
+  totalLength: any;
   page: number = 1;
-  limit: number = 10;
+  limit: number = 1000;
   searchErrFlag: boolean = false
   topicByID: any;
   topicFlag: boolean = false
-  questionFlag: boolean = false 
+  questionFlag: boolean = false
   items = [1, 2, 3, 4];
   relationListByTopic: any;
   relationListFlag: boolean = false;
@@ -38,43 +39,43 @@ export class RelationComponent {
     private formBuilder: FormBuilder,
     private router: Router,
     private activtedrouter: ActivatedRoute
-  ) {   
+  ) {
     this.formGroup = this.formBuilder.group({
-    level: new FormControl('', []),
-    search: new FormControl('', []),
-    tag: new FormControl('', []),
-  });
-}
-
-get level() {
-  return this.formGroup.get('level');
-}
-
-get search() {
-  return this.formGroup.get('search');
-}
-
-get tag() {
-  return this.formGroup.get('tag');
-}
-
-async ngOnInit() {
-  await this.getId();
-  await this.relationList();
-}
-
-async getId() {
-  await this.commonservice
-    .get(`topic/get/${this.activtedrouter.snapshot.params['id']}`)
-    .subscribe(async (result: any) => {
-      if (result && result.status == 'SUCCESS') {
-        this.topicByID = result && result.payload[0];
-        console.log("this.topicByID>>>>>>>",this.topicByID.length)
-      }else{
-        this._router.navigate(['./topic/list']);
-      }
+      level: new FormControl('', []),
+      search: new FormControl('', []),
+      tag: new FormControl('', []),
     });
-}
+  }
+
+  get level() {
+    return this.formGroup.get('level');
+  }
+
+  get search() {
+    return this.formGroup.get('search');
+  }
+
+  get tag() {
+    return this.formGroup.get('tag');
+  }
+
+  async ngOnInit() {
+    await this.getId();
+    await this.relationList();
+  }
+
+  async getId() {
+    await this.commonservice
+      .get(`topic/get/${this.activtedrouter.snapshot.params['id']}`)
+      .subscribe(async (result: any) => {
+        if (result && result.status == 'SUCCESS') {
+          this.topicByID = result && result.payload[0];
+          console.log("this.topicByID>>>>>>>", this.topicByID.length)
+        } else {
+          this._router.navigate(['./topic/list']);
+        }
+      });
+  }
 
   async getQuestion(params: any) {
     this.questionFlag = false;
@@ -86,7 +87,7 @@ async getId() {
       if (apiResult && apiResult.status == 'SUCCESS') {
         this.questionFlag = true;
         this.questions = apiResult && apiResult.payload;
-        this.questions.map((question: any) => {});
+        this.questions.map((question: any) => { });
       } else {
         this.errFlag = true;
         this.errMessage = apiResult.msg;
@@ -96,7 +97,7 @@ async getId() {
 
   async onSubmit(formData: any) {
     this.searchErrFlag = false
-    console.log("formData>>>>>>>>>>>>>>>>",formData)
+    console.log("formData>>>>>>>>>>>>>>>>", formData)
     // if (formData.level == '' && formData.search == '') {
     //   this.searchErrFlag = true
     // }
@@ -109,11 +110,11 @@ async getId() {
     });
   }
 
-  clear(){
+  clear() {
     this.formGroup.reset();
   }
-    
-  addId(id:any){
+
+  addId(id: any) {
     this.selectedId.push(id);
     this.selectedId = [...new Set(this.selectedId)];
   }
@@ -124,13 +125,13 @@ async getId() {
     return str.replace(/(<([^>]+)>)/gi, '');
   }
 
-  add(){
-    if(this.selectedId.length > 0){
-      console.log("this.selectedId>>>>>>",this.selectedId)
+  add() {
+    if (this.selectedId.length > 0) {
+      console.log("this.selectedId>>>>>>", this.selectedId)
 
       let count = 0;
       this.selectedId.map(async (qid: any) => {
-        console.log("qid>>>>>>",qid)
+        console.log("qid>>>>>>", qid)
         await this.commonservice
           .post(
             {
@@ -155,7 +156,7 @@ async getId() {
       });
 
 
-    }else{
+    } else {
       Swal.fire({
         position: 'top-end',
         icon: 'error',
@@ -167,13 +168,13 @@ async getId() {
   }
 
 
-  delete(id:any){
+  delete(id: any) {
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
         confirmButton: 'btn btn-success',
         cancelButton: 'btn btn-danger',
       },
-      buttonsStyling: false,
+      buttonsStyling: true,
     });
 
     swalWithBootstrapButtons
@@ -214,20 +215,33 @@ async getId() {
       });
   }
 
-  async relationList(){
+  async relationList() {
+    console.clear()
+    console.log(this.activtedrouter.snapshot.params['id'])
     await this.commonservice
-    .get(
-      `relation/get/${this.activtedrouter.snapshot.params['id']}`
-    )
-    .subscribe((res: any) => {
-      this.relationListFlag = false;
-      const apiResult = JSON.parse(JSON.stringify(res));
-      if (apiResult && apiResult.status == 'SUCCESS') {
-        this.relationListByTopic = apiResult && apiResult.payload;
-        if(this.relationListByTopic.length == 0){
-          this.relationListFlag = true;
+      .get(
+        `relation/get/${this.activtedrouter.snapshot.params['id']}`
+      )
+      .subscribe((res: any) => {
+        console.log("under sub>>>>>>>>>>", res)
+        this.relationListFlag = false;
+        const apiResult = JSON.parse(JSON.stringify(res));
+        console.log("apiResult>>>>>>>>>>", apiResult)
+
+        if (apiResult && apiResult.status == 'SUCCESS') {
+          console.log("if>>>>>>>>>>", apiResult.status)
+
+          this.relationListByTopic = apiResult && apiResult.payload;
+          console.log("this.relationListByTopic>>>>>>>>>>", this.relationListByTopic)
+
+          if (this.relationListByTopic.length == 0) {
+            console.log("if this.relationListByTopic>>>>>>>>>>", this.relationListByTopic.length)
+            this.relationListFlag = true;
+          } else {
+            console.log("false")
+            this.relationListFlag = false;
+          }
         }
-      }
-    })
+      })
   }
 }
