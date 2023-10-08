@@ -31,6 +31,7 @@ export class RelationComponent {
   questionFlag: boolean = false
   items = [1, 2, 3, 4];
   relationListByTopic: any;
+  relationIds:any = []
   relationListFlag: boolean = false;
 
   constructor(
@@ -87,7 +88,6 @@ export class RelationComponent {
       if (apiResult && apiResult.status == 'SUCCESS') {
         this.questionFlag = true;
         this.questions = apiResult && apiResult.payload;
-        this.questions.map((question: any) => { });
       } else {
         this.errFlag = true;
         this.errMessage = apiResult.msg;
@@ -115,8 +115,20 @@ export class RelationComponent {
   }
 
   addId(id: any) {
-    this.selectedId.push(id);
-    this.selectedId = [...new Set(this.selectedId)];
+    let found = this.selectedId.find((arrid:number) =>  arrid == id ? true : false);
+    if(found){
+      this.selectedId = this.selectedId.filter((item:any) => {
+        return item !== found
+      });
+    }else{
+      this.selectedId.push(id);
+      this.selectedId = [...new Set(this.selectedId)];
+    }   
+  }
+
+  checkRow(id:any){
+    const found = this.relationIds.find((element:any) => element == id );
+    return found ? true : false
   }
 
   removeTags(str: any) {
@@ -233,6 +245,7 @@ export class RelationComponent {
 
           this.relationListByTopic = apiResult && apiResult.payload;
           console.log("this.relationListByTopic>>>>>>>>>>", this.relationListByTopic)
+          this.relationIds = this.relationListByTopic.map((val:any) => val.question_id)
 
           if (this.relationListByTopic.length == 0) {
             console.log("if this.relationListByTopic>>>>>>>>>>", this.relationListByTopic.length)
