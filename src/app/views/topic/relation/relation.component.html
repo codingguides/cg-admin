@@ -124,7 +124,12 @@
                     >
                       <th scope="row">{{ question.index }}</th>
                       <th scope="row">
-                      <input type="checkbox" [disabled]="checkRow(question._id)" [checked]="checkRow(question._id)" (change)="addId(question._id)" />
+                        <input
+                          type="checkbox"
+                          [disabled]="checkRow(question._id)"
+                          [checked]="checkRow(question._id)"
+                          (change)="addId(question._id)"
+                        />
                       </th>
                       <td>{{ removeTags(question.question) }}</td>
                       <td>{{ question.point }}</td>
