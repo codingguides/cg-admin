@@ -131,7 +131,7 @@
                           (change)="addId(question._id)"
                         />
                       </th>
-                      <td>{{ removeTags(question.question) }}</td>
+                      <td [innerHTML]="question.question"></td>
                       <td>{{ question.point }}</td>
                       <td>{{ question.level }}</td>
                     </tr>
@@ -175,7 +175,7 @@
                   "
                 >
                   <th scope="row">{{ num + 1 }}</th>
-                  <td>{{ removeTags(relation?.questions[0]?.question) }}</td>
+                  <td [innerHTML]="relation?.questions[0]?.question"></td>
                   <td>{{ relation?.questions[0]?.point }}</td>
                   <td>{{ relation?.questions[0]?.level }}</td>
                   <td>
