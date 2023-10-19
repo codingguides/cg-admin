@@ -22,3 +22,9 @@ $enable-rtl: true;
 // If you want to add something do it here
 @import "custom";
 @import 'ngx-toastr/toastr';
+
+
+.sidebar-brand{
+    background-color: white !important;
+    border-right: 2px solid #161414 !important;
+}
