@@ -20,7 +20,6 @@ export class EditBlogComponent {
   public favoriteColor = '#26ab3c';
   updateDesc: any = '';
   formGroup!: FormGroup;
-  // editorData: any = '<p>Enter text</p>';
   blogs!: any[];
   blogSlug: string = '';
   getUserDetails: any;
@@ -44,9 +43,7 @@ export class EditBlogComponent {
       slug: new FormControl('', [Validators.required]),
       feature_image: new FormControl('', [Validators.required]),
       feature_video: new FormControl('', [Validators.required]),
-      description: new FormControl(''),
-      // parent_id: new FormControl('', [Validators.required]),
-      // tags: new FormControl('', [Validators.required]),
+      description: new FormControl('')
     })
   }
 

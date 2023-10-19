@@ -1,22 +1,22 @@
 import { Component } from '@angular/core';
-import { HttpCallService } from '../../../common/http-call.service';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { HttpCallService } from 'src/app/common/http-call.service';
 import Swal from 'sweetalert2';
-import { Router } from '@angular/router';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
+
 
 @Component({
-  selector: 'app-blog-list',
-  templateUrl: './blog-list.component.html',
-  styleUrls: ['./blog-list.component.scss']
+  selector: 'app-blog-relation',
+  templateUrl: './blog-relation.component.html',
+  styleUrls: ['./blog-relation.component.scss']
 })
-export class BlogListComponent {
+export class BlogRelationComponent {
+
+  qname: string | null = localStorage.getItem('qname');
   formGroup!: FormGroup;
   blogs: any = [];
+  activeBlogs:any = [];
   errMessage: string = '';
   errFlag: boolean = true;
   page: number = 1;
@@ -25,12 +25,15 @@ export class BlogListComponent {
   showSearch: boolean = true;
   parray: any = [];
   searchoption: any = '';
+  selectedBlog!: any;
 
   constructor(
     public commonservice: HttpCallService,
     private _router: Router,
     private formBuilder: FormBuilder,
-    private router: Router
+    private router: Router,
+    private toastr: ToastrService,
+    private activtedrouter: ActivatedRoute,
   ) {
     this.formGroup = this.formBuilder.group({
       type: new FormControl('', [Validators.required]),
@@ -51,6 +54,7 @@ export class BlogListComponent {
   }
 
   ngOnInit() {
+    this.relationList()
     this.getBlog({
       page: this.page,
       limit: this.limit,
@@ -63,7 +67,20 @@ export class BlogListComponent {
       console.log(apiResult.payload);
 
       if (apiResult && apiResult.status == 'SUCCESS') {
-        this.blogs = apiResult && apiResult.payload;
+        if(this.selectedBlog){
+          this.activeBlogs = apiResult && apiResult.payload.filter((blog:any)=> blog._id == this.selectedBlog.blog_id)
+          console.log("this.activeBlogs>>>>",this.activeBlogs)
+        }
+        if(param.type){
+          this.blogs = apiResult && apiResult.payload.map((blog:any)=>{
+            return {
+              ...blog,
+              isAdded: blog._id == this.selectedBlog.blog_id ? true :false
+            }
+          })
+        }
+       
+        console.log("this.blogs>>>",this.blogs)
       } else if (apiResult && apiResult.status == 'ERROR') {
         this.errFlag = true;
         this.errMessage = apiResult.msg;
@@ -197,8 +214,6 @@ export class BlogListComponent {
 
   }
 
-
-
   changeSearch(event: any) {
     if (event.target.value == 'status') {
       this.showSearch = false;
@@ -206,4 +221,39 @@ export class BlogListComponent {
       this.showSearch = true;
     }
   }
+
+  async relationList() {
+    await this.commonservice
+      .get(`relation/get/blog/${this.activtedrouter.snapshot.params['id']}`)
+      .subscribe(async (result: any) => {
+        if (result && result.status == 'SUCCESS') {
+          this.selectedBlog = result && result.payload[0];
+          // console.log("this.selectedBlog>>>>>>", this.selectedBlog)
+          console.log("this.selectedBlog>>>>>>", this.selectedBlog.blog_id)
+        }
+      });
+  }
+
+  async addRelation(id: any) {
+    alert(id)
+    if (id) {
+      await this.commonservice
+        .post(
+          {
+            question_id: this.activtedrouter.snapshot.params['id'],
+            blog_id: id
+          },
+          'relation/add'
+        )
+        .subscribe((res: any) => {
+          const apiResult = JSON.parse(JSON.stringify(res));
+          if (apiResult && apiResult.status == 'SUCCESS') {
+            this.toastr.success("Added");
+            this.ngOnInit();
+          }
+        })
+    }
+  }
+
+
 }

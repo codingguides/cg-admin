@@ -165,8 +165,9 @@ export class QuestionListComponent {
       });
   }
 
-  edit(question: any) {
-    alert(question.point);
+  relation(question: any) {
+    localStorage.setItem("qname", question.question)
+    this.router.navigate([`/question/relation/${ question._id }`]);
   }
 
   removeTags(str: any) {
