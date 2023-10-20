@@ -62,6 +62,7 @@ export class BlogRelationComponent {
   }
 
   async getBlog(param: any) {
+    this.blogs = [];
     await this.commonservice.put(param, 'blog/').subscribe((res) => {
       const apiResult = JSON.parse(JSON.stringify(res));
       console.log(apiResult.payload);
@@ -146,6 +147,13 @@ export class BlogRelationComponent {
   async onSubmit(formData: any) {
 
     if (formData.type !== '' && formData.search !== '' || formData.type !== '' && formData.status !== '') {
+      localStorage.setItem('search', JSON.stringify({
+        page: this.page,
+        limit: this.limit,
+        type: formData.type,
+        search: formData.search,
+        status: formData.status,
+      }))
       await this.getBlog({
         page: this.page,
         limit: this.limit,
@@ -234,24 +242,33 @@ export class BlogRelationComponent {
       });
   }
 
-  async addRelation(id: any) {
-    alert(id)
-    if (id) {
-      await this.commonservice
-        .post(
-          {
-            question_id: this.activtedrouter.snapshot.params['id'],
-            blog_id: id
-          },
-          'relation/add'
-        )
-        .subscribe((res: any) => {
-          const apiResult = JSON.parse(JSON.stringify(res));
-          if (apiResult && apiResult.status == 'SUCCESS') {
-            this.toastr.success("Added");
-            this.ngOnInit();
-          }
-        })
+  async addRelation(blog: any) {
+    console.log(this.selectedBlog._id,">>>>>>>>>>>>>>blog>>>>>>>>>>>>",blog)
+    if(this.selectedBlog?._id){
+      await this.commonservice.delete(`relation/delete/${this.selectedBlog?._id}`).subscribe(async(res) => {
+        const apiResult = JSON.parse(JSON.stringify(res));
+        if (apiResult.status == 'SUCCESS') {
+          await this.commonservice
+          .post(
+            {
+              question_id: this.activtedrouter.snapshot.params['id'],
+              blog_id: blog._id
+            },
+            'relation/add'
+          )
+          .subscribe(async (res: any) => {
+            const apiResult = JSON.parse(JSON.stringify(res));
+            if (apiResult && apiResult.status == 'SUCCESS') {
+              await this.relationList().then(async ()=>{
+                let sres = localStorage.getItem('search')
+                await this.getBlog(sres).then(()=>{
+                  this.toastr.success("Added Successfully");
+                })
+              })
+            }
+          })
+        }
+      })  
     }
   }
 
