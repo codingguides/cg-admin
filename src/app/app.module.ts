@@ -40,11 +40,6 @@ import {
 
 import { IconModule, IconSetService } from '@coreui/icons-angular';
 import { ToastrModule } from 'ngx-toastr';
-// import { BlogListComponent } from './views/blog/blog-list/blog-list.component';
-// import { AddBlogComponent } from './views/blog/add-blog/add-blog.component';
-// import { EditBlogComponent } from './views/blog/edit-blog/edit-blog.component';
-
-
 
 const APP_CONTAINERS = [
   DefaultFooterComponent,
