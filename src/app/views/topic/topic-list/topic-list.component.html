@@ -89,6 +89,8 @@
               <th scope="col">Slug</th>
               <th scope="col">Parent Topic</th>
               <th scope="col">Action</th>
+              <th scope="col">Question Relation</th>
+              <th scope="col">Blog Relation</th>
               <th scope="col">Show Menu</th>
             </tr>
           </thead>
@@ -120,10 +122,19 @@
                   aria-hidden="true"
                   (click)="delete(topic._id)"
                 ></i>
+              </td>
+              <td>
                 <i
                   class="actionClass fa fa-eye"
                   aria-hidden="true"
                   routerLink="/topic/relation/{{ topic._id }}"
+                ></i>
+              </td>
+              <td>
+                <i
+                  class="actionClass fa fa-eye"
+                  aria-hidden="true"
+                  (click)="relation(topic)"
                 ></i>
               </td>
               <td>

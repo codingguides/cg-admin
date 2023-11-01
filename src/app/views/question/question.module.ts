@@ -23,14 +23,12 @@ import { AddQuestionComponent } from './add-question/add-question.component';
 import { QuestionListComponent } from './question-list/question-list.component';
 import { CKEditorModule } from 'ckeditor4-angular';
 import { EditQuestionComponent } from './edit-question/edit-question.component';
-import { BlogRelationComponent } from './blog-relation/blog-relation.component';
 
 @NgModule({
   declarations: [
     AddQuestionComponent,
     QuestionListComponent,
     EditQuestionComponent,
-    BlogRelationComponent
   ],
   imports: [
     CommonModule,

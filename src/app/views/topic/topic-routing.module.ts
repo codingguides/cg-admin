@@ -4,6 +4,8 @@ import { TopicListComponent } from './topic-list/topic-list.component';
 import { AddTopicComponent } from './add-topic/add-topic.component';
 import { EditTopic } from './edit-topic/edit-topic.component';
 import { RelationComponent } from './relation/relation.component';
+import { BlogRelationComponent } from './blog-relation/blog-relation.component';
+
 
 const routes: Routes = [
   {
@@ -31,6 +33,14 @@ const routes: Routes = [
         component: RelationComponent,
         data: {
           title: 'Relation with topic and question'
+        }
+      },
+      {
+        path: 'blog-relation/:id',
+        component: BlogRelationComponent,
+        pathMatch: 'full',
+        data: {
+          title: 'Blog Relation'
         }
       },
       {

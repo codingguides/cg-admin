@@ -204,4 +204,11 @@ export class TopicListComponent {
         }
       });
   }
+
+
+  relation(topic: any) {
+    localStorage.setItem("tname", topic.name)
+    this.router.navigate([`/topic/blog-relation/${topic._id}`]);
+  }
+
 }

@@ -13,10 +13,10 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class BlogRelationComponent {
 
-  qname: string | null = localStorage.getItem('qname');
+  tname: string | null = localStorage.getItem('tname');
   formGroup!: FormGroup;
   blogs: any = [];
-  activeBlogs:any = [];
+  activeBlogs: any = [];
   errMessage: string = '';
   errFlag: boolean = true;
   page: number = 1;
@@ -68,20 +68,20 @@ export class BlogRelationComponent {
       console.log(apiResult.payload);
 
       if (apiResult && apiResult.status == 'SUCCESS') {
-        if(this.selectedBlog){
-          this.activeBlogs = apiResult && apiResult.payload.filter((blog:any)=> blog._id == this.selectedBlog.blog_id)
-          console.log("this.activeBlogs>>>>",this.activeBlogs)
+        if (this.selectedBlog) {
+          this.activeBlogs = apiResult && apiResult.payload.filter((blog: any) => blog._id == this.selectedBlog.blog_id)
+          console.log("this.activeBlogs>>>>", this.activeBlogs)
         }
-        if(param.type){
-          this.blogs = apiResult && apiResult.payload.map((blog:any)=>{
+        if (param.type) {
+          this.blogs = apiResult && apiResult.payload.map((blog: any) => {
             return {
               ...blog,
-              isAdded: blog._id == this.selectedBlog.blog_id ? true :false
+              isAdded: blog._id == this.selectedBlog?.blog_id ? true : false
             }
           })
         }
-       
-        console.log("this.blogs>>>",this.blogs)
+        console.log("param.type>", param.type)
+        console.log("this.blogs>>>", this.blogs)
       } else if (apiResult && apiResult.status == 'ERROR') {
         this.errFlag = true;
         this.errMessage = apiResult.msg;
@@ -237,38 +237,38 @@ export class BlogRelationComponent {
         if (result && result.status == 'SUCCESS') {
           this.selectedBlog = result && result.payload[0];
           // console.log("this.selectedBlog>>>>>>", this.selectedBlog)
-          console.log("this.selectedBlog>>>>>>", this.selectedBlog.blog_id)
+          console.log("this.selectedBlog>>>>>>", this.selectedBlog?.blog_id)
         }
       });
   }
 
   async addRelation(blog: any) {
-    console.log(this.selectedBlog._id,">>>>>>>>>>>>>>blog>>>>>>>>>>>>",blog)
-    if(this.selectedBlog?._id){
-      await this.commonservice.delete(`relation/delete/${this.selectedBlog?._id}`).subscribe(async(res) => {
+    console.log(this.selectedBlog._id, ">>>>>>>>>>>>>>blog>>>>>>>>>>>>", blog)
+    if (this.selectedBlog?._id) {
+      await this.commonservice.delete(`relation/delete/${this.selectedBlog?._id}`).subscribe(async (res) => {
         const apiResult = JSON.parse(JSON.stringify(res));
         if (apiResult.status == 'SUCCESS') {
           await this.commonservice
-          .post(
-            {
-              question_id: this.activtedrouter.snapshot.params['id'],
-              blog_id: blog._id
-            },
-            'relation/add'
-          )
-          .subscribe(async (res: any) => {
-            const apiResult = JSON.parse(JSON.stringify(res));
-            if (apiResult && apiResult.status == 'SUCCESS') {
-              await this.relationList().then(async ()=>{
-                let sres = localStorage.getItem('search')
-                await this.getBlog(sres).then(()=>{
-                  this.toastr.success("Added Successfully");
+            .post(
+              {
+                question_id: this.activtedrouter.snapshot.params['id'],
+                blog_id: blog._id
+              },
+              'relation/add'
+            )
+            .subscribe(async (res: any) => {
+              const apiResult = JSON.parse(JSON.stringify(res));
+              if (apiResult && apiResult.status == 'SUCCESS') {
+                await this.relationList().then(async () => {
+                  let sres = localStorage.getItem('search')
+                  await this.getBlog(sres).then(() => {
+                    this.toastr.success("Added Successfully");
+                  })
                 })
-              })
-            }
-          })
+              }
+            })
         }
-      })  
+      })
     }
   }
 

@@ -1,0 +1,212 @@
+<c-row ngPreserveWhitespaces>
+  <c-col xs="12">
+    <c-card class="mb-4">
+      <c-card-header>
+        <div class="row">
+          <div class="col-sm-6">
+            <strong
+              ><h6>
+                Topic Name:
+                <p [innerHTML]="tname"></p></h6
+            ></strong>
+          </div>
+        </div>
+      </c-card-header>
+      <c-card-body>
+        <c-nav variant="tabs">
+          <a
+            [active]="true"
+            [cTabContent]="tabContent"
+            [routerLink]
+            [tabPaneIdx]="0"
+            cNavLink
+            >Add Relation</a
+          >
+          <a
+            [cTabContent]="tabContent"
+            [routerLink]
+            [tabPaneIdx]="1"
+            (click)="relationList()"
+            cNavLink
+            >Relation List</a
+          >
+        </c-nav>
+        <c-tab-content #tabContent="cTabContent">
+          <c-tab-pane class="p-3">
+            <div>
+              <div class="container mt-3">
+                <div class="row">
+                  <form
+                    cForm
+                    class="row g-3 form-horizontal"
+                    [formGroup]="formGroup"
+                    (ngSubmit)="onSubmit(formGroup.value)"
+                  >
+                    <div class="col-sm">
+                      <select
+                        cSelect
+                        id="type"
+                        class="form-select"
+                        formControlName="type"
+                        required
+                        (change)="changeSearch($event)"
+                      >
+                        <option value="" disabled selected>Select type</option>
+                        <option value="title">Title</option>
+                        <option value="slug">Slug</option>
+                        <option value="status">Status</option>
+                      </select>
+                      <div
+                        style="color: red"
+                        *ngIf="type && type.invalid && type.touched"
+                      >
+                        <div [hidden]="!type.errors?.['required']">
+                          Select one Type!
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-sm" *ngIf="showSearch">
+                      <input
+                        cFormControl
+                        type="text"
+                        id="search"
+                        required
+                        class="form-control"
+                        placeholder="type your search"
+                        formControlName="search"
+                      />
+                      <div
+                        style="color: red"
+                        *ngIf="search && search.invalid && search.touched"
+                      >
+                        <div [hidden]="!search.errors?.['required']">
+                          Search is required!
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-sm" *ngIf="!showSearch">
+                      <select
+                        cSelect
+                        id="type"
+                        class="form-select"
+                        formControlName="status"
+                        required
+                      >
+                        <option value="" disabled selected>Select type</option>
+                        <option value="publish">Publish</option>
+                        <option value="draft">Draft</option>
+                      </select>
+                    </div>
+                    <div class="col-sm">
+                      <button type="submit" class="btn btn-outline-secondary">
+                        Search
+                      </button>
+                      <button
+                        type="submit"
+                        class="btn btn-outline-secondary"
+                        (click)="clear()"
+                      >
+                        Clear
+                        <i class="fa fa-times-circle" aria-hidden="true"></i>
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+
+              <table class="table" *ngIf="blogs.length > 0">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Slug</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Relation</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    *ngFor="
+                      let blog of blogs
+                        | paginate
+                          : {
+                              itemsPerPage: 10,
+                              currentPage: page,
+                              totalItems: totalLength
+                            };
+                      let num = index
+                    "
+                  >
+                    <th scope="row">{{ num + 1 }}</th>
+                    <td scope="row">{{ blog.title }}</td>
+                    <td>{{ blog.slug }}</td>
+                    <td>
+                      <p (click)="statusUpdate(blog)">{{ blog.status }}</p>
+                    </td>
+                    <td>
+                      <i
+                        *ngIf="blog.isAdded"
+                        class="actionClass fa fa-plus-circle green"
+                        aria-hidden="true"
+                      ></i>
+                      <i
+                        *ngIf="!blog.isAdded"
+                        class="actionClass fa fa-plus-circle defult"
+                        aria-hidden="true"
+                        (click)="addRelation(blog)"
+                      ></i>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="pagination" *ngIf="blogs.length > 0">
+                <pagination-controls
+                  (pageChange)="page = $event"
+                ></pagination-controls>
+              </div>
+            </div>
+          </c-tab-pane>
+          <c-tab-pane class="p-3">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Title</th>
+                  <th scope="col">Slug</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Edit Blog</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  *ngFor="
+                    let blog of activeBlogs
+                      | paginate
+                        : {
+                            itemsPerPage: 10,
+                            currentPage: page,
+                            totalItems: totalLength
+                          };
+                    let num = index
+                  "
+                >
+                  <td scope="row">{{ blog.title }}</td>
+                  <td>{{ blog.slug }}</td>
+                  <td>
+                    <p (click)="statusUpdate(blog)">{{ blog.status }}</p>
+                  </td>
+                  <td>
+                    <i
+                      class="actionClass fa fa-pencil-square-o"
+                      aria-hidden="true"
+                      routerLink="/blog/edit/{{ blog._id }}"
+                    ></i>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </c-tab-pane>
+        </c-tab-content>
+      </c-card-body>
+    </c-card>
+  </c-col>
+</c-row>

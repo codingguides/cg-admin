@@ -165,10 +165,7 @@ export class QuestionListComponent {
       });
   }
 
-  relation(question: any) {
-    localStorage.setItem("qname", question.question)
-    this.router.navigate([`/question/relation/${ question._id }`]);
-  }
+
 
   removeTags(str: any) {
     if (str === null || str === '') return false;
