@@ -1,18 +1,21 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpCallService } from 'src/app/common/http-call.service';
 import Swal from 'sweetalert2';
 import { ToastrService } from 'ngx-toastr';
 
-
 @Component({
   selector: 'app-blog-relation',
   templateUrl: './blog-relation.component.html',
-  styleUrls: ['./blog-relation.component.scss']
+  styleUrls: ['./blog-relation.component.scss'],
 })
 export class BlogRelationComponent {
-
   tname: string | null = localStorage.getItem('tname');
   formGroup!: FormGroup;
   blogs: any = [];
@@ -27,13 +30,21 @@ export class BlogRelationComponent {
   searchoption: any = '';
   selectedBlog!: any;
 
+  blogById: any;
+  blogFlag: boolean = false;
+  searchErrFlag: boolean = false;
+  selectedId: any = [];
+  relationIds: any = [];
+  relationListFlag: boolean = false;
+  relationListByBlog: any;
+
   constructor(
     public commonservice: HttpCallService,
     private _router: Router,
     private formBuilder: FormBuilder,
     private router: Router,
     private toastr: ToastrService,
-    private activtedrouter: ActivatedRoute,
+    private activtedrouter: ActivatedRoute
   ) {
     this.formGroup = this.formBuilder.group({
       type: new FormControl('', [Validators.required]),
@@ -50,54 +61,129 @@ export class BlogRelationComponent {
     return this.formGroup.get('search');
   }
   get status() {
-    return this.formGroup.get('status')
+    return this.formGroup.get('status');
   }
 
-  ngOnInit() {
-    this.relationList()
-    this.getBlog({
-      page: this.page,
-      limit: this.limit,
+  async ngOnInit() {
+    this.getId();
+    await this.relationList();
+  }
+
+  async getId() {
+    await this.commonservice
+      .get(`topic/get/${this.activtedrouter.snapshot.params['id']}`)
+      .subscribe((result: any) => {
+        if (result && result.status == 'SUCCESS') {
+          console.log(result);
+          this.blogById = result && result.payload[0];
+          console.log('this.topicByID>>>>>>>', this.blogById.length);
+        } else {
+          this._router.navigate(['./blog/list']);
+        }
+      });
+  }
+
+  async getBlog(params: any) {
+    this.blogFlag = false;
+    console.log(params);
+
+    await this.commonservice.put(params, 'blog/').subscribe((res) => {
+      const apiResult = JSON.parse(JSON.stringify(res));
+      this.blogs = apiResult && apiResult.payload;
+      console.log(this.blogs);
+      if (apiResult && apiResult.status == 'SUCCESS') {
+        this.blogFlag = true;
+        this.blogs = apiResult && apiResult.payload;
+      } else {
+        this.errFlag = true;
+        this.errMessage = apiResult.msg;
+      }
     });
   }
 
-  async getBlog(param: any) {
-    this.blogs = [];
-    await this.commonservice.put(param, 'blog/').subscribe((res) => {
-      const apiResult = JSON.parse(JSON.stringify(res));
-      console.log(apiResult.payload);
+  async onSubmit(formData: any) {
+    this.searchErrFlag = false;
+    console.log('formData>>>>>>>>>>>>>>>>', formData);
 
-      if (apiResult && apiResult.status == 'SUCCESS') {
-        if (this.selectedBlog) {
-          this.activeBlogs = apiResult && apiResult.payload.filter((blog: any) => blog._id == this.selectedBlog.blog_id)
-          console.log("this.activeBlogs>>>>", this.activeBlogs)
-        }
-        if (param.type) {
-          this.blogs = apiResult && apiResult.payload.map((blog: any) => {
-            return {
-              ...blog,
-              isAdded: blog._id == this.selectedBlog?.blog_id ? true : false
-            }
-          })
-        }
-        console.log("param.type>", param.type)
-        console.log("this.blogs>>>", this.blogs)
-      } else if (apiResult && apiResult.status == 'ERROR') {
-        this.errFlag = true;
-        this.errMessage = apiResult.msg;
-        this.blogs = [];
-      }
-    })
+    await this.getBlog({
+      page: this.page,
+      limit: this.limit,
+      type: formData.type,
+      search: formData.search,
+      status: formData.status,
+    });
   }
 
-  getParentName(blog: any) {
-    if (blog.parentDetails.length > 0) {
-      return blog.parentDetails[0].name;
+  clear() {
+    this.formGroup.reset();
+  }
+
+  addId(id: any) {
+    let found = this.selectedId.find((arrid: number) =>
+      arrid == id ? true : false
+    );
+    if (found) {
+      this.selectedId = this.selectedId.filter((item: any) => {
+        return item !== found;
+      });
+    } else {
+      this.selectedId.push(id);
+      this.selectedId = [...new Set(this.selectedId)];
     }
   }
 
+  checkRow(id: any) {
+    const found = this.relationIds.find((element: any) => element == id);
+    return found ? true : false;
+  }
 
-  delete(blogid: any) {
+  removeTags(str: any) {
+    if (str === null || str === '') return false;
+    else str = str.toString();
+    return str.replace(/(<([^>]+)>)/gi, '');
+  }
+
+  add() {
+    if (this.selectedId.length > 0) {
+      console.log('this.selectedId>>>>>>', this.selectedId);
+
+      let count = 0;
+      this.selectedId.map(async (bid: any) => {
+        console.log('bid>>>>>>', bid);
+        await this.commonservice
+          .post(
+            {
+              blog_id: bid,
+              topic_id: this.activtedrouter.snapshot.params['id'],
+            },
+            'relation/add'
+          )
+          .subscribe((res: any) => {
+            const apiResult = JSON.parse(JSON.stringify(res));
+            if (apiResult && apiResult.status == 'SUCCESS') {
+              count++;
+              Swal.fire({
+                position: 'top-end',
+                icon: 'success',
+                title: `Total ${count} question added succesfully.`,
+                showConfirmButton: false,
+                timer: 1000,
+              });
+            }
+          });
+      });
+    } else {
+      Swal.fire({
+        position: 'top-end',
+        icon: 'error',
+        title: 'Please select question.',
+        showConfirmButton: false,
+        timer: 1000,
+      });
+    }
+  }
+
+  delete(id: any) {
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
         confirmButton: 'btn btn-success',
@@ -119,11 +205,11 @@ export class BlogRelationComponent {
       .then((result) => {
         if (result.isConfirmed) {
           this.commonservice
-            .delete(`blog/delete/${blogid}`)
+            .delete(`relation/delete/${id}`)
             .subscribe((res) => {
               const apiResult = JSON.parse(JSON.stringify(res));
               if (apiResult.status == 'SUCCESS') {
-                this.ngOnInit();
+                this.relationList();
                 swalWithBootstrapButtons.fire(
                   'Deleted!',
                   'Your file has been deleted.',
@@ -141,33 +227,44 @@ export class BlogRelationComponent {
             'error'
           );
         }
-      })
-  }
-
-  async onSubmit(formData: any) {
-
-    if (formData.type !== '' && formData.search !== '' || formData.type !== '' && formData.status !== '') {
-      localStorage.setItem('search', JSON.stringify({
-        page: this.page,
-        limit: this.limit,
-        type: formData.type,
-        search: formData.search,
-        status: formData.status,
-      }))
-      await this.getBlog({
-        page: this.page,
-        limit: this.limit,
-        type: formData.type,
-        search: formData.search,
-        status: formData.status,
       });
-      console.log(formData);
-    }
   }
 
-  clear() {
-    this.formGroup.reset();
-    this.ngOnInit();
+  async relationList() {
+    // console.clear();
+    console.log(this.activtedrouter.snapshot.params['id']);
+    await this.commonservice
+      .get(`relation/get/blog/${this.activtedrouter.snapshot.params['id']}`)
+      .subscribe((res: any) => {
+        console.log('under sub>>>>>>>>>>', res);
+        this.relationListFlag = false;
+        const apiResult = JSON.parse(JSON.stringify(res));
+        console.log('apiResult>>>>>>>>>>', apiResult);
+
+        if (apiResult && apiResult.status == 'SUCCESS') {
+          console.log('if>>>>>>>>>>', apiResult.status);
+
+          this.relationListByBlog = apiResult && apiResult.payload;
+          console.log(
+            'this.relationListByBlog>>>>>>>>>>',
+            this.relationListByBlog
+          );
+          this.relationIds = this.relationListByBlog.map(
+            (val: any) => val.blog_id
+          );
+
+          if (this.relationListByBlog.length == 0) {
+            console.log(
+              'if this.relationListByTopic>>>>>>>>>>',
+              this.relationListByBlog.length
+            );
+            this.relationListFlag = true;
+          } else {
+            console.log('false');
+            this.relationListFlag = false;
+          }
+        }
+      });
   }
 
   statusUpdate(value: any) {
@@ -189,14 +286,16 @@ export class BlogRelationComponent {
         confirmButtonText: 'Yes, change it!',
         cancelButtonText: 'No, cancel!',
         reverseButtons: true,
-
       })
       .then((result) => {
         if (result.isConfirmed) {
           this.commonservice
-            .put({
-              status: value.status == "draft" ? "publish" : "draft"
-            }, `blog/update/${value._id}`)
+            .put(
+              {
+                status: value.status == 'draft' ? 'publish' : 'draft',
+              },
+              `blog/update/${value._id}`
+            )
             .subscribe((res) => {
               const apiResult = JSON.parse(JSON.stringify(res));
               if (apiResult.status == 'SUCCESS') {
@@ -218,8 +317,7 @@ export class BlogRelationComponent {
             'error'
           );
         }
-      })
-
+      });
   }
 
   changeSearch(event: any) {
@@ -229,48 +327,4 @@ export class BlogRelationComponent {
       this.showSearch = true;
     }
   }
-
-  async relationList() {
-    await this.commonservice
-      .get(`relation/get/blog/${this.activtedrouter.snapshot.params['id']}`)
-      .subscribe(async (result: any) => {
-        if (result && result.status == 'SUCCESS') {
-          this.selectedBlog = result && result.payload[0];
-          // console.log("this.selectedBlog>>>>>>", this.selectedBlog)
-          console.log("this.selectedBlog>>>>>>", this.selectedBlog?.blog_id)
-        }
-      });
-  }
-
-  async addRelation(blog: any) {
-    console.log(this.selectedBlog._id, ">>>>>>>>>>>>>>blog>>>>>>>>>>>>", blog)
-    if (this.selectedBlog?._id) {
-      await this.commonservice.delete(`relation/delete/${this.selectedBlog?._id}`).subscribe(async (res) => {
-        const apiResult = JSON.parse(JSON.stringify(res));
-        if (apiResult.status == 'SUCCESS') {
-          await this.commonservice
-            .post(
-              {
-                question_id: this.activtedrouter.snapshot.params['id'],
-                blog_id: blog._id
-              },
-              'relation/add'
-            )
-            .subscribe(async (res: any) => {
-              const apiResult = JSON.parse(JSON.stringify(res));
-              if (apiResult && apiResult.status == 'SUCCESS') {
-                await this.relationList().then(async () => {
-                  let sres = localStorage.getItem('search')
-                  await this.getBlog(sres).then(() => {
-                    this.toastr.success("Added Successfully");
-                  })
-                })
-              }
-            })
-        }
-      })
-    }
-  }
-
-
 }

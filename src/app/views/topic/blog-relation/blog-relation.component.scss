@@ -6,3 +6,24 @@
 .defult{
     font-size:20px;
 }
+
+.add{
+    padding-left: 73%;
+  }
+  
+  .input-group-text{
+    padding: 0.72rem 0.75rem;
+  }
+  
+  .pagination {
+    padding: 20px 16px;
+    float: right;
+    font-size: 18px;    
+  }
+  
+  .pagination::ng-deep .ngx-pagination .current {
+    background: #39f;  
+  }
+  .pagination::ng-deep .ngx-pagination .ng-star-inserted{
+    text-decoration: none;
+  }

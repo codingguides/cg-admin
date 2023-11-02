@@ -31,7 +31,7 @@ export class RelationComponent {
   questionFlag: boolean = false
   items = [1, 2, 3, 4];
   relationListByTopic: any;
-  relationIds:any = []
+  relationIds: any = [];
   relationListFlag: boolean = false;
 
   constructor(
@@ -70,6 +70,7 @@ export class RelationComponent {
       .get(`topic/get/${this.activtedrouter.snapshot.params['id']}`)
       .subscribe(async (result: any) => {
         if (result && result.status == 'SUCCESS') {
+          console.log(result)
           this.topicByID = result && result.payload[0];
           console.log("this.topicByID>>>>>>>", this.topicByID.length)
         } else {
@@ -84,6 +85,7 @@ export class RelationComponent {
     await this.commonservice.put(params, 'questions/').subscribe((res) => {
       const apiResult = JSON.parse(JSON.stringify(res));
       this.questions = apiResult && apiResult.payload;
+      console.log(this.questions)
 
       if (apiResult && apiResult.status == 'SUCCESS') {
         this.questionFlag = true;
@@ -115,19 +117,19 @@ export class RelationComponent {
   }
 
   addId(id: any) {
-    let found = this.selectedId.find((arrid:number) =>  arrid == id ? true : false);
-    if(found){
-      this.selectedId = this.selectedId.filter((item:any) => {
+    let found = this.selectedId.find((arrid: number) => arrid == id ? true : false);
+    if (found) {
+      this.selectedId = this.selectedId.filter((item: any) => {
         return item !== found
       });
-    }else{
+    } else {
       this.selectedId.push(id);
       this.selectedId = [...new Set(this.selectedId)];
-    }   
+    }
   }
 
-  checkRow(id:any){
-    const found = this.relationIds.find((element:any) => element == id );
+  checkRow(id: any) {
+    const found = this.relationIds.find((element: any) => element == id);
     return found ? true : false
   }
 
@@ -139,7 +141,7 @@ export class RelationComponent {
 
   add() {
     if (this.selectedId.length > 0) {
-      console.log("this.selectedId>>>>>>", this.selectedId)
+      console.log("this.selectedId>>>>>>", this.selectedId);
 
       let count = 0;
       this.selectedId.map(async (qid: any) => {
@@ -245,7 +247,7 @@ export class RelationComponent {
 
           this.relationListByTopic = apiResult && apiResult.payload;
           console.log("this.relationListByTopic>>>>>>>>>>", this.relationListByTopic)
-          this.relationIds = this.relationListByTopic.map((val:any) => val.question_id)
+          this.relationIds = this.relationListByTopic.map((val: any) => val.question_id)
 
           if (this.relationListByTopic.length == 0) {
             console.log("if this.relationListByTopic>>>>>>>>>>", this.relationListByTopic.length)
