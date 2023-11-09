@@ -111,6 +111,56 @@
             </c-col>
           </c-row>
 
+          <c-row>
+            <c-col class="col-md-6">
+              <label cLabel for="parent_id">Topic TagLine</label>
+              <input
+                cFormControl
+                id="home_tagline"
+                type="text"
+                formControlName="home_tagline"
+                required
+              />
+              <div
+                style="color: red"
+                *ngIf="
+                  home_tagline && home_tagline.invalid && home_tagline.touched
+                "
+              >
+                <div [hidden]="!home_tagline.errors?.['required']">
+                  Tagline is required!
+                </div>
+              </div>
+            </c-col>
+            <c-col class="col-md-6">
+              <label cLabel for="parent_id">Index No</label>
+              <input
+                cFormControl
+                id="index_no"
+                type="text"
+                formControlName="index_no"
+              />
+              <!-- <div
+                style="color: red"
+                *ngIf="index_no && index_no.invalid && index_no.touched"
+              >
+                <div [hidden]="!index_no.errors?.['required']">
+                  Index No is required!
+                </div>
+              </div> -->
+            </c-col>
+          </c-row>
+          <c-row>
+            <c-col class="col-md-6">
+              <label cLabel for="image">Feature Image</label>
+              <textarea
+                cFormControl
+                id="image"
+                formControlName="featureImg"
+              ></textarea>
+            </c-col>
+          </c-row>
+
           <c-row class="mt-2">
             <c-col class="col-xs-6">
               <button cButton type="submit" [disabled]="!formGroup.valid">

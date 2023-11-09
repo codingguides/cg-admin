@@ -40,6 +40,10 @@ export class AddTopicComponent {
       slug: new FormControl('', []),
       parent_id: new FormControl('', [Validators.required]),
       tags: new FormControl('', [Validators.required]),
+      home_tagline: new FormControl('', [Validators.required]),
+      index_no: new FormControl('', []),
+      featureImg: new FormControl('', []),
+
     });
   }
 
@@ -61,6 +65,18 @@ export class AddTopicComponent {
 
   get tags() {
     return this.formGroup.get('tags');
+  }
+
+  get home_tagline() {
+    return this.formGroup.get('home_tagline');
+  }
+
+  get index_no() {
+    return this.formGroup.get('index_no');
+  }
+
+  get featureImg() {
+    return this.formGroup.get('featureImg');
   }
 
   async ngOnInit() {
@@ -102,10 +118,14 @@ export class AddTopicComponent {
       parent_id: formData['parent_id'],
       user_id: this.getUserDetails,
       tags: tags,
+      home_tagline: formData['home_tagline'],
+      index_no: formData['index_no'],
+      featureImg: formData['featureImg'],
     };
 
     this.commonservice.post(data, 'topic/add').subscribe((res) => {
       const apiResult = JSON.parse(JSON.stringify(res));
+      console.log(apiResult);
 
       if (apiResult && apiResult.status == 'SUCCESS') {
         tags.map(async (tag: string) => {

@@ -43,8 +43,11 @@ export class EditTopic {
       name: new FormControl('', [Validators.required]),
       slug: new FormControl('', [Validators.required]),
       parent_id: new FormControl('', [Validators.required]),
-      tags: new FormControl('', [Validators.required]),
+      tags: new FormControl('', []),
       description: new FormControl(''),
+      home_tagline: new FormControl('', [Validators.required]),
+      index_no: new FormControl('', [Validators.required]),
+      featureImg: new FormControl('', []),
     });
   }
 
@@ -71,6 +74,19 @@ export class EditTopic {
   get tags() {
     return this.formGroup.get('tags');
   }
+
+  get home_tagline() {
+    return this.formGroup.get('home_tagline');
+  }
+
+  get index_no() {
+    return this.formGroup.get('index_no');
+  }
+
+  get featureImg() {
+    return this.formGroup.get('featureImg');
+  }
+
   async ngOnInit() {
     await this.getId();
   }
@@ -93,6 +109,9 @@ export class EditTopic {
             parent_id: new FormControl(this.topicByID.parent_id),
             description: new FormControl(this.topicByID.description),
             tags: new FormControl(),
+            home_tagline: new FormControl(this.topicByID.home_tagline),
+            index_no: new FormControl(this.topicByID.index_no),
+            featureImg: new FormControl(this.topicByID.featureImg),
           });
         }
       });
@@ -173,6 +192,9 @@ export class EditTopic {
       parent_id: formData['parent_id'],
       user_id: this.getUserDetails,
       tags: tags,
+      home_tagline: formData['home_tagline'],
+      index_no: formData['index_no'],
+      featureImg: formData['featureImg'],
     };
     this.commonservice
       .put(data, `topic/update/${this.router.snapshot.params['id']}`)
