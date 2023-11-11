@@ -22,6 +22,55 @@
         >
           <c-row>
             <c-col class="col-md-6">
+              <label cLabel for="parent_id">Topic</label>
+              <select
+                cSelect
+                id="parent_id"
+                class="form-select"
+                formControlName="topic_id"
+                (change)="getCate($event)"
+              >
+                <option value="" selected disabled>
+                  --- Choose Topic ---
+                </option>
+                <option
+                  *ngFor="let topic of topics; let num = index"
+                  [value]="topic | json"
+                >
+                  {{ topic.name }}
+                </option>
+              </select>
+              <div
+                style="color: red"
+                *ngIf="topic_id && topic_id.invalid && topic_id.touched"
+              >
+                <div [hidden]="!topic_id.errors?.['required']">
+                  Select one Parent Topic!
+                </div>
+              </div>
+            </c-col>
+            <c-col class="col-md-6" *ngIf="isCategory">
+              <label cLabel for="category_id">Category</label>
+              <select
+                cSelect
+                id="category_id"
+                class="form-select"
+                formControlName="category_id"
+              >
+                <option value="" selected disabled>
+                  --- Choose Category ---
+                </option>
+                <option
+                  *ngFor="let cat of topicCate; let num = index"
+                  [value]="cat._id"
+                >
+                  {{ cat.sub_category }}
+                </option>
+              </select>
+            </c-col>
+          </c-row>
+          <c-row>
+            <c-col class="col-md-6">
               <label cLabel for="blogtitle">Blog Title</label>
               <input
                 cFormControl
@@ -71,18 +120,6 @@
                 id="image"
                 formControlName="feature_image"
               />
-              <div
-                style="color: red"
-                *ngIf="
-                  feature_image &&
-                  feature_image.invalid &&
-                  feature_image.touched
-                "
-              >
-                <div [hidden]="!feature_image.errors?.['required']">
-                  Feature Image is required!
-                </div>
-              </div>
             </c-col>
 
             <c-col class="col-md-6">
@@ -93,18 +130,6 @@
                 id="video"
                 formControlName="feature_video"
               />
-              <!-- <div
-                style="color: red"
-                *ngIf="
-                  feature_video &&
-                  feature_video.invalid &&
-                  feature_video.touched
-                "
-              >
-                <div [hidden]="!feature_video.errors?.['required']">
-                  Feature Video is required!
-                </div>
-              </div> -->
             </c-col>
           </c-row>
 
