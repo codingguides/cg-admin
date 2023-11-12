@@ -100,7 +100,8 @@
             <tr>
               <th scope="col">#</th>
               <th scope="col">Title</th>
-              <th scope="col">Slug</th>
+              <th scope="col">Category</th>
+              <th scope="col">Sub category</th>
               <th scope="col">Status</th>
               <th scope="col">Action</th>
             </tr>
@@ -120,8 +121,8 @@
             >
               <th scope="row">{{ num + 1 }}</th>
               <td scope="row">{{ blog.title }}</td>
-              <!-- <td>{{ removeTags(question.question) }}</td> -->
-              <td>{{ blog.slug }}</td>
+              <td>{{ blog.blogRelationDetails[0].category }}</td>
+              <td>{{ blog.blogRelationDetails[0].sub_category }}</td>
               <td>
                 <p (click)="statusUpdate(blog)">{{ blog.status }}</p>
               </td>
