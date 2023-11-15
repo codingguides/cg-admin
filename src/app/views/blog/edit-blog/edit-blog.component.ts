@@ -29,6 +29,12 @@ export class EditBlogComponent {
     flag: false,
     message: '',
   };
+  topics: any[] = [];
+  topicCate: any[] = [];
+  isCategory: boolean = true;
+  selectedTopic: any = {};
+  selectedCategory: any
+  selectedSubCategory: any
 
   constructor(
     public commonservice: HttpCallService,
@@ -43,7 +49,9 @@ export class EditBlogComponent {
       slug: new FormControl('', [Validators.required]),
       feature_image: new FormControl('', [Validators.required]),
       feature_video: new FormControl('', [Validators.required]),
-      description: new FormControl('')
+      description: new FormControl(''),
+      topic_id: new FormControl('', []),
+      category_id: new FormControl('', [Validators.required]),
     })
   }
 
@@ -67,9 +75,19 @@ export class EditBlogComponent {
     return this.formGroup.get('description');
   }
 
+  get category_id() {
+    return this.formGroup.get('category_id');
+  }
+
+  get topic_id() {
+    return this.formGroup.get('topic_id');
+  }
+
 
   async ngOnInit() {
     await this.getId();
+    await this.getTopic();
+
   }
 
   async getId() {
@@ -78,20 +96,51 @@ export class EditBlogComponent {
       .subscribe((result: any) => {
         const apiResult = JSON.parse(JSON.stringify(result));
         console.log(apiResult)
+
         if (result && result.status == 'SUCCESS') {
           this.blogByID = result && result.payload;
+          const detailsArray = this.blogByID.map(async (details: any) => {
 
-          this.updateDesc = this.blogByID.description;
-          this.formGroup = this.formBuilder.group({
-            title: new FormControl(this.blogByID.title),
-            slug: new FormControl(this.blogByID.slug),
-            description: new FormControl(this.blogByID.description),
-            feature_image: new FormControl(this.blogByID.feature_image),
-            feature_video: new FormControl(this.blogByID.feature_video)
+            this.selectedCategory = details.catDetails[0].category;
+            this.selectedSubCategory = details.catDetails[0].sub_category
+            console.log("this.selectedCategory", this.selectedCategory)
+            console.log("this.selectedCategory", this.selectedSubCategory)
+            await this.getCate(this.selectedCategory, '');
 
-          });
+            // console.log(sss.sub_category)
+            // console.log("ALL Details", details)
+            // console.log("sssss>>>>>>", details.catDetails)
+            // this.formGroup = this.formBuilder.group({
+            //   title: new FormControl(details.title),
+            //   slug: new FormControl(details.slug),
+            //   description: new FormControl(details.description),
+            // })
+
+          })
         }
       });
+  }
+
+  async getCate(val: any, selected: any) {
+    this.selectedTopic = JSON.parse(val.target.value);
+    this.topicCate = [];
+    let value = selected.length > 0 ? selected : this.selectedTopic.slug
+    if (value) {
+      console.log("selectedTopic.slug>>>>>>>>>>>>>", value)
+      await this.commonservice.get(`blog/get/category/${value}`).subscribe((res) => {
+        const apiResult = JSON.parse(JSON.stringify(res));
+        let tres = apiResult && apiResult.payload;
+        this.isCategory = tres.length > 0 ? true : false;
+        tres.map((result: any) => {
+          this.topicCate.push({
+            ...result,
+            selected: result.name === this.selectedSubCategory ? true : false,
+          });
+        })
+        console.log("this.topicCate", this.topicCate)
+      });
+    }
+
   }
 
   onChange(event: CKEditor4.EventInfo) {
@@ -121,16 +170,19 @@ export class EditBlogComponent {
     }
   }
 
-  async getBlog(selected: any) {
-    await this.commonservice.get('blog/list').subscribe((res) => {
+  async getTopic() {
+    await this.commonservice.get('topic/list').subscribe((res) => {
       const apiResult = JSON.parse(JSON.stringify(res));
-      this.blogs = apiResult && apiResult.payload;
-      this.blogs = this.blogs.map((blog) => {
-        return {
-          ...blog,
-          selected: blog._id === selected ? true : false,
-        };
-      });
+      let tres = apiResult && apiResult.payload;
+      tres.map((result: any) => {
+        if (result.parent_id == null) {
+          this.topics.push({
+            ...result,
+            selected: result.slug === this.selectedCategory ? true : false,
+          })
+        }
+      })
+      console.log("this.topics", this.topics)
     });
   }
 

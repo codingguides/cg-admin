@@ -30,9 +30,7 @@
                 formControlName="topic_id"
                 (change)="getCate($event)"
               >
-                <option value="" selected disabled>
-                  --- Choose Topic ---
-                </option>
+                <option value="" selected disabled>--- Choose Topic ---</option>
                 <option
                   *ngFor="let topic of topics; let num = index"
                   [value]="topic | json"
@@ -56,6 +54,7 @@
                 id="category_id"
                 class="form-select"
                 formControlName="category_id"
+                required
               >
                 <option value="" selected disabled>
                   --- Choose Category ---
@@ -67,6 +66,16 @@
                   {{ cat.sub_category }}
                 </option>
               </select>
+              <div
+                style="color: red"
+                *ngIf="
+                  category_id && category_id.invalid && category_id.touched
+                "
+              >
+                <div [hidden]="!category_id.errors?.['required']">
+                  Select one Category of particular Topic!
+                </div>
+              </div>
             </c-col>
           </c-row>
           <c-row>

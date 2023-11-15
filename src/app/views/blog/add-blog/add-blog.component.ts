@@ -30,8 +30,8 @@ export class AddBlogComponent {
   status: String = 'publish';
   topics: any[] = [];
   topicCate: any[] = [];
-  isCategory:boolean = true;
-  selectedTopic:any = {}
+  isCategory: boolean = true;
+  selectedTopic: any = {}
 
   constructor(
     public commonservice: HttpCallService,
@@ -45,10 +45,10 @@ export class AddBlogComponent {
 
     this.formGroup = this.formBuilder.group({
       title: new FormControl('', [Validators.required]),
-      slug: new FormControl('', [Validators.required]),
-      feature_image: new FormControl('', []),
-      feature_video: new FormControl('', []),
-      topic_id: new FormControl('', []),
+      slug: new FormControl(''),
+      feature_image: new FormControl(''),
+      feature_video: new FormControl(''),
+      topic_id: new FormControl('', [Validators.required]),
       category_id: new FormControl('', [Validators.required]),
     })
   }
@@ -91,6 +91,7 @@ export class AddBlogComponent {
     await this.commonservice.get('blog/').subscribe((res) => {
       const apiResult = JSON.parse(JSON.stringify(res));
       this.blogs = apiResult && apiResult.payload;
+      console.log("this.blogs", this.blogs)
     });
   }
 
@@ -118,10 +119,14 @@ export class AddBlogComponent {
       topic_id: this.selectedTopic.topic_id,
       category_id: formData['category_id']
     };
+
     this.commonservice.post(data, 'blog/add').subscribe((res) => {
       const apiResult = JSON.parse(JSON.stringify(res));
+      console.log("apiResult", apiResult)
+
 
       if (apiResult && apiResult.status == 'SUCCESS') {
+
         // this.toastr.success(apiResult.msg);
         this.formGroup.reset();
         this.formBuilder
@@ -165,30 +170,30 @@ export class AddBlogComponent {
     await this.commonservice.get('topic/list').subscribe((res) => {
       const apiResult = JSON.parse(JSON.stringify(res));
       let tres = apiResult && apiResult.payload;
-      tres.map((result:any)=>{
-        if(result.parent_id == null){
+      tres.map((result: any) => {
+        if (result.parent_id == null) {
           this.topics.push(result)
         }
       })
     });
   }
 
-  async getCate(val:any){
+  async getCate(val: any) {
     this.selectedTopic = JSON.parse(val.target.value);
     this.topicCate = [];
-    if(this.selectedTopic.slug){
-      console.log("selectedTopic.slug>>>>>>>>>>>>>",this.selectedTopic.slug)
+    if (this.selectedTopic.slug) {
+      console.log("selectedTopic.slug>>>>>>>>>>>>>", this.selectedTopic.slug)
       await this.commonservice.get(`blog/get/category/${this.selectedTopic.slug}`).subscribe((res) => {
         const apiResult = JSON.parse(JSON.stringify(res));
         let tres = apiResult && apiResult.payload;
         this.isCategory = tres.length > 0 ? true : false;
-        console.log("tres>>>>>>>",tres)
-        tres.map((result:any)=>{
+        console.log("tres>>>>>>>", tres)
+        tres.map((result: any) => {
           this.topicCate.push(result);
         })
       });
     }
-    
+
   }
 
 }
