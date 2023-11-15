@@ -34,7 +34,7 @@ export class EditBlogComponent {
   isCategory: boolean = true;
   selectedTopic: any = {};
   selectedCategory: any
-  selectedSubCategory: any
+  selectedSubCategory: any;
 
   constructor(
     public commonservice: HttpCallService,
@@ -93,38 +93,46 @@ export class EditBlogComponent {
   async getId() {
     await this.commonservice
       .get(`blog/get/${this.router.snapshot.params['id']}`)
-      .subscribe((result: any) => {
+      .subscribe(async (result: any) => {
         const apiResult = JSON.parse(JSON.stringify(result));
-        console.log(apiResult)
+        // console.log(apiResult)
 
         if (result && result.status == 'SUCCESS') {
-          this.blogByID = result && result.payload;
-          const detailsArray = this.blogByID.map(async (details: any) => {
+          this.blogByID = result && result.payload[0];
 
-            this.selectedCategory = details.catDetails[0].category;
-            this.selectedSubCategory = details.catDetails[0].sub_category
-            console.log("this.selectedCategory", this.selectedCategory)
-            console.log("this.selectedCategory", this.selectedSubCategory)
-            await this.getCate(this.selectedCategory, '');
+          this.selectedCategory = this.blogByID.catDetails[0].category;
+          this.selectedSubCategory = this.blogByID.catDetails[0].sub_category
+          console.log("this.selectedCategory", this.selectedCategory)
+          console.log("this.selectedCategory", this.selectedSubCategory)
+          await this.getCate('',this.selectedCategory);
 
-            // console.log(sss.sub_category)
-            // console.log("ALL Details", details)
-            // console.log("sssss>>>>>>", details.catDetails)
-            // this.formGroup = this.formBuilder.group({
-            //   title: new FormControl(details.title),
-            //   slug: new FormControl(details.slug),
-            //   description: new FormControl(details.description),
-            // })
+          this.updateDesc = this.blogByID.description;
 
+
+          this.formGroup = this.formBuilder.group({
+            title: new FormControl(this.blogByID.title),
+            slug: new FormControl(this.blogByID.slug),
+            description: new FormControl(this.blogByID.description),
+            feature_image: new FormControl(this.blogByID.feature_image),
+            feature_video: new FormControl(this.blogByID.feature_video),
+            topic_id: new FormControl(this.blogByID.topic_id),
+            category_id: new FormControl(this.blogByID.category_id),
           })
         }
       });
   }
 
   async getCate(val: any, selected: any) {
-    this.selectedTopic = JSON.parse(val.target.value);
+
     this.topicCate = [];
-    let value = selected.length > 0 ? selected : this.selectedTopic.slug
+    let value = '';
+    if(selected.length > 0){
+      value = selected;
+    }else{
+      this.selectedTopic = JSON.parse(val.target.value);
+      value = this.selectedTopic.slug;
+    }
+
     if (value) {
       console.log("selectedTopic.slug>>>>>>>>>>>>>", value)
       await this.commonservice.get(`blog/get/category/${value}`).subscribe((res) => {
@@ -134,7 +142,7 @@ export class EditBlogComponent {
         tres.map((result: any) => {
           this.topicCate.push({
             ...result,
-            selected: result.name === this.selectedSubCategory ? true : false,
+            selected: result.sub_category === this.selectedSubCategory ? true : false,
           });
         })
         console.log("this.topicCate", this.topicCate)
@@ -176,6 +184,7 @@ export class EditBlogComponent {
       let tres = apiResult && apiResult.payload;
       tres.map((result: any) => {
         if (result.parent_id == null) {
+          console.log(result.slug ,"==1111==", this.selectedCategory)
           this.topics.push({
             ...result,
             selected: result.slug === this.selectedCategory ? true : false,

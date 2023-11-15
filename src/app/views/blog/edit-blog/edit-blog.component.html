@@ -22,33 +22,27 @@
         >
           <c-row>
             <c-col class="col-md-6">
-              <label cLabel for="parent_id">Topic</label>
+              <label cLabel for="topic_id">Topic</label>
+              {{this.selectedCategory}}
               <select
                 cSelect
-                id="parent_id"
+                id="topic_id"
                 class="form-select"
                 formControlName="topic_id"
-                (change)="getCate($event, '')"
               >
                 <option
                   *ngFor="let topic of topics; let num = index"
-                  [value]="topic | json"
+                  [value]="topic._id"
                   [selected]="topic.selected"
                 >
+                  {{ topic.selected }}
                   {{ topic.name }}
                 </option>
               </select>
-              <div
-                style="color: red"
-                *ngIf="topic_id && topic_id.invalid && topic_id.touched"
-              >
-                <div [hidden]="!topic_id.errors?.['required']">
-                  Select one Parent Topic!
-                </div>
-              </div>
-            </c-col>
+              </c-col>
             <c-col class="col-md-6" *ngIf="isCategory">
               <label cLabel for="category_id">Category</label>
+              {{this.selectedSubCategory}}
               <select
                 cSelect
                 id="category_id"
