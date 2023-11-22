@@ -7,6 +7,7 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CKEditor4 } from 'ckeditor4-angular/ckeditor';
+import { ToastrService } from 'ngx-toastr';
 import { HttpCallService } from 'src/app/common/http-call.service';
 import Swal from 'sweetalert2';
 
@@ -41,7 +42,8 @@ export class AddQuestionComponent {
     private _router: Router,
     private formBuilder: FormBuilder,
     private router: Router,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private toastr: ToastrService,
   ) {
     this.config = this.commonservice.getConfigOfCKEditor();
     this.formGroup = this.formBuilder.group({
@@ -200,6 +202,13 @@ export class AddQuestionComponent {
             timer: 1500,
           });
         }
+      }, error => {
+        const array = error.error.errors;
+        const messages = array.map(function (err: any) { return err.msg })
+        const reverseMsg = messages.reverse();
+        const messages2 = reverseMsg.forEach((msgs: any) => {
+          this.toastr.error(msgs, "ERROR");
+        })
       });
   }
 

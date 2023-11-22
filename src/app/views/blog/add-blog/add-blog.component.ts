@@ -128,11 +128,10 @@ export class AddBlogComponent {
       if (apiResult && apiResult.status == 'SUCCESS') {
 
         // this.toastr.success(apiResult.msg);
-        this.formGroup.reset();
-        this.formBuilder
-        this.getUserDetails = '';
         this.updateDesc = '';
         this.editorData = 'Enter text';
+        this.formGroup.reset();
+        this.getUserDetails = '';
         this.ngOnInit();
 
         Swal.fire({

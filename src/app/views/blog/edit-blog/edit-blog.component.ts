@@ -203,6 +203,8 @@ export class EditBlogComponent {
       user_id: this.getUserDetails,
       feature_image: formData['feature_image'],
       feature_video: formData['feature_video'],
+      topic_id: this.selectedTopic.topic_id,
+      category_id: formData['category_id']
     };
     this.commonservice
       .put(data, `blog/update/${this.router.snapshot.params['id']}`)
@@ -212,7 +214,7 @@ export class EditBlogComponent {
         if (apiResult && apiResult.status == 'SUCCESS') {
           this.formGroup.reset();
           this.getUserDetails = '';
-          this.ngOnInit();
+          // this.ngOnInit();
           Swal.fire({
             position: 'top-end',
             icon: 'success',
