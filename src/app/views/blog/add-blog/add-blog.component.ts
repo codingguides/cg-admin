@@ -181,9 +181,9 @@ export class AddBlogComponent {
   async getCate(val: any) {
     this.selectedTopic = JSON.parse(val.target.value);
     this.topicCate = [];
-    if (this.selectedTopic.slug) {
-      console.log("selectedTopic.slug>>>>>>>>>>>>>", this.selectedTopic.slug)
-      await this.commonservice.get(`blog/get/category/${this.selectedTopic.slug}`).subscribe((res) => {
+    if (this.selectedTopic.name) {
+      console.log("selectedTopic.slug>>>>>>>>>>>>>", this.selectedTopic.name)
+      await this.commonservice.get(`blog/get/category/${this.selectedTopic.name}`).subscribe((res) => {
         const apiResult = JSON.parse(JSON.stringify(res));
         let tres = apiResult && apiResult.payload;
         this.isCategory = tres.length > 0 ? true : false;

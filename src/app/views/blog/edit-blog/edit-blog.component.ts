@@ -95,7 +95,7 @@ export class EditBlogComponent {
       .get(`blog/get/${this.router.snapshot.params['id']}`)
       .subscribe(async (result: any) => {
         const apiResult = JSON.parse(JSON.stringify(result));
-        // console.log(apiResult)
+        console.log(apiResult)
 
         if (result && result.status == 'SUCCESS') {
           this.blogByID = result && result.payload[0];
@@ -104,7 +104,7 @@ export class EditBlogComponent {
           this.selectedSubCategory = this.blogByID.catDetails[0].sub_category
           console.log("this.selectedCategory", this.selectedCategory)
           console.log("this.selectedCategory", this.selectedSubCategory)
-          await this.getCate('',this.selectedCategory);
+          await this.getCate('', this.selectedCategory);
 
           this.updateDesc = this.blogByID.description;
 
@@ -126,11 +126,11 @@ export class EditBlogComponent {
 
     this.topicCate = [];
     let value = '';
-    if(selected.length > 0){
+    if (selected.length > 0) {
       value = selected;
-    }else{
+    } else {
       this.selectedTopic = JSON.parse(val.target.value);
-      value = this.selectedTopic.slug;
+      value = this.selectedTopic.name;
     }
 
     if (value) {
@@ -184,10 +184,10 @@ export class EditBlogComponent {
       let tres = apiResult && apiResult.payload;
       tres.map((result: any) => {
         if (result.parent_id == null) {
-          console.log(result.slug ,"==1111==", this.selectedCategory)
+          console.log(result.name, "==1111==", this.selectedCategory)
           this.topics.push({
             ...result,
-            selected: result.slug === this.selectedCategory ? true : false,
+            selected: result.name === this.selectedCategory ? true : false,
           })
         }
       })
