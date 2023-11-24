@@ -130,7 +130,7 @@ export class EditBlogComponent {
       value = selected;
     } else {
       this.selectedTopic = JSON.parse(val.target.value);
-      value = this.selectedTopic.name;
+      value = this.selectedTopic.slug;
     }
 
     if (value) {
@@ -184,10 +184,10 @@ export class EditBlogComponent {
       let tres = apiResult && apiResult.payload;
       tres.map((result: any) => {
         if (result.parent_id == null) {
-          console.log(result.name, "==1111==", this.selectedCategory)
+          console.log(result.slug, "==1111==", this.selectedCategory)
           this.topics.push({
             ...result,
-            selected: result.name === this.selectedCategory ? true : false,
+            selected: result.slug === this.selectedCategory ? true : false,
           })
         }
       })
