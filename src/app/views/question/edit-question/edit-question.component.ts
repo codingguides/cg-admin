@@ -153,6 +153,9 @@ export class EditQuestionComponent {
     } else if (this.selectedOption == 'option4') {
       rightAnswer = this.formGroup.value['option4'];
     }
+    else {
+      rightAnswer = this.questionByID.rightoption;
+    }
 
     for (let index = 1; index < 5; index++) {
       this.options.push(this.formGroup.value[`option${index}`]);
