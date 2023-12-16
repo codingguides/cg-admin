@@ -22,6 +22,45 @@
         >
           <c-row>
             <c-col class="col-md-6">
+              <label cLabel for="topic_id">Topic</label>
+              {{this.selectedCategory}}
+              <select
+                cSelect
+                id="topic_id"
+                class="form-select"
+                formControlName="topic_id"
+              >
+                <option
+                  *ngFor="let topic of topics; let num = index"
+                  [value]="topic._id"
+                  [selected]="topic.selected"
+                >
+                  {{ topic.selected }}
+                  {{ topic.name }}
+                </option>
+              </select>
+              </c-col>
+            <c-col class="col-md-6" *ngIf="isCategory">
+              <label cLabel for="category_id">Category</label>
+              {{this.selectedSubCategory}}
+              <select
+                cSelect
+                id="category_id"
+                class="form-select"
+                formControlName="category_id"
+              >
+                <option
+                  *ngFor="let cat of topicCate; let num = index"
+                  [value]="cat._id"
+                  [selected]="cat.selected"
+                >
+                  {{ cat.sub_category }}
+                </option>
+              </select>
+            </c-col>
+          </c-row>
+          <c-row>
+            <c-col class="col-md-6">
               <label cLabel for="blogtitle">Blog Title</label>
               <input
                 cFormControl

@@ -2,8 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxPaginationModule } from 'ngx-pagination';
-
-
+import { BlogRelationComponent } from './blog-relation/blog-relation.component';
 
 import {
   ButtonGroupModule,
@@ -32,7 +31,8 @@ import { RelationComponent } from './relation/relation.component';
     TopicListComponent,
     AddTopicComponent,
     EditTopic,
-    RelationComponent
+    RelationComponent,
+    BlogRelationComponent
   ],
   imports: [
     CommonModule,

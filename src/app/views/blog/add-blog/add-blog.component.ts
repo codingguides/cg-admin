@@ -27,7 +27,11 @@ export class AddBlogComponent {
   blogSlug: string = '';
   getUserDetails: any;
   config: any;
-  status: String = 'publish'
+  status: String = 'publish';
+  topics: any[] = [];
+  topicCate: any[] = [];
+  isCategory: boolean = true;
+  selectedTopic: any = {}
 
   constructor(
     public commonservice: HttpCallService,
@@ -41,11 +45,11 @@ export class AddBlogComponent {
 
     this.formGroup = this.formBuilder.group({
       title: new FormControl('', [Validators.required]),
-      slug: new FormControl('', []),
-      feature_image: new FormControl('', [Validators.required]),
-      feature_video: new FormControl('', []),
-      // parent_id: new FormControl('', [Validators.required]),
-      // tags: new FormControl('', [Validators.required]),
+      slug: new FormControl(''),
+      feature_image: new FormControl(''),
+      feature_video: new FormControl(''),
+      topic_id: new FormControl('', [Validators.required]),
+      category_id: new FormControl('', [Validators.required]),
     })
   }
 
@@ -65,9 +69,17 @@ export class AddBlogComponent {
     return this.formGroup.get('feature_video');
   }
 
+  get category_id() {
+    return this.formGroup.get('category_id');
+  }
+
+  get topic_id() {
+    return this.formGroup.get('topic_id');
+  }
+
   async ngOnInit() {
     this.getBlog();
-
+    this.getTopic();
     this.getUserDetails = await this.commonservice.getTokenDetails('id');
   }
 
@@ -78,8 +90,8 @@ export class AddBlogComponent {
   async getBlog() {
     await this.commonservice.get('blog/').subscribe((res) => {
       const apiResult = JSON.parse(JSON.stringify(res));
-
       this.blogs = apiResult && apiResult.payload;
+      console.log("this.blogs", this.blogs)
     });
   }
 
@@ -104,17 +116,22 @@ export class AddBlogComponent {
       feature_image: formData['feature_image'],
       feature_video: formData['feature_video'],
       status: this.status,
+      topic_id: this.selectedTopic.topic_id,
+      category_id: formData['category_id']
     };
+
     this.commonservice.post(data, 'blog/add').subscribe((res) => {
       const apiResult = JSON.parse(JSON.stringify(res));
+      console.log("apiResult", apiResult)
+
 
       if (apiResult && apiResult.status == 'SUCCESS') {
+
         // this.toastr.success(apiResult.msg);
-        this.formGroup.reset();
-        this.formBuilder
-        this.getUserDetails = '';
         this.updateDesc = '';
         this.editorData = 'Enter text';
+        this.formGroup.reset();
+        this.getUserDetails = '';
         this.ngOnInit();
 
         Swal.fire({
@@ -146,6 +163,36 @@ export class AddBlogComponent {
 
   changeStatus() {
     this.status = "draft";
+  }
+
+  async getTopic() {
+    await this.commonservice.get('topic/list').subscribe((res) => {
+      const apiResult = JSON.parse(JSON.stringify(res));
+      let tres = apiResult && apiResult.payload;
+      tres.map((result: any) => {
+        if (result.parent_id == null) {
+          this.topics.push(result)
+        }
+      })
+    });
+  }
+
+  async getCate(val: any) {
+    this.selectedTopic = JSON.parse(val.target.value);
+    this.topicCate = [];
+    if (this.selectedTopic.slug) {
+      console.log("selectedTopic.slug>>>>>>>>>>>>>", this.selectedTopic.slug)
+      await this.commonservice.get(`blog/get/category/${this.selectedTopic.slug}`).subscribe((res) => {
+        const apiResult = JSON.parse(JSON.stringify(res));
+        let tres = apiResult && apiResult.payload;
+        this.isCategory = tres.length > 0 ? true : false;
+        console.log("tres>>>>>>>", tres)
+        tres.map((result: any) => {
+          this.topicCate.push(result);
+        })
+      });
+    }
+
   }
 
 }

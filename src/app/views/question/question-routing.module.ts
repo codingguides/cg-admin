@@ -15,6 +15,7 @@ const routes: Routes = [
       {
         path: 'list',
         component: QuestionListComponent,
+        pathMatch: 'full',
         data: {
           title: 'Question List'
         }
@@ -22,6 +23,7 @@ const routes: Routes = [
       {
         path: 'edit/:id',
         component: EditQuestionComponent,
+        pathMatch: 'full',
         data: {
           title: 'Edit'
         }
@@ -29,6 +31,7 @@ const routes: Routes = [
       {
         path: 'add',
         component: AddQuestionComponent,
+        pathMatch: 'full',
         data: {
           title: 'Add Question'
         }

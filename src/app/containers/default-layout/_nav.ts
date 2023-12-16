@@ -47,4 +47,15 @@ export const navItems: INavData[] = [
       },
     ],
   },
+  {
+    name: 'Newsletter',
+    url: '/newsletter',
+    iconComponent: { name: 'cil-notes' },
+    children: [
+      {
+        name: 'Newsletter List',
+        url: '/newsletter/list',
+      },
+    ],
+  },
 ];

@@ -50,6 +50,11 @@ const routes: Routes = [
           import('./views/blog/blog.module').then((m) => m.BlogModule)
       },
       {
+        path: 'newsletter',
+        loadChildren: () =>
+          import('./views/newsletter/newsletter.module').then((m) => m.NewsletterModule)
+      },
+      {
         path: 'interview',
         loadChildren: () =>
           import('./views/interview/interview.module').then((m) => m.InterviewModule)

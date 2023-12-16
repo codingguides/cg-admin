@@ -1,0 +1,44 @@
+:host {
+    #exampleColorInput {
+      min-width: 2.5rem;
+    }
+    .color-box {
+      min-width: 2rem;
+      min-height: 2rem;
+    }
+    
+  }
+  
+  .add{
+    padding-left: 73%;
+  }
+  
+  th, tr, td {
+    text-align: center !important;
+  }
+
+  .pagination {
+    padding: 20px 16px;
+    float: right;
+    font-size: 14px;    
+  }
+
+  .pagination::ng-deep .ngx-pagination .current {
+    background: #39f;  
+  }
+  .pagination::ng-deep .ngx-pagination .ng-star-inserted{
+    text-decoration: none;
+  }
+
+// button.swal2-cancel.btn.btn-danger {
+//     margin-right: 10px;
+// }
+
+.my-actions { margin: 0 2em; }
+.order-1 { order: 1; }
+.order-2 { order: 2; }
+
+
+.right-gap {
+  margin-right: auto;
+}

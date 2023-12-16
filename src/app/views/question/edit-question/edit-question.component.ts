@@ -19,6 +19,7 @@ import Swal from 'sweetalert2';
 export class EditQuestionComponent {
   public favoriteColor = '#26ab3c';
   updateDesc: any = '';
+  ansDetails: any = '';
   formGroup!: FormGroup;
   questions!: any[];
   questionSlug: string = '';
@@ -50,6 +51,7 @@ export class EditQuestionComponent {
       option3: new FormControl('', [Validators.required]),
       option4: new FormControl('', [Validators.required]),
       rightoption: new FormControl(''),
+      rightAnswerDescription: new FormControl(''),
     });
   }
 
@@ -84,6 +86,9 @@ export class EditQuestionComponent {
   get rightoption() {
     return this.formGroup.get('rightoption');
   }
+  get rightAnswerDescription() {
+    return this.formGroup.get('rightAnswerDescription');
+  }
 
   async ngOnInit() {
     await this.getId();
@@ -98,10 +103,13 @@ export class EditQuestionComponent {
         if (result && result.status == 'SUCCESS') {
           this.questionByID = result && result.payload;
           this.updateDesc = this.questionByID.question;
+          this.ansDetails = this.questionByID.rightAnswerDescription;
           // await this.getQuestion(this.questionByID._id);
 
           this.formGroup = this.formBuilder.group({
             question: new FormControl(this.questionByID.question),
+            rightAnswerDescription: new FormControl(this.questionByID.rightAnswerDescription),
+
             questiontype: new FormControl(this.questionByID.questiontype),
             point: new FormControl(this.questionByID.point),
             level: new FormControl(this.questionByID.level),
@@ -120,6 +128,10 @@ export class EditQuestionComponent {
 
   onChange(event: CKEditor4.EventInfo) {
     this.updateDesc = event.editor.getData();
+  }
+
+  ansDescription(event: CKEditor4.EventInfo) {
+    this.ansDetails = event.editor.getData();
   }
 
   rightOption(option: any) {
@@ -141,6 +153,9 @@ export class EditQuestionComponent {
     } else if (this.selectedOption == 'option4') {
       rightAnswer = this.formGroup.value['option4'];
     }
+    else {
+      rightAnswer = this.questionByID.rightoption;
+    }
 
     for (let index = 1; index < 5; index++) {
       this.options.push(this.formGroup.value[`option${index}`]);
@@ -156,6 +171,7 @@ export class EditQuestionComponent {
           level: this.formGroup.value.level,
           questiontype: this.formGroup.value.questiontype,
           user_id: this.getUserDetails,
+          rightAnswerDescription: this.ansDetails,
         },
         `questions/update/${this.router.snapshot.params['id']}`
       )
@@ -165,6 +181,7 @@ export class EditQuestionComponent {
         if (apiResult && apiResult.status == 'SUCCESS') {
           this.formGroup.reset();
           this.getUserDetails = '';
+          this.ansDetails = '';
           this.ngOnInit();
 
           Swal.fire({

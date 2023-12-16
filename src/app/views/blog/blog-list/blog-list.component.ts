@@ -22,9 +22,6 @@ export class BlogListComponent {
   page: number = 1;
   totalLength: any;
   limit: number = 1000;
-  // totalPages!: number;
-  // currentPage!: number;
-  // lastElement!: number;
   showSearch: boolean = true;
   parray: any = [];
   searchoption: any = '';
@@ -67,54 +64,13 @@ export class BlogListComponent {
 
       if (apiResult && apiResult.status == 'SUCCESS') {
         this.blogs = apiResult && apiResult.payload;
-        // this.totalPages = apiResult.totalPages;
-        // this.currentPage = apiResult.currentPage;
-        // this.parray = [];
-        // for (let index = 1; index <= this.totalPages; index++) {
-        //   this.parray.push(index)
-        // }
-        // this.lastElement = this.parray[this.parray.length - 1];
       } else if (apiResult && apiResult.status == 'ERROR') {
         this.errFlag = true;
         this.errMessage = apiResult.msg;
         this.blogs = [];
-        // this.totalPages = 0;
-        // this.currentPage = 0;
       }
     })
   }
-
-  // async updateBlog(pageno: number) {
-  //   this.currentPage = pageno;
-  //   await this.getBlog({
-  //     page: pageno,
-  //     limit: this.limit,
-  //   });
-  // }
-
-  // async previous(pageno: number) {
-  //   this.currentPage = pageno - 1;
-  //   console.log(">>>>>>>>>>>>>>>>", {
-  //     page: this.currentPage,
-  //     limit: this.limit,
-  //   })
-  //   await this.getBlog({
-  //     page: this.currentPage,
-  //     limit: this.limit,
-  //   });
-  // }
-
-  // async next(pageno: number) {
-  //   this.currentPage = pageno + 1;
-  //   console.log(">>>>>>>>>>>>>>>>", {
-  //     page: this.currentPage,
-  //     limit: this.limit,
-  //   })
-  //   await this.getBlog({
-  //     page: this.currentPage,
-  //     limit: this.limit,
-  //   });
-  // }
 
   getParentName(blog: any) {
     if (blog.parentDetails.length > 0) {

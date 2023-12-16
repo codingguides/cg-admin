@@ -165,9 +165,7 @@ export class QuestionListComponent {
       });
   }
 
-  edit(question: any) {
-    alert(question.point);
-  }
+
 
   removeTags(str: any) {
     if (str === null || str === '') return false;

@@ -1,0 +1,91 @@
+<c-row ngPreserveWhitespaces>
+  <c-col xs="12">
+    <c-card class="mb-4">
+      <c-card-header>
+        <c-col xs="12">
+          <div class="row">
+            <div class="col-sm-12"><strong>Newsletter List</strong></div>
+          </div>
+        </c-col>
+      </c-card-header>
+      <c-card-body>
+
+        <div class="row">
+          <div class="col-sm-3">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Email</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  *ngFor="
+                    let blog of blogs
+                      | paginate
+                        : {
+                            itemsPerPage: 10,
+                            currentPage: page,
+                            totalItems: totalLength
+                          };
+                    let num = index
+                  "
+                >
+                  <th scope="row">
+                    <input
+                      type="checkbox"
+                      (change)="addEmail(blog.email)"
+                    />
+                    <!-- [disabled]="checkRow(question._id)"
+                      [checked]="checkRow(question._id)"
+                      (change)="addId(question._id)" -->
+                  </th>
+                  <td scope="row">{{ blog.email }}</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="pagination">
+              <pagination-controls
+                (pageChange)="page = $event"
+              ></pagination-controls>
+            </div>
+          </div>
+          <div class="col-sm-9">
+            <form cForm>
+              <div class="mb-3">
+                <label cLabel for="exampleFormControlInput1">To</label>
+                <input cFormControl
+                  id="exampleFormControlInput1"
+                  placeholder="name@example.com"
+                  type="email"
+                  [value]="ccemail"
+                  readonly="true"
+                />
+              </div>
+              <div class="mb-3">
+                <label cLabel for="exampleFormControlTextarea1">Email Body</label>
+                <ckeditor
+                  cFormControl
+                  [data]="editorData"
+                  [config]="this.config"
+                  (change)="onChange($event)"
+                ></ckeditor>
+              </div>
+              <c-row class="mt-2">
+                <c-col class="col-xs-6">
+                  <button cButton type="submit">
+                    Send Email
+                  </button>
+                </c-col>
+              </c-row>
+            </form>
+          </div>
+        </div>
+
+        
+        
+      </c-card-body>
+    </c-card>
+  </c-col>
+</c-row>

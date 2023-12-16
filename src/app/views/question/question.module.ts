@@ -11,8 +11,11 @@ import {
   FormModule,
   GridModule,
   ListGroupModule,
-  SharedModule,
+  AccordionModule,
+  NavModule,
+  TabsModule,
   PaginationModule,
+  SharedModule
 } from '@coreui/angular';
 
 import { QuestionRoutingModule } from './question-routing.module';
@@ -25,13 +28,16 @@ import { EditQuestionComponent } from './edit-question/edit-question.component';
   declarations: [
     AddQuestionComponent,
     QuestionListComponent,
-    EditQuestionComponent
+    EditQuestionComponent,
   ],
   imports: [
     CommonModule,
     QuestionRoutingModule,
     NgxPaginationModule,
     PaginationModule,
+    AccordionModule,
+    NavModule,
+    TabsModule,
     CardModule,
     FormModule,
     GridModule,

@@ -7,6 +7,7 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CKEditor4 } from 'ckeditor4-angular/ckeditor';
+import { ToastrService } from 'ngx-toastr';
 import { HttpCallService } from 'src/app/common/http-call.service';
 import Swal from 'sweetalert2';
 
@@ -18,8 +19,10 @@ import Swal from 'sweetalert2';
 export class AddQuestionComponent {
   public favoriteColor = '#26ab3c';
   public updateDesc: string = '';
+  public ansDetails: string = '';
   formGroup!: FormGroup;
   editorData: any = '<p>Enter text</p>';
+  answerData: any = '<p>Enter answer in details</p>';
   questions!: any[];
   questionSlug: string = '';
   getUserDetails: any;
@@ -39,7 +42,8 @@ export class AddQuestionComponent {
     private _router: Router,
     private formBuilder: FormBuilder,
     private router: Router,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private toastr: ToastrService,
   ) {
     this.config = this.commonservice.getConfigOfCKEditor();
     this.formGroup = this.formBuilder.group({
@@ -53,6 +57,7 @@ export class AddQuestionComponent {
       option4: new FormControl('', [Validators.required]),
       rightoption: new FormControl(''),
       tags: new FormControl('', [Validators.required]),
+      rightAnswerDescription: new FormControl(''),
     });
   }
 
@@ -86,6 +91,9 @@ export class AddQuestionComponent {
   get tags() {
     return this.formGroup.get('tags');
   }
+  get rightAnswerDescription() {
+    return this.formGroup.get('rightAnswerDescription')
+  }
 
   async ngOnInit() {
     await this.getQuestion({
@@ -98,6 +106,10 @@ export class AddQuestionComponent {
 
   onChange(event: CKEditor4.EventInfo) {
     this.updateDesc = event.editor.getData();
+  }
+
+  ansDescription(event: CKEditor4.EventInfo) {
+    this.ansDetails = event.editor.getData()
   }
 
   rightOption(option: any) {
@@ -146,7 +158,8 @@ export class AddQuestionComponent {
           level: this.formGroup.value.level,
           questiontype: this.formGroup.value.questiontype,
           user_id: this.getUserDetails,
-          tags: tags
+          tags: tags,
+          rightAnswerDescription: this.ansDetails,
         },
         'questions/add'
       )
@@ -169,7 +182,9 @@ export class AddQuestionComponent {
           this.formGroup.reset();
           this.getUserDetails = '';
           this.updateDesc = '';
+          this.ansDetails = '';
           this.editorData = 'Enter text';
+          this.answerData = 'Enter answer in details';
           this.ngOnInit();
           Swal.fire({
             position: 'top-end',
@@ -187,6 +202,13 @@ export class AddQuestionComponent {
             timer: 1500,
           });
         }
+      }, error => {
+        const array = error.error.errors;
+        const messages = array.map(function (err: any) { return err.msg })
+        const reverseMsg = messages.reverse();
+        const messages2 = reverseMsg.forEach((msgs: any) => {
+          this.toastr.error(msgs, "ERROR");
+        })
       });
   }
 

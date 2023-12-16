@@ -81,41 +81,12 @@ export class TopicListComponent {
     });
   }
 
-  // async updateTopic(pageno: number) {
-  //   this.currentPage = pageno;
-  //   await this.getTopic({
-  //     page: pageno,
-  //     limit: this.limit,
-  //   });
-  // }
-
-  // async previous(pageno: number) {
-  //   this.currentPage = pageno - 1;
-  //   console.log(">>>>>>>>>>>>>>>>", {
-  //     page: this.currentPage,
-  //     limit: this.limit,
-  //   })
-  //   await this.getTopic({
-  //     page: this.currentPage,
-  //     limit: this.limit,
-  //   });
-  // }
-
-  // async next(pageno: number) {
-  //   this.currentPage = pageno + 1;
-  //   console.log(">>>>>>>>>>>>>>>>", {
-  //     page: this.currentPage,
-  //     limit: this.limit,
-  //   })
-  //   await this.getTopic({
-  //     page: this.currentPage,
-  //     limit: this.limit,
-  //   });
-  // }
-
   getParentName(topic: any) {
     if (topic.parentDetails.length > 0) {
       return topic.parentDetails[0].name;
+    }
+    else {
+      return "no parent";
     }
   }
 
@@ -188,11 +159,19 @@ export class TopicListComponent {
     this.formGroup.reset();
   }
 
-  isShowMenu(topic: any) {
-    this.commonservice
-      .put({
+  isShowMenu(topic: any, flag: String) {
+    let query = {};
+    if (flag == 'isShowMenu') {
+      query = {
         showNav: !topic.showNav
-      }, `topic/update/${topic._id}`)
+      }
+    } else if (flag == 'showFeatures') {
+      query = {
+        showFeatures: !topic.showFeatures
+      }
+    }
+    this.commonservice
+      .put(query, `topic/update/${topic._id}`)
       .subscribe((res) => {
         const apiResult = JSON.parse(JSON.stringify(res));
 
@@ -204,4 +183,11 @@ export class TopicListComponent {
         }
       });
   }
+
+
+  relation(topic: any) {
+    localStorage.setItem("tname", topic.name)
+    this.router.navigate([`/topic/blog-relation/${topic._id}`]);
+  }
+
 }

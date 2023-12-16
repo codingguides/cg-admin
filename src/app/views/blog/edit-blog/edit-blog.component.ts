@@ -20,7 +20,6 @@ export class EditBlogComponent {
   public favoriteColor = '#26ab3c';
   updateDesc: any = '';
   formGroup!: FormGroup;
-  // editorData: any = '<p>Enter text</p>';
   blogs!: any[];
   blogSlug: string = '';
   getUserDetails: any;
@@ -30,6 +29,12 @@ export class EditBlogComponent {
     flag: false,
     message: '',
   };
+  topics: any[] = [];
+  topicCate: any[] = [];
+  isCategory: boolean = true;
+  selectedTopic: any = {};
+  selectedCategory: any
+  selectedSubCategory: any;
 
   constructor(
     public commonservice: HttpCallService,
@@ -45,8 +50,8 @@ export class EditBlogComponent {
       feature_image: new FormControl('', [Validators.required]),
       feature_video: new FormControl('', [Validators.required]),
       description: new FormControl(''),
-      // parent_id: new FormControl('', [Validators.required]),
-      // tags: new FormControl('', [Validators.required]),
+      topic_id: new FormControl('', []),
+      category_id: new FormControl('', [Validators.required]),
     })
   }
 
@@ -70,31 +75,80 @@ export class EditBlogComponent {
     return this.formGroup.get('description');
   }
 
+  get category_id() {
+    return this.formGroup.get('category_id');
+  }
+
+  get topic_id() {
+    return this.formGroup.get('topic_id');
+  }
+
 
   async ngOnInit() {
     await this.getId();
+    await this.getTopic();
+
   }
 
   async getId() {
     await this.commonservice
       .get(`blog/get/${this.router.snapshot.params['id']}`)
-      .subscribe((result: any) => {
+      .subscribe(async (result: any) => {
         const apiResult = JSON.parse(JSON.stringify(result));
         console.log(apiResult)
+
         if (result && result.status == 'SUCCESS') {
-          this.blogByID = result && result.payload;
+          this.blogByID = result && result.payload[0];
+
+          this.selectedCategory = this.blogByID.catDetails[0].category;
+          this.selectedSubCategory = this.blogByID.catDetails[0].sub_category
+          console.log("this.selectedCategory", this.selectedCategory)
+          console.log("this.selectedCategory", this.selectedSubCategory)
+          await this.getCate('', this.selectedCategory);
 
           this.updateDesc = this.blogByID.description;
+
+
           this.formGroup = this.formBuilder.group({
             title: new FormControl(this.blogByID.title),
             slug: new FormControl(this.blogByID.slug),
             description: new FormControl(this.blogByID.description),
             feature_image: new FormControl(this.blogByID.feature_image),
-            feature_video: new FormControl(this.blogByID.feature_video)
-
-          });
+            feature_video: new FormControl(this.blogByID.feature_video),
+            topic_id: new FormControl(this.blogByID.topic_id),
+            category_id: new FormControl(this.blogByID.category_id),
+          })
         }
       });
+  }
+
+  async getCate(val: any, selected: any) {
+
+    this.topicCate = [];
+    let value = '';
+    if (selected.length > 0) {
+      value = selected;
+    } else {
+      this.selectedTopic = JSON.parse(val.target.value);
+      value = this.selectedTopic.slug;
+    }
+
+    if (value) {
+      console.log("selectedTopic.slug>>>>>>>>>>>>>", value)
+      await this.commonservice.get(`blog/get/category/${value}`).subscribe((res) => {
+        const apiResult = JSON.parse(JSON.stringify(res));
+        let tres = apiResult && apiResult.payload;
+        this.isCategory = tres.length > 0 ? true : false;
+        tres.map((result: any) => {
+          this.topicCate.push({
+            ...result,
+            selected: result.sub_category === this.selectedSubCategory ? true : false,
+          });
+        })
+        console.log("this.topicCate", this.topicCate)
+      });
+    }
+
   }
 
   onChange(event: CKEditor4.EventInfo) {
@@ -124,16 +178,20 @@ export class EditBlogComponent {
     }
   }
 
-  async getBlog(selected: any) {
-    await this.commonservice.get('blog/list').subscribe((res) => {
+  async getTopic() {
+    await this.commonservice.get('topic/list').subscribe((res) => {
       const apiResult = JSON.parse(JSON.stringify(res));
-      this.blogs = apiResult && apiResult.payload;
-      this.blogs = this.blogs.map((blog) => {
-        return {
-          ...blog,
-          selected: blog._id === selected ? true : false,
-        };
-      });
+      let tres = apiResult && apiResult.payload;
+      tres.map((result: any) => {
+        if (result.parent_id == null) {
+          console.log(result.slug, "==1111==", this.selectedCategory)
+          this.topics.push({
+            ...result,
+            selected: result.slug === this.selectedCategory ? true : false,
+          })
+        }
+      })
+      console.log("this.topics", this.topics)
     });
   }
 
@@ -145,6 +203,8 @@ export class EditBlogComponent {
       user_id: this.getUserDetails,
       feature_image: formData['feature_image'],
       feature_video: formData['feature_video'],
+      topic_id: this.selectedTopic.topic_id,
+      category_id: formData['category_id']
     };
     this.commonservice
       .put(data, `blog/update/${this.router.snapshot.params['id']}`)
@@ -154,7 +214,7 @@ export class EditBlogComponent {
         if (apiResult && apiResult.status == 'SUCCESS') {
           this.formGroup.reset();
           this.getUserDetails = '';
-          this.ngOnInit();
+          // this.ngOnInit();
           Swal.fire({
             position: 'top-end',
             icon: 'success',
