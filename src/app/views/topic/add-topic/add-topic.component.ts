@@ -31,7 +31,7 @@ export class AddTopicComponent {
     private _router: Router,
     private formBuilder: FormBuilder,
     private router: Router,
-    private toastr: ToastrService,
+    private toastr: ToastrService
   ) {
     this.config = this.commonservice.getConfigOfCKEditor();
 
@@ -43,7 +43,6 @@ export class AddTopicComponent {
       home_tagline: new FormControl('', [Validators.required]),
       index_no: new FormControl('', []),
       featureImg: new FormControl('', []),
-
     });
   }
 
@@ -123,52 +122,57 @@ export class AddTopicComponent {
       featureImg: formData['featureImg'],
     };
 
-    this.commonservice.post(data, 'topic/add').subscribe((res) => {
-      const apiResult = JSON.parse(JSON.stringify(res));
-      console.log(apiResult);
+    this.commonservice.post(data, 'topic/add').subscribe(
+      (res) => {
+        const apiResult = JSON.parse(JSON.stringify(res));
+        console.log(apiResult);
 
-      if (apiResult && apiResult.status == 'SUCCESS') {
-        tags.map(async (tag: string) => {
-          await this.commonservice
-            .post(
-              {
-                name: tag,
-                type: 'topic',
-                topic_id: apiResult?.payload?._id,
-              },
-              'tags/add'
-            )
-            .subscribe((res: any) => { });
+        if (apiResult && apiResult.status == 'SUCCESS') {
+          tags.map(async (tag: string) => {
+            await this.commonservice
+              .post(
+                {
+                  name: tag,
+                  type: 'topic',
+                  topic_id: apiResult?.payload?._id,
+                },
+                'tags/add'
+              )
+              .subscribe((res: any) => {});
+          });
+          this.formGroup.reset();
+          this.topicSlug = '';
+          this.getUserDetails = '';
+          this.updateDesc = '';
+          this.editorData = 'Enter text';
+          this.ngOnInit();
+          Swal.fire({
+            position: 'top-end',
+            icon: 'success',
+            title: apiResult.msg,
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        } else {
+          Swal.fire({
+            position: 'top-end',
+            icon: 'error',
+            title: apiResult.message,
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+      },
+      (error) => {
+        const array = error.error.errors;
+        const messages = array.map(function (err: any) {
+          return err.msg;
         });
-        this.formGroup.reset();
-        this.topicSlug = '';
-        this.getUserDetails = '';
-        this.updateDesc = '';
-        this.editorData = 'Enter text';
-        this.ngOnInit();
-        Swal.fire({
-          position: 'top-end',
-          icon: 'success',
-          title: apiResult.msg,
-          showConfirmButton: false,
-          timer: 1500,
-        });
-      } else {
-        Swal.fire({
-          position: 'top-end',
-          icon: 'error',
-          title: apiResult.message,
-          showConfirmButton: false,
-          timer: 1500,
+        const reverseMsg = messages.reverse();
+        const messages2 = reverseMsg.forEach((msgs: any) => {
+          this.toastr.error(msgs, 'ERROR');
         });
       }
-    }, error => {
-      const array = error.error.errors;
-      const messages = array.map(function (err: any) { return err.msg })
-      const reverseMsg = messages.reverse();
-      const messages2 = reverseMsg.forEach((msgs: any) => {
-        this.toastr.error(msgs, "ERROR");
-      })
-    });
+    );
   }
 }

@@ -16,7 +16,7 @@ import {
   NavModule,
   TabsModule,
   PaginationModule,
-  SharedModule
+  SharedModule,
 } from '@coreui/angular';
 
 import { TopicRoutingModule } from './topic-routing.module';
@@ -32,7 +32,7 @@ import { RelationComponent } from './relation/relation.component';
     AddTopicComponent,
     EditTopic,
     RelationComponent,
-    BlogRelationComponent
+    BlogRelationComponent,
   ],
   imports: [
     CommonModule,
@@ -54,8 +54,7 @@ import { RelationComponent } from './relation/relation.component';
     ButtonGroupModule,
     DropdownModule,
     SharedModule,
-    ListGroupModule
-  ]
+    ListGroupModule,
+  ],
 })
-export class TopicModule {
-}
+export class TopicModule {}

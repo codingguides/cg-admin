@@ -34,8 +34,7 @@ export class TopicListComponent {
     private _router: Router,
     private formBuilder: FormBuilder,
     private router: Router,
-    private toastr: ToastrService,
-
+    private toastr: ToastrService
   ) {
     this.formGroup = this.formBuilder.group({
       type: new FormControl('', [Validators.required]),
@@ -84,9 +83,8 @@ export class TopicListComponent {
   getParentName(topic: any) {
     if (topic.parentDetails.length > 0) {
       return topic.parentDetails[0].name;
-    }
-    else {
-      return "no parent";
+    } else {
+      return 'no parent';
     }
   }
 
@@ -141,7 +139,7 @@ export class TopicListComponent {
     return Array.apply(1, Array(end)).map((element, index) => index + start);
   }
 
-  searchOption(event: any) { }
+  searchOption(event: any) {}
 
   async onSubmit(formData: any) {
     if (formData.type !== '' && formData.search !== '') {
@@ -151,7 +149,7 @@ export class TopicListComponent {
         type: formData.type,
         search: formData.search,
       });
-      console.log(formData.type)
+      console.log(formData.type);
     }
   }
 
@@ -163,12 +161,12 @@ export class TopicListComponent {
     let query = {};
     if (flag == 'isShowMenu') {
       query = {
-        showNav: !topic.showNav
-      }
+        showNav: !topic.showNav,
+      };
     } else if (flag == 'showFeatures') {
       query = {
-        showFeatures: !topic.showFeatures
-      }
+        showFeatures: !topic.showFeatures,
+      };
     }
     this.commonservice
       .put(query, `topic/update/${topic._id}`)
@@ -184,10 +182,8 @@ export class TopicListComponent {
       });
   }
 
-
   relation(topic: any) {
-    localStorage.setItem("tname", topic.name)
+    localStorage.setItem('tname', topic.name);
     this.router.navigate([`/topic/blog-relation/${topic._id}`]);
   }
-
 }
