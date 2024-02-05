@@ -11,14 +11,12 @@ import { ToastrService } from 'ngx-toastr';
 import { HttpCallService } from 'src/app/common/http-call.service';
 import Swal from 'sweetalert2';
 
-
 @Component({
   selector: 'app-add-blog',
   templateUrl: './add-blog.component.html',
-  styleUrls: ['./add-blog.component.scss']
+  styleUrls: ['./add-blog.component.scss'],
 })
 export class AddBlogComponent {
-
   public favoriteColor = '#26ab3c';
   public updateDesc: string = '';
   formGroup!: FormGroup;
@@ -31,15 +29,15 @@ export class AddBlogComponent {
   topics: any[] = [];
   topicCate: any[] = [];
   isCategory: boolean = true;
-  selectedTopic: any = {}
+  selectedTopic: any = {};
+  sortSlug: string = '';
 
   constructor(
     public commonservice: HttpCallService,
     private _router: Router,
     private formBuilder: FormBuilder,
     private router: Router,
-    private toastr: ToastrService,
-
+    private toastr: ToastrService
   ) {
     this.config = this.commonservice.getConfigOfCKEditor();
 
@@ -50,7 +48,9 @@ export class AddBlogComponent {
       feature_video: new FormControl(''),
       topic_id: new FormControl('', [Validators.required]),
       category_id: new FormControl('', [Validators.required]),
-    })
+      sort_title: new FormControl('', [Validators.required]),
+      sort_slug: new FormControl(''),
+    });
   }
 
   public onTagEdited(event: any) {
@@ -77,6 +77,10 @@ export class AddBlogComponent {
     return this.formGroup.get('topic_id');
   }
 
+  get sort_title() {
+    return this.formGroup.get('sort_title');
+  }
+
   async ngOnInit() {
     this.getBlog();
     this.getTopic();
@@ -91,12 +95,24 @@ export class AddBlogComponent {
     await this.commonservice.get('blog/').subscribe((res) => {
       const apiResult = JSON.parse(JSON.stringify(res));
       this.blogs = apiResult && apiResult.payload;
-      console.log("this.blogs", this.blogs)
+      console.log('this.blogs', this.blogs);
     });
   }
 
   createSlug(event: any) {
     this.blogSlug = event.target.value
+      .toString()
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, '-')
+      .replace(/[^\w\-]+/g, '')
+      .replace(/\-\-+/g, '-')
+      .replace(/^-+/, '')
+      .replace(/-+$/, '');
+  }
+
+  createSortSlug(event: any) {
+    this.sortSlug = event.target.value
       .toString()
       .trim()
       .toLowerCase()
@@ -116,53 +132,58 @@ export class AddBlogComponent {
       feature_image: formData['feature_image'],
       feature_video: formData['feature_video'],
       status: this.status,
-      topic_id: this.selectedTopic.topic_id,
-      category_id: formData['category_id']
+      topic_id: this.selectedTopic._id,
+      category_id: formData['category_id'],
+      sort_title: formData['sort_title'],
+      sort_slug: formData['sort_slug'] ? formData['sort_slug'] : this.sortSlug,
     };
+    console.log(data);
 
-    this.commonservice.post(data, 'blog/add').subscribe((res) => {
-      const apiResult = JSON.parse(JSON.stringify(res));
-      console.log("apiResult", apiResult)
+    this.commonservice.post(data, 'blog/add').subscribe(
+      (res) => {
+        const apiResult = JSON.parse(JSON.stringify(res));
+        console.log('apiResult', apiResult);
 
+        if (apiResult && apiResult.status == 'SUCCESS') {
+          // this.toastr.success(apiResult.msg);
+          this.updateDesc = '';
+          this.editorData = 'Enter text';
+          this.formGroup.reset();
+          this.getUserDetails = '';
+          this.ngOnInit();
 
-      if (apiResult && apiResult.status == 'SUCCESS') {
-
-        // this.toastr.success(apiResult.msg);
-        this.updateDesc = '';
-        this.editorData = 'Enter text';
-        this.formGroup.reset();
-        this.getUserDetails = '';
-        this.ngOnInit();
-
-        Swal.fire({
-          position: 'top-end',
-          icon: 'success',
-          title: apiResult.msg,
-          showConfirmButton: false,
-          timer: 1500,
+          Swal.fire({
+            position: 'top-end',
+            icon: 'success',
+            title: apiResult.msg,
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        } else {
+          Swal.fire({
+            position: 'top-end',
+            icon: 'error',
+            title: apiResult.message,
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+      },
+      (error) => {
+        const array = error.error.errors;
+        const messages = array.map(function (err: any) {
+          return err.msg;
+        });
+        const reverseMsg = messages.reverse();
+        const messages2 = reverseMsg.forEach((msgs: any) => {
+          this.toastr.error(msgs, 'ERROR');
         });
       }
-      else {
-        Swal.fire({
-          position: 'top-end',
-          icon: 'error',
-          title: apiResult.message,
-          showConfirmButton: false,
-          timer: 1500,
-        });
-      }
-    }, error => {
-      const array = error.error.errors;
-      const messages = array.map(function (err: any) { return err.msg })
-      const reverseMsg = messages.reverse();
-      const messages2 = reverseMsg.forEach((msgs: any) => {
-        this.toastr.error(msgs, "ERROR");
-      })
-    })
+    );
   }
 
   changeStatus() {
-    this.status = "draft";
+    this.status = 'draft';
   }
 
   async getTopic() {
@@ -171,28 +192,30 @@ export class AddBlogComponent {
       let tres = apiResult && apiResult.payload;
       tres.map((result: any) => {
         if (result.parent_id == null) {
-          this.topics.push(result)
+          this.topics.push(result);
         }
-      })
+      });
     });
   }
 
   async getCate(val: any) {
     this.selectedTopic = JSON.parse(val.target.value);
+    console.log(this.selectedTopic);
     this.topicCate = [];
     if (this.selectedTopic.slug) {
-      console.log("selectedTopic.slug>>>>>>>>>>>>>", this.selectedTopic.slug)
-      await this.commonservice.get(`blog/get/category/${this.selectedTopic.slug}`).subscribe((res) => {
-        const apiResult = JSON.parse(JSON.stringify(res));
-        let tres = apiResult && apiResult.payload;
-        this.isCategory = tres.length > 0 ? true : false;
-        console.log("tres>>>>>>>", tres)
-        tres.map((result: any) => {
-          this.topicCate.push(result);
-        })
-      });
+      console.log('selectedTopic.slug>>>>>>>>>>>>>', this.selectedTopic.slug);
+
+      await this.commonservice
+        .get(`blog/get/category/${this.selectedTopic.slug}`)
+        .subscribe((res) => {
+          const apiResult = JSON.parse(JSON.stringify(res));
+          let tres = apiResult && apiResult.payload;
+          this.isCategory = tres.length > 0 ? true : false;
+          console.log('tres>>>>>>>', tres);
+          tres.map((result: any) => {
+            this.topicCate.push(result);
+          });
+        });
     }
-
   }
-
 }

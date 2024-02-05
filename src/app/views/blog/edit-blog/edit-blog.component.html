@@ -23,7 +23,7 @@
           <c-row>
             <c-col class="col-md-6">
               <label cLabel for="topic_id">Topic</label>
-              {{this.selectedCategory}}
+              {{ this.selectedCategory }}
               <select
                 cSelect
                 id="topic_id"
@@ -39,10 +39,10 @@
                   {{ topic.name }}
                 </option>
               </select>
-              </c-col>
+            </c-col>
             <c-col class="col-md-6" *ngIf="isCategory">
               <label cLabel for="category_id">Category</label>
-              {{this.selectedSubCategory}}
+              {{ this.selectedSubCategory }}
               <select
                 cSelect
                 id="category_id"
@@ -65,7 +65,7 @@
               <input
                 cFormControl
                 id="blogtitle"
-                type="email"
+                type="text"
                 formControlName="title"
                 (change)="createSlug($event)"
                 required
@@ -104,6 +104,41 @@
                 (change)="onChange($event)"
                 formControlName="description"
               ></ckeditor>
+            </c-col>
+          </c-row>
+          <c-row>
+            <c-col class="col-md-6">
+              <label cLabel for="sorttitle">Sort Title</label>
+              <input
+                cFormControl
+                id="sorttitle"
+                type="text"
+                formControlName="sort_title"
+                (change)="createSortSlug($event)"
+                required
+              />
+              <div
+                style="color: red"
+                *ngIf="sort_title && sort_title.invalid && sort_title.touched"
+              >
+                <div [hidden]="!sort_title.errors?.['required']">
+                  Sort Title is required!
+                </div>
+              </div>
+            </c-col>
+            <c-col class="col-md-6">
+              <label cLabel for="sortslug">Sort Slug</label>
+              <input
+                cFormControl
+                id="sortslug"
+                type="text"
+                [value]="sortSlug"
+                formControlName="sort_slug"
+                (change)="validateSortSlug($event)"
+              />
+              <div style="color: red" *ngIf="sort_slug?.touched">
+                <div>{{ sortSlugError.message }}</div>
+              </div>
             </c-col>
           </c-row>
           <c-row>
