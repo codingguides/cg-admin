@@ -67,6 +67,7 @@ export class LoginComponent {
           {
             email: email,
             password: password,
+            loginType: 'normal',
           },
           'user/login'
         )
